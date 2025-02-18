@@ -1,6 +1,24 @@
 :root {
-
-  color: rgba(255, 255, 255);
+  --primary: white;
+  --secondary: #E6BC4B;
   background-color: #000000;
 
+}
+
+.sanchez-regular {
+  font-family: "Sanchez", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.sanchez-regular-italic {
+  font-family: "Sanchez", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.julius-sans-one-regular {
+  font-family: "Julius Sans One", serif;
+  font-weight: 400;
+  font-style: normal;
 }

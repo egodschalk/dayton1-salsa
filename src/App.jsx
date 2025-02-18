@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import './App.css';
-// import Nav from './components/NavTabs';
-// import Header from './components/Header';
+import Nav from './components/NavTabs';
+import Header from './components/Header';
 // import Footer from './components/Footer';
 
 function App() {
@@ -10,8 +10,8 @@ function App() {
 
   return (
     <>
-      {/* <Header /> */}
-      {/* <Nav /> */}
+      <Header />
+      <Nav />
       <main className="mx-3">
           <Outlet />
       </main >

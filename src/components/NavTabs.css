@@ -1,0 +1,17 @@
+.navigation {
+    font-family: "Julius Sans One", serif;
+    font-weight: 400;
+    font-style: normal;
+    display: flex;
+    justify-content: right;
+    color: var(--primary);
+    margin: -120px 0 100px 0;
+
+}
+
+li, Link {
+    list-style-type: none;
+    font-size: 20pt;
+    text-decoration: none;
+    color: var(--primary);
+}
