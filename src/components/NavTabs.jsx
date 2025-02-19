@@ -4,13 +4,18 @@ import './NavTabs.css'
 function NavTabs() {
     return (
         <div className="navigation">
-            <div className='nav-bar'>
-                <li>About
-                    <Link to="/">
+            {/* <div className='nav-bar'>
+                <li>
+                    <Link to="/" className="nav-link" >
                         About
                     </Link>
+                    <li>
+                    <Link to="/" className="nav-link" >
+                        Classes
+                    </Link>
                 </li>
-            </div>
+                </li>
+            </div> */}
         </div>
     );
 }
