@@ -1,11 +1,11 @@
-.classes-page {
+.events-page {
     color: var(--primary);
     font-family: "Sanchez", serif;
     font-weight: 400;
     font-style: regular;
 }
 
-.classes-text {
+.events-text {
     color: var(--secondary);
     display: flex;
     justify-content: center;

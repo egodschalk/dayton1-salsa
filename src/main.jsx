@@ -6,6 +6,10 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App.jsx';
 import About from './pages/About';
 import Classes from './pages/Classes';
+import Events from './pages/Events';
+import Instructors from './pages/Instructors';
+import FAQs from './pages/FAQs';
+
 
 const router = createBrowserRouter([
   {
@@ -19,6 +23,18 @@ const router = createBrowserRouter([
       {
         path: '/Classes',
         element: <Classes />,
+      },
+      {
+        path: '/Events',
+        element: <Events />,
+      },
+      {
+        path: '/Instructors',
+        element: <Instructors />,
+      },
+      {
+        path: '/FAQs',
+        element: <FAQs />,
       },
     ],
   },
