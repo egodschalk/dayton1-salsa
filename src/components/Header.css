@@ -36,20 +36,20 @@
     font-size: 1.25em;
     text-decoration: none;
     color: var(--primary);
-    padding: 0 20px;
+    padding: 0 15px;
 }
 
 .nav-link:hover {
-    background-color: rgb(230, 188, 75, .75);
+    background-color: rgb(231, 189, 75, .85);
     color: var(--tertiary);
-    padding: 20px 20px;
+    padding: 15px 15px 17px 15px;
     border-radius: 5px 5px 0 0;
 }
 
-.active-link,
-.active-link:hover {
+.active,
+.active:hover {
     background-color: var(--secondary);
     color: var(--tertiary);
-    padding: 20px 20px;
+    padding: 15px 15px 17px 15px;
     border-radius: 5px 5px 0 0;
 }

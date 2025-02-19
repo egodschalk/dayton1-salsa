@@ -1,15 +1,11 @@
-.about-page {
+.classes-page {
     color: var(--primary);
     font-family: "Sanchez", serif;
     font-weight: 400;
     font-style: regular;
 }
 
-.video-placeholder {
-    width: 100vw;
-}
-
-.about-text {
+.classes-text {
     color: var(--secondary);
     display: flex;
     width: 70vw;

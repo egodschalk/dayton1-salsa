@@ -14,22 +14,22 @@ function Header() {
 
             <div className="navigation">
                 <div className='nav-bar'>
-                    <NavLink to="/" className="nav-link" activeClassName="nav-link-active">
+                    <NavLink to="/" className="nav-link" >
                         About
                     </NavLink>
-                    <NavLink to="" className="nav-link" activeClassName="active-link">
+                    <NavLink to="/Classes" className="nav-link">
                         Classes
                     </NavLink>
-                    <NavLink to="" className="nav-link" activeClassName="active-link">
+                    <NavLink to="/Events" className="nav-link">
                         Events
                     </NavLink>
-                    <NavLink to="" className="nav-link" activeClassName="active-link">
+                    <NavLink to="/Instructors" className="nav-link">
                         Instructors
                     </NavLink>
-                    <NavLink to="" className="nav-link" activeClassName="active-link">
+                    <NavLink to="/FAQs" className="nav-link">
                         FAQs
                     </NavLink>
-                    <NavLink to="" className="nav-link" activeClassName="active-link">
+                    <NavLink to="/Contact" className="nav-link">
                         Contact
                     </NavLink>
                 </div>
