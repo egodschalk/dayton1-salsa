@@ -1,0 +1,90 @@
+.contact-header {
+    color: var(--secondary);
+    font-family: "Julius Sans One", serif;
+    font-size: 25pt;
+    padding-bottom: 30px;
+}
+
+.contact-content {
+    display: flex;
+    justify-content: center;
+    height: 400px;
+}
+
+.contact-info {
+    color: var(--primary);
+    font-family: "Julius Sans One", serif;
+    font-weight: 400;
+    font-style: normal;
+    width: 30vw;
+    padding-top: 20px;
+    border-right: 2px solid var(--secondary);
+    text-align: left;
+    margin-left: 10vw;
+}
+
+.contact-info h3 {
+    padding-top: 15px;
+    color: var(--secondary);
+}
+
+.contact-info p {
+    line-height: 8pt;
+}
+
+.contact-form {
+    font-family: "Sanchez", serif;
+    font-weight: 400;
+    font-style: normal;
+    width: 60vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.field {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.name,
+.email {
+    font-family: "Sanchez", serif;
+    font-size: 13pt;
+    text-align: center;
+    width: 250px;
+    border-radius: 5px;
+    border: none;
+    margin-left: 10px;
+}
+
+.message {
+    font-family: "Sanchez", serif;
+    font-size: 13pt;
+    text-align: center;
+    border-radius: 5px;
+    border: none;
+    margin-left: 10px;
+}
+
+button {
+    background-color: var(--secondary);
+    color: var(--tertiary);
+    font-family: "Sanchez", serif;
+    padding: 8px;
+    width: 120px;
+    border: none;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: rgb(231, 189, 75, .85);
+}
