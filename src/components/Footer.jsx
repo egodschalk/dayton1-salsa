@@ -9,10 +9,10 @@ function Footer() {
         <div className='footer'>
             <div className='socials'>
                 <p className='follow'>follow us:  </p>
-                <a href="https://www.facebook.com/DaytOn1Salsa">
+                <a href="https://www.facebook.com/DaytOn1Salsa" target='_blank'>
                     <img src={facebookLogo} alt="" className='social-logos'/>
                 </a>
-                <a href="https://www.instagram.com/dayton1salsa/">
+                <a href="https://www.instagram.com/dayton1salsa/" target='_blank'>
                 <img src={instagramLogo} alt="" className='social-logos' />
                 </a>
             </div>
