@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import './App.css';
-// import Nav from './components/NavTabs';
 import Header from './components/Header';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 
+
 function App() {
+  
   const [count, setCount] = useState(0)
 
   return (
     <>
       <Header />
-      {/* <Nav /> */}
       <main className="mx-3">
           <Outlet />
       </main >

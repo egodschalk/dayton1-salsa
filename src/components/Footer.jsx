@@ -18,7 +18,7 @@ function Footer() {
             </div>
             <div className='ownership'>
                 <p className='copyright'>&copy; 2025 DaytOn1 Salsa - All Rights Reserved</p>
-                <a href="https://www.egodschalk.com/" className='dev-stuff'>created by: ColorFlow Studios</a>
+                <a href="https://www.egodschalk.com/" className='dev-stuff' target='_blank'>created by: ColorFlow Studios</a>
             </div>
         </div>
     );

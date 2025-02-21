@@ -43,7 +43,7 @@
     background-color: rgb(231, 189, 75, .85);
     color: var(--tertiary);
     padding: 15px 15px 17px 15px;
-    border-radius: 5px 5px 0 0;
+    border-radius: 10px 10px 0 0;
 }
 
 .active,
@@ -51,7 +51,7 @@
     background-color: var(--secondary);
     color: var(--tertiary);
     padding: 15px 15px 17px 15px;
-    border-radius: 5px 5px 0 0;
+    border-radius: 10px 10px 0 0;
 }
 
 @media screen and (max-width: 1050px) {

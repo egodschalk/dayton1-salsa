@@ -1,10 +1,40 @@
 import { Link, useLocation } from 'react-router-dom';
 import './Contact.css'
+import Swal from 'sweetalert2'
 
 function Contact() {
 
+    const onSubmit = async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+    
+        formData.append("access_ke");
+    
+        const object = Object.fromEntries(formData);
+        const json = JSON.stringify(object);
+    
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          body: json
+        }).then((res) => res.json());
+       
+        if (res.success) {
+            Swal.fire({
+                title: "Thank you!",
+                text: "Your message has been sent",
+                icon: "success"
+              });
+          }
+        };
+
+
+
     return (
-        <div className="contact-page">
+        <div className="contact-page" id='Contact'>
             <h2 className="contact-header">Contact Us</h2>
             <div className='contact-content'>
                 <div className='contact-info'>
@@ -18,24 +48,24 @@ function Contact() {
                     <p>DaytOn1Salsa@gmail.com</p>
                 </div>
                 <div className='contact-form'>
-                    <form className='form'>
+                    <form onSubmit={onSubmit} className='form'>
                         <div className='field'>
                             <label className='label'>
-                                <input type="text" className="name" name="name" placeholder="name" />
+                                <input type="text" className="name" name="name" placeholder="name" required/>
                             </label>
                         </div>
                         <div className='field'>
                             <label className='label'>
-                                <input type="text" className="email" name="email" placeholder="email" />
+                                <input type="text" className="email" name="email" placeholder="email" required/>
                             </label>
                         </div>
                         <div className='field'>
                             <label className='label-message'>
-                                <textarea className="message" rows="8" cols="50" placeholder="your message"></textarea>
+                                <textarea className="message" name='message'  placeholder="your message" required></textarea>
 
                             </label>
                         </div>
-                        <button>Contact Us</button>
+                        <button type='submit'>Send Message</button>
                     </form>
                 </div>
 
@@ -44,4 +74,4 @@ function Contact() {
     );
 }
 
-export default Contact
+export default Contact;

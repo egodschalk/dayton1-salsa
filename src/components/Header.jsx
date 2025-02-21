@@ -1,4 +1,5 @@
-import { Link, useLocation, NavLink } from 'react-router-dom';
+import { useLocation, NavLink } from 'react-router-dom';
+import { HashLink as Link } from 'react-router-hash-link'
 import './Header.css'
 import dayton1Logo from '../assets/DaytOn1-Logo.png'
 
@@ -29,9 +30,9 @@ function Header() {
                     <NavLink to="/FAQs" className="nav-link">
                         FAQs
                     </NavLink>
-                    <NavLink to="/Contact" className="nav-link">
+                    <Link smooth to="#Contact" className="nav-link" >
                         Contact
-                    </NavLink>
+                    </Link>
                 </div>
             </div>
         </div>
