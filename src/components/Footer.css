@@ -4,39 +4,66 @@
     font-family: "Sanchez", serif;
     display: flex;
     flex-direction: column;
+    width: 100vw;
 }
 
 .socials {
-    position: relative;
     top: 10px;
     display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    padding: 0 40vw;
+    justify-content: center;
+    align-items: center;
 }
 
 .follow {
-    position: relative;
     bottom: 5px;
+    padding: 0 5px;
 }
 
 .social-logos {
     width: 40px;
     height: 40px;
+    padding: 0 5px;
 }
 
 .ownership {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 
 .copyright {
     text-align: left;
+    padding-bottom: 10px;
 }
 
 .dev-stuff {
     color: var(--primary);
+    display: flex;
     text-align: right;
-    margin-top: 15px;
+    text-decoration: none;
+    padding-left: 50px;
+}
+
+.cf-logo {
+    width: 150px;
+}
+
+@media screen  and (max-width: 875px) {
+
+    .ownership {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .copyright {
+        text-align: center;
+    }
+    
+    .dev-stuff {
+        color: var(--primary);
+        text-align: center;
+        margin-right: 0;
+    }
+
 }

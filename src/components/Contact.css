@@ -91,3 +91,42 @@ button {
 button:hover {
     background-color: rgb(231, 189, 75, .85);
 }
+
+@media screen  and (max-width: 815px) {
+
+    .contact-header {
+        padding-bottom: 0px;
+    }
+
+    .contact-content {
+        flex-wrap: wrap;
+        height: 100%;
+    }
+
+    .contact-info {
+        width: 90vw;
+        padding-top: 0px;
+        padding-bottom: 20px;
+        border-right: none;
+        border-bottom: 2px solid var(--secondary);
+        text-align: center;
+        margin-left: 0;
+    }
+
+    .contact-info h3 {
+        padding-top: 0px;
+        color: var(--secondary);
+    }
+
+    .contact-form {
+        width: 90vw;
+        display: flex;
+        padding-top: 20px;
+    }
+
+    .message {
+        margin-left: 0px;
+        width: 60vw;
+    }
+
+}

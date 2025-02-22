@@ -8,7 +8,7 @@ function Contact() {
         event.preventDefault();
         const formData = new FormData(event.target);
     
-        formData.append("access_ke");
+        formData.append("access_key", "6f3b29ad-ad8f-4442-ade9-2511bbdf0354");
     
         const object = Object.fromEntries(formData);
         const json = JSON.stringify(object);
@@ -40,7 +40,7 @@ function Contact() {
                 <div className='contact-info'>
                     <h3>Address:</h3>
                     <p>Genuine Work</p>
-                    <p>15 McDonough Street</p>
+                    <p>15 Mc Donough Street</p>
                     <p>Dayton, OH 45402</p>
                     <h3>Phone (Please Text):</h3>
                     <p>858-752-2578</p>
