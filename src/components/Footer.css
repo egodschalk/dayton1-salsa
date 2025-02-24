@@ -8,6 +8,8 @@
 }
 
 .socials {
+    font-family: "Julius Sans One", serif;
+
     top: 10px;
     display: flex;
     justify-content: center;
@@ -26,6 +28,7 @@
 }
 
 .ownership {
+    font-family: "Julius Sans One", serif;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -43,10 +46,12 @@
     text-align: right;
     text-decoration: none;
     padding-left: 50px;
+    font-family: "Julius Sans One", serif;;
 }
 
 .cf-logo {
     width: 150px;
+    padding-left: 10px;
 }
 
 @media screen  and (max-width: 875px) {

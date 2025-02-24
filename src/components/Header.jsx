@@ -1,9 +1,17 @@
 import { useLocation, NavLink } from 'react-router-dom';
 import { HashLink as Link } from 'react-router-hash-link'
 import './Header.css'
-import dayton1Logo from '../assets/DaytOn1-Logo.jpeg'
+import dayton1Logo from '../assets/DaytOn1-Logo.png'
+import hamburger from '../assets/hamburger.png'
+import { useState } from 'react';
 
 function Header() {
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setIsOpen((open) => !open);
+    }
 
     return (
         <div className="header">
@@ -14,7 +22,10 @@ function Header() {
             </div>
 
             <div className="navigation">
-                <div className='nav-bar'>
+                <li class="hamburger-button" onClick={toggleMenu}>
+                    <img src={hamburger} className='hamburger' alt="" />
+                </li>
+                <div class={`nav-bar ${isOpen ? "is-open" : ""}`} >
                     <NavLink to="/" className="nav-link" >
                         About
                     </NavLink>
@@ -34,6 +45,7 @@ function Header() {
                         Contact
                     </Link>
                 </div>
+
             </div>
         </div>
     );
