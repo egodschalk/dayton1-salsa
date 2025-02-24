@@ -1,3 +1,7 @@
+.contact-page {
+    width: 100vw;
+}
+
 .contact-header {
     color: var(--secondary);
     font-family: "Julius Sans One", serif;

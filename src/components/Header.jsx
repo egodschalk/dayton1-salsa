@@ -13,6 +13,10 @@ function Header() {
         setIsOpen((open) => !open);
     }
 
+    const closeMenu = () => {
+        setIsOpen(false);
+    };
+
     return (
         <div className="header">
             <div className="header-logo">
@@ -26,22 +30,22 @@ function Header() {
                     <img src={hamburger} className='hamburger' alt="" />
                 </li>
                 <div class={`nav-bar ${isOpen ? "is-open" : ""}`} >
-                    <NavLink to="/" className="nav-link" >
+                    <NavLink to="/" className="nav-link" onClick={closeMenu}>
                         About
                     </NavLink>
-                    <NavLink to="/Classes" className="nav-link">
+                    <NavLink to="/Classes" className="nav-link" onClick={closeMenu}>
                         Classes
                     </NavLink>
-                    <NavLink to="/Events" className="nav-link">
+                    <NavLink to="/Events" className="nav-link" onClick={closeMenu}>
                         Events
                     </NavLink>
-                    <NavLink to="/Instructors" className="nav-link">
+                    <NavLink to="/Instructors" className="nav-link" onClick={closeMenu}>
                         Instructors
                     </NavLink>
-                    <NavLink to="/FAQs" className="nav-link">
+                    <NavLink to="/FAQs" className="nav-link" onClick={closeMenu}>
                         FAQs
                     </NavLink>
-                    <Link smooth to="#Contact" className="nav-link" >
+                    <Link smooth to="#Contact" className="nav-link" onClick={closeMenu}>
                         Contact
                     </Link>
                 </div>

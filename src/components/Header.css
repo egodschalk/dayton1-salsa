@@ -27,8 +27,7 @@
     top: 290px;
     width: 70vw;
     color: var(--primary);
-    margin: -100px 0 100px 0;
-    /* padding-top: 20px; */
+    margin: -110px 0 100px 0;
 }
 
 .nav-link {
@@ -39,7 +38,7 @@
 }
 
 .nav-link:hover {
-    background-color: rgb(231, 189, 75, .85);
+    background-color: rgb(231, 193, 37, .85);
     color: var(--tertiary);
     padding: 15px 15px 10px 15px;
     border-radius: 10px 10px 0 0;
