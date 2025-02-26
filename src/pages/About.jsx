@@ -1,6 +1,9 @@
 import './About.css'
 import videoplaceholder from '../assets/Video-Placeholder.png'
-
+import noel1 from '../assets/noel-1.png'
+import group2 from '../assets/group-2.png'
+import timTeach from '../assets/tim-teaching.png'
+import { Link } from 'react-router-dom'
 export default function About() {
     return (
         <div className="about-page">
@@ -10,6 +13,49 @@ export default function About() {
                 <h2 className='about-text'>
                     DaytOn1 Salsa strives to bring people together, share our love for Latin dance, and grow the dance community
                 </h2>
+                <div className='about-class-section'>
+                    <h2>Our Classes</h2>
+                    <div className='about-classes'>
+                        <div className='about-class-offerings'>
+                            <Link to="/Classes#" onClick={() => {
+                                window.scroll(0, 0);
+                            }}
+                            >
+                                <h3 className='about-class-heading'>Salsa</h3>
+                                <img src={noel1} alt="" />
+                            </Link>
+                        </div>
+                        <div className='about-class-offerings'>
+                            <Link to="/Classes#" onClick={() => {
+                                window.scroll(0, 0);
+                            }}
+                            >
+                                <h3 className='about-class-heading'>Bachata</h3>
+                                {/* <Link to="/Classes"> */}
+                                <img src={group2} alt="" />
+                            </Link>
+                        </div>
+                        <div className='about-class-offerings'>
+                            <Link to="/Classes#" onClick={() => {
+                                window.scroll(0, 0);
+                            }}
+                            >
+                                <h3 className='about-class-heading'>Social Hour</h3>
+                                <img src={timTeach} alt="" />
+                            </Link>
+                        </div>
+                    </div>
+                    <Link to="/Classes" onClick={() => {
+                        window.scroll(0, 0);
+                    }}
+                    >
+                        <h4>...and more</h4>
+                    </Link>
+                </div>
+                <div className='about-event-section'>
+                    <h2>Our Events</h2>
+
+                </div>
             </div>
         </div>
     );
