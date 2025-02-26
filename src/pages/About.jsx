@@ -31,7 +31,6 @@ export default function About() {
                             }}
                             >
                                 <h3 className='about-class-heading'>Bachata</h3>
-                                {/* <Link to="/Classes"> */}
                                 <img src={group2} alt="" />
                             </Link>
                         </div>
@@ -49,7 +48,7 @@ export default function About() {
                         window.scroll(0, 0);
                     }}
                     >
-                        <h4>...and more</h4>
+                        <h4>and more...</h4>
                     </Link>
                 </div>
                 <div className='about-event-section'>
