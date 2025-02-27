@@ -33,7 +33,7 @@
 
 .about-class-section h2 {
     font-family: "Julius Sans One", serif;
-    font-size: 30pt;
+    font-size: 40pt;
     color: var(--secondary);
     text-align: center;
     text-decoration: none;
@@ -73,19 +73,53 @@ a {
 }
 
 .about-event-section {
-    padding-bottom: 200px;
+    margin-bottom: 200px;
+    width: 100vw;
+    height: 600px;
+    background-image: linear-gradient(45deg, var(--secondary), rgb(227, 200, 93));
+    ;
+    transform: skewY(10deg);
+    display: flex;
+    align-items: center;
 }
 
 .about-event-section h2 {
+    min-width: 600px;
     font-family: "Julius Sans One", serif;
-    font-size: 30pt;
-    color: var(--secondary);
-    text-align: center;
+    font-size: 40pt;
+    color: black;
+    transform: skewY(-10deg) rotate(270deg);
+    position: relative;
+    left: -220px;
+}
+
+.about-event-content {
+    /* background-color: salmon; */
+    min-width: 80vw;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    transform: skewY(-10deg);
+    position: relative;
+    left: -400px;
+}
+
+.event1 img {
+    width: 350px;
+    position: relative;
+    top: -50px;
+}
+
+.event2 img {
+    width: 350px;
+    position: relative;
+    top: 50px;
 }
 
 
-@media screen  and (max-width: 1020px) {
-    
+@media screen and (max-width: 1020px) {
+
     .about-class-section {
         padding: 20px 0 0 0;
     }
@@ -94,7 +128,7 @@ a {
         flex-direction: column;
         top: 0;
     }
-    
+
     .about-class-heading {
         position: relative;
         top: 80px;
@@ -115,13 +149,42 @@ a {
     }
 }
 
-@media screen  and (max-width: 920px) {
+@media screen and (max-width: 950px) {
+
+    .about-event-section {
+
+        height: 700px;
+        background-image: linear-gradient(45deg, var(--secondary), rgb(227, 200, 93));
+        ;
+        transform: skewY(10deg);
+        display: flex;
+        align-items: center;
+    }
+
+    .about-event-content {
+        min-width: 85vw;
+        justify-content: center;
+        flex-direction: column;
+        left: -450px;
+    }
+
+    .event1 img {
+        padding-bottom: 20px;
+    }
+
+}
+
+@media screen and (max-width: 920px) {
     .about-text {
         font-size: 30pt;
     }
+
+    .about-event-content h2 {
+        top: -60px;
+    }
 }
 
-@media screen  and (max-width: 420px) {
+@media screen and (max-width: 420px) {
     .about-text {
         font-size: 30pt;
         width: 90vw;

@@ -1,13 +1,15 @@
 import './About.css'
+import { Link } from 'react-router-dom'
 import videoplaceholder from '../assets/Video-Placeholder.png'
 import noel1 from '../assets/noel-1.png'
 import group2 from '../assets/group-2.png'
 import timTeach from '../assets/tim-teaching.png'
-import { Link } from 'react-router-dom'
+import event1 from '../assets/Event-1.png'
+import event2 from '../assets/Event-2.png'
+
 export default function About() {
     return (
         <div className="about-page">
-            {/* <h2 className="about-header">About Me</h2> */}
             <div className='about-content'>
                 <img className="video-placeholder" src={videoplaceholder} alt="" />
                 <h2 className='about-text'>
@@ -52,8 +54,15 @@ export default function About() {
                     </Link>
                 </div>
                 <div className='about-event-section'>
-                    <h2>Our Events</h2>
-
+                <h2>Upcoming Events</h2>
+                    <div className='about-event-content'>
+                        <div className='event1'>
+                            <img src={event1} alt="" />
+                        </div>
+                        <div className='event2'>
+                            <img src={event2} alt="" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
