@@ -1,6 +1,6 @@
 import './About.css'
 import { Link } from 'react-router-dom'
-import videoplaceholder from '../assets/Video-Placeholder.png'
+import videoplaceholder from '../assets/dayton1-group.jpg'
 import noel1 from '../assets/noel-1.png'
 import group2 from '../assets/group-2.png'
 import timTeach from '../assets/tim-teaching.png'

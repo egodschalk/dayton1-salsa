@@ -77,7 +77,6 @@ a {
     width: 100vw;
     height: 600px;
     background-image: linear-gradient(45deg, var(--secondary), rgb(227, 200, 93));
-    ;
     transform: skewY(10deg);
     display: flex;
     align-items: center;
@@ -117,7 +116,6 @@ a {
     top: 50px;
 }
 
-
 @media screen and (max-width: 1020px) {
 
     .about-class-section {
@@ -152,10 +150,8 @@ a {
 @media screen and (max-width: 950px) {
 
     .about-event-section {
-
         height: 700px;
         background-image: linear-gradient(45deg, var(--secondary), rgb(227, 200, 93));
-        ;
         transform: skewY(10deg);
         display: flex;
         align-items: center;
@@ -170,8 +166,12 @@ a {
 
     .event1 img {
         padding-bottom: 20px;
+        top: 0;
     }
 
+    .event2 img {
+        top: 0;
+    }
 }
 
 @media screen and (max-width: 920px) {
@@ -179,9 +179,45 @@ a {
         font-size: 30pt;
     }
 
-    .about-event-content h2 {
-        top: -60px;
+}
+
+@media screen and (max-width: 650px) {
+
+    .about-event-section {
+        height: 850px;
+        background-image: linear-gradient(45deg, var(--secondary), rgb(227, 200, 93));
+        transform: skewY(10deg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
     }
+
+    .about-event-section h2 {
+        min-width: 100vw;
+        font-size: 40pt;
+        color: black;
+        transform: skewY(-10deg) rotate(0deg);
+        left: 0px;
+        top: 20px;
+        text-wrap: wrap;
+    }
+
+    .about-event-content {
+        min-width: 100vw;
+        left: 0px;
+    }
+
+    .event1 img {
+        padding-bottom: 20px;
+        top: -20px;
+    }
+
+    .event2 img {
+        top: -20px;
+    }
+
 }
 
 @media screen and (max-width: 420px) {
