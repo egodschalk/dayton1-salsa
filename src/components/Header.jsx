@@ -1,7 +1,7 @@
 import { useLocation, NavLink } from 'react-router-dom';
 import { HashLink as Link } from 'react-router-hash-link'
 import './Header.css'
-import dayton1Logo from '../assets/dayton1-logo.png'
+import dayton1Logo from '../assets/Dayton1-Logo.png'
 import hamburger from '../assets/hamburger.png'
 import { useState } from 'react';
 
