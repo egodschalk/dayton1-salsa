@@ -153,13 +153,15 @@
         width: 300px;
     }
 
+    .nav-bar.is-open {
+        position: relative;
+        top: -45px;
+    }
+
 }
 
 @media screen and (max-width: 400px) {
 
-    .hamburger {
-        /* bottom: 55px; */
-        /* top: -100px; */
-    }
+
 
 }

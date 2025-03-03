@@ -222,8 +222,8 @@ a {
 
 @media screen and (max-width: 420px) {
     .about-text {
-        font-size: 30pt;
-        width: 90vw;
+        font-size: 22pt;
+        width: 92vw;
         padding: 3vh 0;
         text-align: center;
     }

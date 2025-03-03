@@ -86,8 +86,9 @@ button {
     background-color: var(--secondary);
     color: var(--tertiary);
     font-family: "Sanchez", serif;
+    font-size: 13pt;
     padding: 8px;
-    width: 120px;
+    width: 140px;
     border: none;
     border-radius: 5px;
 }
