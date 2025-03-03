@@ -60,9 +60,13 @@ function Contact() {
                             </label>
                         </div>
                         <div className='field'>
+                            <label className='label'>
+                                <input type="text" className="phone" name="phone" placeholder="phone" required />
+                            </label>
+                        </div>
+                        <div className='field'>
                             <label className='label-message'>
                                 <textarea className="message" name='message' placeholder="your message" required></textarea>
-
                             </label>
                         </div>
                         <button type='submit'>Send Message</button>
