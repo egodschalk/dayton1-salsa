@@ -184,7 +184,7 @@ a {
 @media screen and (max-width: 650px) {
 
     .about-event-section {
-        height: 850px;
+        height: 900px;
         background-image: linear-gradient(45deg, var(--secondary), rgb(227, 200, 93));
         transform: skewY(10deg);
         display: flex;
@@ -221,10 +221,13 @@ a {
 }
 
 @media screen and (max-width: 420px) {
+    
     .about-text {
         font-size: 22pt;
         width: 92vw;
-        padding: 3vh 0;
-        text-align: center;
+    }
+
+    .about-class-heading {
+        text-shadow: 0 0 10px black, 0 0 20px black, 0 0 30px black, 0 0 40px black, 0 0 50px black;
     }
 }
