@@ -146,7 +146,6 @@
     .hamburger {
         position: absolute;
         top: -100px;
-        /* bottom: 100px; */
     }
 
     .logo {
@@ -157,11 +156,5 @@
         position: relative;
         top: -45px;
     }
-
-}
-
-@media screen and (max-width: 400px) {
-
-
 
 }

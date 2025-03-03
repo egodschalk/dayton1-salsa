@@ -4,7 +4,7 @@ import videoplaceholder from '../assets/dayton1-group.jpg'
 import noel1 from '../assets/noel-1.png'
 import group2 from '../assets/group-2.png'
 import timTeach from '../assets/tim-teaching.png'
-import event1 from '../assets/Event-1.png'
+import event1 from '../assets/Event-1.jpeg'
 import event2 from '../assets/Event-2.jpeg'
 
 export default function About() {
