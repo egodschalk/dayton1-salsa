@@ -41,7 +41,7 @@ export default function About() {
                                 window.scroll(0, 0);
                             }}
                             >
-                                <h3 className='about-class-heading'>Social Hour</h3>
+                                <h3 className='about-class-heading'>Social Dancing</h3>
                                 <img src={timTeach} alt="" />
                             </Link>
                         </div>
@@ -50,11 +50,11 @@ export default function About() {
                         window.scroll(0, 0);
                     }}
                     >
-                        <h4>and more...</h4>
+                        <button className='about-classes-button'>and more...</button>
                     </Link>
                 </div>
                 <div className='about-event-section'>
-                <h2>Upcoming Events</h2>
+                    <h2>Upcoming Events</h2>
                     <div className='about-event-content'>
                         <div className='event1'>
                             <img src={event1} alt="" />
@@ -62,7 +62,14 @@ export default function About() {
                         <div className='event2'>
                             <img src={event2} alt="" />
                         </div>
+                        <Link to="/Events" onClick={() => {
+                            window.scroll(0, 0);
+                        }}
+                        >
+                            <button className='about-event-button'>More Info</button>
+                        </Link>
                     </div>
+
                 </div>
             </div>
         </div>

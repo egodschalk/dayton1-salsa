@@ -90,7 +90,7 @@ button {
     padding: 8px;
     width: 140px;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 button:hover {
@@ -116,6 +116,7 @@ button:hover {
         border-bottom: 2px solid var(--secondary);
         text-align: center;
         margin-left: 0;
+        font-size: 14pt;
     }
 
     .contact-info h3 {
