@@ -93,20 +93,40 @@
     padding-right: 20px;
 }
 
+.classes-rates p {
+    font-size: 14pt;
+}
+
 .rate-category p,
 .rate-cost p {
     font-family: "Sanchez", serif;    
     font-size: 18pt;
 }
 
-.classes-rates ul {
-    text-align: left;
-    font-size: 14pt;
-    /* list-style-type: disc; */
-}
-
 .classes-picture img {
     width: 450px;
+}
+
+.classes-first-time {
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 20px;
+}
+
+.classes-first-time h3 {
+    font-family: "Julius Sans One", serif;    
+    color: var(--secondary);
+    width: 40vw;
+    font-size: 24pt;
+}
+
+.first-time-info {
+    width: 45vw;
+    font-size: 14pt;
+    text-align: left;
+    padding-left: 20px;
 }
 
 @media screen and (max-width: 965px) {
@@ -121,11 +141,6 @@
         padding-bottom: 20px;
     }
 
-    .classes-rates ul {
-        text-align: center;
-        list-style-type: none;
-    }
-
     .classes-picture {
         display: flex;
         justify-content: center;
@@ -136,6 +151,30 @@
         width: 450px;
         justify-self: center;
     }
+
+}
+
+@media screen and (max-width: 760px) {
+
+    .classes-first-time {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .classes-first-time h3 {
+        width: 90vw;
+    }
+    
+    .first-time-info {
+        width: 90vw;
+        text-align: center;
+        padding-left: 0px;
+    }
+
+    .first-time-info button {
+        margin-top: 20px;
+    }
+
 
 }
 

@@ -49,11 +49,18 @@ export default function Classes() {
                                 <p>$60</p>
                             </div>
                         </div>
-                        <ul>Social dancing included in all monthly memberships</ul>
-                        <ul>All monthly memberships are ONLY valid for the duration of the month that it is purchased. Classes do not roll over to the next month.</ul>
+                        <p>Social dancing included in all monthly memberships</p>
+                        <p>All monthly memberships are ONLY valid for the duration of the month that it is purchased. Classes do not roll over to the next month.</p>
                     </div>
                     <div className='classes-picture'>
                         <img src={classesPagePic} alt="picture of couples dancing in a circle" />
+                    </div>
+                </div>
+                <div className='classes-first-time'>
+                    <h3>First time? No problem!</h3>
+                    <div className='first-time-info'>
+                        <p>Message us each person’s name, phone number, and preferred payment method to be registered if it's your first time attending our classes</p>
+                        <button>Check out our FAQs</button>
                     </div>
                 </div>
             </div>
