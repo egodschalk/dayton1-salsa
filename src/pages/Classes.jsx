@@ -1,5 +1,8 @@
 import './Classes.css'
 import classesPagePic from '../assets/tim-teaching.png'
+import level1 from '../assets/noel-1.png'
+import level2 from '../assets/group-2.png'
+import level3 from '../assets/rj-teaching.png'
 
 export default function Classes() {
     return (
@@ -11,7 +14,7 @@ export default function Classes() {
                     <p>15 Mc Donough Street</p>
                     <p>Dayton, OH 45402</p>
                 </div>
-                <div className='classes-schedule'>
+                <div className='classes-schedule-section'>
                     <div className='days'>
                         <h3>MONDAYS</h3>
                         <p>Multiple Levels Offered</p>
@@ -30,7 +33,6 @@ export default function Classes() {
                                 <p>Salsa</p>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <div className='classes-membership-section'>
@@ -51,7 +53,7 @@ export default function Classes() {
                         <ul>All monthly memberships are ONLY valid for the duration of the month that it is purchased. Classes do not roll over to the next month.</ul>
                     </div>
                     <div className='classes-picture'>
-                        <img src={classesPagePic} alt="" />
+                        <img src={classesPagePic} alt="picture of couples dancing in a circle" />
                     </div>
                 </div>
             </div>
