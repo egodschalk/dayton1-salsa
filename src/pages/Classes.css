@@ -3,13 +3,90 @@
     font-family: "Sanchez", serif;
     font-weight: 400;
     font-style: regular;
+    width: 100vw;
 }
 
-.classes-text {
+.classes-location {
+    font-family: "Sanchez", serif;
+    font-size: 20pt;
+    line-height: 8pt;
     color: var(--secondary);
+    padding: 25px 0;
+}
+
+.classes-schedule {
+    background-color: var(--secondary);
+    color: var(--tertiary);
+    padding: 30px;
     display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    font-size: 20pt;
+    line-height: 8pt;
+}
+
+.days {
+    display: flex;
+    flex-direction: column;
     justify-content: center;
-    width: 70vw;
-    padding: 3vh 15vw;
-    font-size: 35pt;
+}
+
+.schedule {
+    display: flex;
+    flex-direction: row;
+}
+
+.times {
+    padding-right: 15px;
+}
+
+.classes {
+    text-align: left;
+}
+
+.classes-membership-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 25px 0;
+}
+
+.classes-rates {
+    width: 40vw;
+    padding-left: 20px;
+}
+
+.classes-rates h3 {
+    font-family: "Julius Sans One", serif;
+    font-size: 20pt;
+    line-height: 8pt;
+    padding-bottom: 20px;
+}
+
+.rates {
+    display: flex;
+    flex-direction: row;
+
+}
+
+.rate-category {
+    text-align: right;
+    padding-right: 20px;
+}
+
+.rate-category p,
+.rate-cost p {
+    font-family: "Sanchez", serif;    
+    font-size: 18pt;
+}
+
+.classes-rates ul {
+    text-align: left;
+    font-size: 14pt;
+    list-style-type: disc;
+}
+
+.classes-picture img {
+    width: 450px;
 }
