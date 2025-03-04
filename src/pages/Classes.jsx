@@ -36,7 +36,7 @@ export default function Classes() {
                 <div className='classes-membership-section'>
                     <div className='classes-rates'>
                         <h3>Monthly Membership Rates:</h3>
-                        <h3>March 2024</h3>
+                        {/* <h3>March 2024</h3> */}
                         <div className='rates'>
                             <div className='rate-category'>
                                 <p>1 Class (Salsa OR Bachata):</p>
