@@ -5,9 +5,13 @@
     font-style: regular;
 }
 
-.video-placeholder {
+.video {
     width: 100vw;
 }
+
+/* .video-placeholder {
+    width: 100vw;
+} */
 
 .about-content {
     width: 100vw;

@@ -1,6 +1,7 @@
 import './About.css'
 import { Link } from 'react-router-dom'
 import videoplaceholder from '../assets/dayton1-group.jpg'
+import video from '../assets/heather-dave-dance.mov'
 import noel1 from '../assets/noel-1.png'
 import group2 from '../assets/group-2.png'
 import timTeach from '../assets/tim-teaching.png'
@@ -11,7 +12,10 @@ export default function About() {
     return (
         <div className="about-page">
             <div className='about-content'>
-                <img className="video-placeholder" src={videoplaceholder} alt="" />
+                <video className='video' autoPlay loop muted>
+                    <source src={video} type='video/mp4' />
+                </video>
+                {/* <img className="video-placeholder" src={videoplaceholder} alt="" /> */}
                 <h2 className='about-text'>
                     DaytOn1 Salsa strives to bring people together, share our love for Latin dance, and grow the dance community
                 </h2>
