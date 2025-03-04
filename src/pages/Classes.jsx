@@ -6,7 +6,7 @@ export default function Classes() {
         <div className="classes-page">
             <div className='classes-content'>
                 <div className='classes-location'>
-                    <p>Location:</p>
+                    <h3>Location</h3>
                     <p>Genuine Work</p>
                     <p>15 Mc Donough Street</p>
                     <p>Dayton, OH 45402</p>
@@ -16,7 +16,7 @@ export default function Classes() {
                         <h3>MONDAYS</h3>
                         <p>Multiple Levels Offered</p>
                     </div>
-                    <div>
+                    <div className='class-schedule'>
                         <h3>CLASS SCHEDULE</h3>
                         <div className='schedule'>
                             <div className='times'>
@@ -47,7 +47,7 @@ export default function Classes() {
                                 <p>$60</p>
                             </div>
                         </div>
-                        <ul>Social dancing included in monthly memberships</ul>
+                        <ul>Social dancing included in all monthly memberships</ul>
                         <ul>All monthly memberships are ONLY valid for the duration of the month that it is purchased. Classes do not roll over to the next month.</ul>
                     </div>
                     <div className='classes-picture'>
