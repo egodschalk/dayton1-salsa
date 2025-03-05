@@ -129,6 +129,79 @@
     padding-left: 20px;
 }
 
+.classes-levels-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px 0;
+    text-decoration: none;
+    margin: 70px 0 100px 0;
+
+}
+
+.classes-levels-section h2 {
+    font-family: "Julius Sans One", serif;
+    font-size: 30pt;
+    color: var(--secondary);
+    text-align: center;
+    text-decoration: none;
+}
+
+.classes-levels {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    position: relative;
+    top: -80px;
+}
+
+.class-levels img {
+    width: 300px;
+    padding: 0 2vw;
+}
+
+.class-level-heading {
+    font-size: 25pt;
+    color: var(--secondary);
+    position: relative;
+    top: 170px;
+    text-shadow: 0 0 10px black, 0 0 20px black, 0 0 30px black, 0 0 40px black, 0 0 50px black, 0 0 60px black, 0 0 70px black, 0 0 80px black;
+    z-index: 10;
+}
+
+.level-desc {
+    width: 300px;
+    padding: 0 2vw;
+    font-size: 16pt;
+}
+
+@media screen and (max-width: 1020px) {
+
+    .classes-levels-section {
+        padding: 20px 0 50px 0;
+    }
+
+    .classes-levels {
+        flex-direction: column;
+        top: 0;
+        align-items: center;
+
+    }
+
+    .class-level-heading {
+        position: relative;
+        top: 80px;
+        padding-bottom: 20px;
+    }
+
+    .class-levels img {
+        position: relative;
+        top: -100px;
+        margin-bottom: -70px;
+    }
+    
+}
+
 @media screen and (max-width: 965px) {
 
     .classes-membership-section {
@@ -195,6 +268,10 @@
     .rate-category p,
     .rate-cost p {
         font-size: 16pt;
+    }
+
+    .class-level-heading {
+        text-shadow: 0 0 10px black, 0 0 20px black, 0 0 30px black, 0 0 40px black, 0 0 50px black;
     }
     
 }

@@ -52,10 +52,6 @@
     top: -50px;
 }
 
-a {
-    text-decoration: none;
-}
-
 .about-class-offerings img {
     width: 300px;
     padding: 0 2vw;
@@ -191,11 +187,6 @@ a {
         margin-left: auto;
     }
     
-}
-
-@media screen and (max-width: 950px) {
-
-
 }
 
 @media screen and (max-width: 920px) {

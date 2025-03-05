@@ -63,6 +63,32 @@ export default function Classes() {
                         <button>Check out our FAQs</button>
                     </div>
                 </div>
+                <div className='classes-levels-section'>
+                    <h2>About Our Levels</h2>
+                    <div className='classes-levels'>
+                        <div className='class-levels'>
+                            <h3 className='class-level-heading'>Level 1</h3>
+                            <img src={level1} alt="" />
+                            <div className='level-desc'>
+                            <p><strong>Beyond the Basics: </strong>dancers with 1-2 years of experience</p>
+                        </div>
+                        </div>
+                        <div className='class-levels'>
+                            <h3 className='class-level-heading'>Level 2</h3>
+                            <img src={level2} alt="" />
+                            <div className='level-desc'>
+                            <p><strong>Beginner: </strong>dancers with little to no experience</p>
+                        </div>
+                        </div>
+                        <div className='class-levels'>
+                            <h3 className='class-level-heading'>Level 3</h3>
+                            <img src={level3} alt="" />
+                            <div className='level-desc'>
+                            <p><strong>Next Level: </strong>for advanced dancers with 3 years or more experience</p>
+                        </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
