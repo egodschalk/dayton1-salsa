@@ -242,7 +242,12 @@
         width: 92vw;
     }
 
+    .about-class-section {
+        padding: 0px 0;
+        margin-bottom: 100px;
+    }
+
     .about-class-heading {
-        text-shadow: 0 0 10px black, 0 0 20px black, 0 0 30px black, 0 0 40px black, 0 0 50px black;
+        text-shadow: 0 0 10px black, 0 0 20px black, 0 0 30px black;
     }
 }

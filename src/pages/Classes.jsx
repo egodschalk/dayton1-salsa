@@ -1,4 +1,5 @@
 import './Classes.css'
+import { Link } from 'react-router-dom'
 import classesPagePic from '../assets/tim-teaching.png'
 import level1 from '../assets/noel-1.png'
 import level2 from '../assets/group-2.png'
@@ -16,11 +17,11 @@ export default function Classes() {
                 </div>
                 <div className='classes-schedule-section'>
                     <div className='days'>
-                        <h3>MONDAYS</h3>
-                        <p>Multiple Levels Offered</p>
+                        <h3>Mondays</h3>
+                        {/* <p>Multiple Levels Offered</p> */}
                     </div>
                     <div className='class-schedule'>
-                        <h3>CLASS SCHEDULE</h3>
+                        <h3>Class Schedule</h3>
                         <div className='schedule'>
                             <div className='times'>
                                 <p>6:30</p>
@@ -28,9 +29,9 @@ export default function Classes() {
                                 <p>7:45</p>
                             </div>
                             <div className='classes'>
-                                <p>Bachata</p>
+                                <p>Bachata Levels 1,2,3</p>
                                 <p>Social Dancing</p>
-                                <p>Salsa</p>
+                                <p>Salsa Levels 1,2,3</p>
                             </div>
                         </div>
                     </div>
@@ -41,7 +42,7 @@ export default function Classes() {
                         {/* <h3>March 2024</h3> */}
                         <div className='rates'>
                             <div className='rate-category'>
-                                <p>1 Class (Salsa OR Bachata):</p>
+                                <p>1 Class / 1 Style:</p>
                                 <p>Both Classes:</p>
                             </div>
                             <div className='rate-cost'>
@@ -60,7 +61,12 @@ export default function Classes() {
                     <h3>First time? No problem!</h3>
                     <div className='first-time-info'>
                         <p>Message us each person’s name, phone number, and preferred payment method to be registered if it's your first time attending our classes</p>
+                        <Link to="/FAQs" onClick={() => {
+                        window.scroll(0, 0);
+                    }}
+                    >
                         <button>Check out our FAQs</button>
+                        </Link>
                     </div>
                 </div>
                 <div className='classes-levels-section'>
@@ -70,14 +76,14 @@ export default function Classes() {
                             <h3 className='class-level-heading'>Level 1</h3>
                             <img src={level1} alt="" />
                             <div className='level-desc'>
-                            <p><strong>Beyond the Basics: </strong>dancers with 1-2 years of experience</p>
+                            <p><strong>Beginner: </strong>dancers with little to no experience</p>
                         </div>
                         </div>
                         <div className='class-levels'>
                             <h3 className='class-level-heading'>Level 2</h3>
                             <img src={level2} alt="" />
                             <div className='level-desc'>
-                            <p><strong>Beginner: </strong>dancers with little to no experience</p>
+                            <p><strong>Beyond the Basics: </strong>dancers with 1-2 years of experience</p>
                         </div>
                         </div>
                         <div className='class-levels'>

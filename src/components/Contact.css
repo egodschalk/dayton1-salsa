@@ -100,7 +100,7 @@ button:hover {
     background-color: rgb(231, 189, 75, .85);
 }
 
-@media screen  and (max-width: 815px) {
+@media screen and (max-width: 815px) {
 
     .contact-header {
         padding-bottom: 0px;
@@ -146,9 +146,17 @@ button:hover {
 
 }
 
-@media screen  and (max-width: 650px) {
+@media screen and (max-width: 650px) {
 
     .message {
         width: 80vw;
+    }
+}
+
+@media screen and (max-width: 450px) {
+
+    .contact-page {
+        width: 100vw;
+        margin-top: 30px;
     }
 }

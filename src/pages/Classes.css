@@ -22,7 +22,7 @@
 }
 
 .classes-schedule-section {
-    background-color: var(--secondary);
+    background-image: linear-gradient(45deg, var(--secondary), rgb(227, 200, 93));
     color: var(--tertiary);
     padding: 20px;
     display: flex;
@@ -32,11 +32,15 @@
     line-height: 8pt;
 }
 
-.days h3, 
-.class-schedule h3 {
+.days h3 {
     font-family: "Julius Sans One", serif;
-    font-size: 24pt;
+    font-size: 35pt;
 }
+
+/* .class-schedule h3 {
+    font-family: "Julius Sans One", serif;
+    font-size: 20pt;
+} */
 
 .days {
     display: flex;
@@ -130,19 +134,19 @@
 }
 
 .classes-levels-section {
+    background-image: linear-gradient(45deg, var(--secondary), rgb(227, 200, 93));
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 20px 0;
+    padding: 20px 0 0 0;
     text-decoration: none;
-    margin: 70px 0 100px 0;
-
+    margin: 70px 0 0px 0;
 }
 
 .classes-levels-section h2 {
     font-family: "Julius Sans One", serif;
     font-size: 30pt;
-    color: var(--secondary);
+    color: var(--tertiary);
     text-align: center;
     text-decoration: none;
 }
@@ -173,6 +177,7 @@
     width: 300px;
     padding: 0 2vw;
     font-size: 16pt;
+    color: var(--tertiary);
 }
 
 @media screen and (max-width: 1020px) {
@@ -270,8 +275,12 @@
         font-size: 16pt;
     }
 
+    .classes-levels-section {
+        margin: 40px 0 30px 0;
+    }
+
     .class-level-heading {
-        text-shadow: 0 0 10px black, 0 0 20px black, 0 0 30px black, 0 0 40px black, 0 0 50px black;
+        text-shadow: 0 0 10px black, 0 0 20px black, 0 0 30px black;
     }
     
 }
@@ -281,11 +290,6 @@
     .classes-schedule-section {
         font-size: 18pt;
         line-height: 8pt;
-    }
-
-    .days h3, 
-    .class-schedule h3 {
-    font-size: 22pt;
     }
     
     .days,
