@@ -53,7 +53,7 @@
 
 .instructor1-picture img,
 .instructor2-picture img {
-    width: 34vw;
+    width: 100%;
 }
 
 .instructor2 {
@@ -72,4 +72,44 @@
 
 .instructor2 p {
     color: var(--primary);
+}
+
+@media screen and (max-width: 900px) {
+    .instructor1,
+    .instructor2 {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .instructor1 {
+        flex-direction: column-reverse;
+    }
+
+    .instructor1-text,
+    .instructor2-text {
+        width: 80vw;
+        padding: 20px 3vw;
+        align-self: center;
+
+    }
+
+    .instructor1-picture,
+    .instructor2-picture {
+        width: 300px;
+    }
+}
+
+@media screen and (max-width: 500px) {
+
+    .instructor1 h3, 
+    .instructor2 h3 {
+        font-size: 24pt;
+    }
+    
+    .instructor1 h4,
+    .instructor2 h4 {
+        font-size: 16pt;
+    }
+
 }

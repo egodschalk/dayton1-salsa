@@ -13,7 +13,7 @@ export default function Instructors() {
             <div className='instructor1'>
                 <div className='instructor1-text'>
                     <h3>Heather Sommer</h3>
-                    <h4>Director</h4>
+                    <h4>Owner / Creative Director</h4>
                     <p>text here...</p>
                 </div>
                 <div className='instructor1-picture'>
