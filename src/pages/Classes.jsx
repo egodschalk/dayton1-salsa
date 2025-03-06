@@ -18,7 +18,7 @@ export default function Classes() {
                 <div className='classes-schedule-section'>
                     <div className='days'>
                         <h3>Mondays</h3>
-                        {/* <p>Multiple Levels Offered</p> */}
+                        <p>March 3rd, 10th, 17th, 24th</p>
                     </div>
                     <div className='class-schedule'>
                         <h3>Class Schedule</h3>
@@ -29,9 +29,9 @@ export default function Classes() {
                                 <p>7:45</p>
                             </div>
                             <div className='classes'>
-                                <p>Bachata All Levels</p>
+                                <p>Bachata (all levels)</p>
                                 <p>Social Dancing</p>
-                                <p>Salsa All Levels</p>
+                                <p>Salsa (all levels)</p>
                             </div>
                         </div>
                     </div>
@@ -39,16 +39,18 @@ export default function Classes() {
                 <div className='classes-membership-section'>
                     <div className='classes-rates'>
                         <h3>Monthly Rates:</h3>
-                        <p>We offer classes in 4-week cycles</p>
+                        <h3>March</h3>
+
+                        <p>We offer classes in monthly cycles</p>
                         {/* <h3>March 2024</h3> */}
                         <div className='rates'>
                             <div className='rate-category'>
-                                <p>1 Class (Salsa or Bachata):</p>
-                                <p>Both Salsa & Bachata:</p>
+                                <p>1 Style:</p>
+                                <p>Both Styles:</p>
                             </div>
                             <div className='rate-cost'>
-                                <p>$45</p>
                                 <p>$60</p>
+                                <p>$80</p>
                             </div>
                         </div>
                         <p>Social dancing included in all monthly memberships</p>
