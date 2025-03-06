@@ -54,11 +54,11 @@ function Contact() {
                                 <input type="text" className="name" name="name" placeholder="name" required />
                             </label>
                         </div>
-                        {/* <div className='field'>
+                        <div className='field'>
                             <label className='label'>
                                 <input type="text" className="email" name="email" placeholder="email" required />
                             </label>
-                        </div> */}
+                        </div>
                         <div className='field'>
                             <label className='label'>
                                 <input type="text" className="phone" name="phone" placeholder="phone" required />

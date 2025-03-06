@@ -5,11 +5,71 @@
     font-style: regular;
 }
 
-.instructors-text {
+.instructors-header h2 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 32pt;
+}
+
+.instructor1 {
+    background-image: linear-gradient(45deg, var(--secondary), var(--yellow-fade));
+    color: var(--tertiary);
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+}
+
+.instructor1-text {
+    min-width: 50vw;
+    padding: 20px 3vw;
+    color: var(--tertiary);
+}
+
+.instructor1 h3, 
+.instructor2 h3 {
+    font-family: "Julius Sans One", serif;
+    font-size: 28pt;
+    line-height: 8pt;
+}
+
+.instructor1 h4,
+.instructor2 h4 {
+    font-family: "Julius Sans One", serif;
+    font-size: 20pt;
+    line-height: 8pt;
+}
+
+.instructor1 p, 
+.instructor2 p {
+    font-size: 16pt;
+}
+
+.instructor1-picture,
+.instructor2-picture {
+    width: 38vw;
+    padding: 20px 2vw;
+    align-self: center;
+}
+
+.instructor1-picture img,
+.instructor2-picture img {
+    width: 34vw;
+}
+
+.instructor2 {
+    background-color: var(--tertiary);
     color: var(--secondary);
     display: flex;
-    justify-content: center;
-    width: 70vw;
-    padding: 3vh 15vw;
-    font-size: 35pt;
+    flex-direction: row;
+    width: 100vw;
+}
+
+.instructor2-text {
+    width: 50vw;
+    padding: 20px 3vw;
+    color: var(--secondary);
+}
+
+.instructor2 p {
+    color: var(--primary);
 }
