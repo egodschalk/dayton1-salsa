@@ -3,13 +3,38 @@
     font-family: "Sanchez", serif;
     font-weight: 400;
     font-style: regular;
+    font-size: 16pt;
 }
 
-.faqs-text {
+.faqs-header {
+    padding: 40px 0;
+}
+
+.faqs-header h2 {
+    font-family: "Julius Sans One", serif;
     color: var(--secondary);
-    display: flex;
-    justify-content: center;
-    width: 70vw;
-    padding: 3vh 15vw;
-    font-size: 35pt;
+    font-size: 32pt;
+}
+
+.faqs-content {
+    width: 96vw;
+    margin: 0 2vw;
+}
+
+.faqs-content h5 {
+    padding: 10px 0;
+    font-size: 16pt;
+    position: relative;
+    top: -40px;
+
+    background-color: var(--secondary);
+    color: var(--tertiary);
+}
+
+.faqs-content p {
+    border: 2px solid var(--secondary);
+    padding: 10px 0;
+    position: relative;
+    top: -80px;
+
 }
