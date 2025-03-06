@@ -22,7 +22,7 @@
 }
 
 .classes-schedule-section {
-    background-image: linear-gradient(45deg, var(--secondary), rgb(227, 200, 93));
+    background-image: linear-gradient(45deg, var(--secondary), var(--yellow-fade));
     color: var(--tertiary);
     padding: 20px;
     display: flex;
@@ -82,7 +82,7 @@
 .classes-rates h3 {
     font-family: "Julius Sans One", serif;
     font-size: 24pt;
-    /* line-height: 8pt; */
+    line-height: 8pt;
     color: var(--secondary);
 }
 
@@ -134,7 +134,7 @@
 }
 
 .classes-levels-section {
-    background-image: linear-gradient(45deg, var(--secondary), rgb(227, 200, 93));
+    background-image: linear-gradient(45deg, var(--secondary), var(--yellow-fade));
     display: flex;
     flex-direction: column;
     justify-content: center;

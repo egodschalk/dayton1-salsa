@@ -29,21 +29,22 @@ export default function Classes() {
                                 <p>7:45</p>
                             </div>
                             <div className='classes'>
-                                <p>Bachata Levels 1,2,3</p>
+                                <p>Bachata All Levels</p>
                                 <p>Social Dancing</p>
-                                <p>Salsa Levels 1,2,3</p>
+                                <p>Salsa All Levels</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className='classes-membership-section'>
                     <div className='classes-rates'>
-                        <h3>Monthly Membership Rates:</h3>
+                        <h3>Monthly Rates:</h3>
+                        <p>We offer classes in 4-week cycles</p>
                         {/* <h3>March 2024</h3> */}
                         <div className='rates'>
                             <div className='rate-category'>
-                                <p>1 Class / 1 Style:</p>
-                                <p>Both Classes:</p>
+                                <p>1 Class (Salsa or Bachata):</p>
+                                <p>Both Salsa & Bachata:</p>
                             </div>
                             <div className='rate-cost'>
                                 <p>$45</p>
@@ -51,7 +52,7 @@ export default function Classes() {
                             </div>
                         </div>
                         <p>Social dancing included in all monthly memberships</p>
-                        <p>All monthly memberships are ONLY valid for the duration of the month that it is purchased. Classes do not roll over to the next month.</p>
+                        {/* <p>All monthly memberships are ONLY valid for the duration of the month that it is purchased. Classes do not roll over to the next month.</p> */}
                     </div>
                     <div className='classes-picture'>
                         <img src={classesPagePic} alt="picture of couples dancing in a circle" />
