@@ -9,7 +9,7 @@ const faqData = [
     },
     {
         id: 2,
-        question: 'I have to miss a class this month, do you offer makeup classes?',
+        question: 'I have to miss a class this month, can I make it up next month?',
         answer: 'All monthly fees are ONLY valid for the duration of the month that a class is purchased. Classes do not roll over to the next month.',
     },
     {
@@ -19,13 +19,13 @@ const faqData = [
     },
     {
         id: 4,
-        question: 'Do I need to come with a partner?',
-        answer: 'No! Many students come by themselves or with friends. We rotate throughout the class to give everyone a chance to practice with a partner.',
+        question: 'What is your refund policy?',
+        answer: 'All classes are non-refundable',
     },
     {
         id: 5,
-        question: 'Do I need to come with a partner?',
-        answer: 'No! Many students come by themselves or with friends. We rotate throughout the class to give everyone a chance to practice with a partner.',
+        question: 'Another question?',
+        answer: 'Another answer.',
     },
 ]
 
