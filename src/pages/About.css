@@ -5,11 +5,9 @@
     font-style: regular;
 }
 
-
-
-/* .video-placeholder {
+.video-placeholder {
     width: 100vw;
-} */
+}
 
 .about-content {
     width: 100vw;
@@ -250,6 +248,6 @@
     }
 
     .about-class-heading {
-        text-shadow: 0 0 10px black, 0 0 20px black, 0 0 30px black;
+        text-shadow: 0 0 5px black, 0 0 10px black, 0 0 15px black, 0 0 20px black;
     }
 }

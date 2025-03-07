@@ -7,7 +7,7 @@
 }
 
 .faqs-header {
-    padding: 40px 0;
+    padding: 20px 0;
 }
 
 .faqs-header h2 {
@@ -17,24 +17,35 @@
 }
 
 .faqs-content {
-    width: 96vw;
-    margin: 0 2vw;
+    width: 80vw;
+    margin: 0 10vw;
+}
+
+.faqs-boxes {
+    margin: 0 0 -40px 0;
 }
 
 .faqs-content h5 {
-    padding: 10px 0;
+    padding: 20px 0;
     font-size: 16pt;
     position: relative;
     top: -40px;
+    background-image: linear-gradient(45deg, var(--secondary), var(--yellow-fade));    color: var(--tertiary);
+    line-height: .5;
 
-    background-color: var(--secondary);
-    color: var(--tertiary);
 }
 
 .faqs-content p {
     border: 2px solid var(--secondary);
-    padding: 10px 0;
+    padding: 20px 0;
     position: relative;
     top: -80px;
+}
 
+@media screen and (max-width: 1020px) {
+    .faqs-content {
+        width: 96vw;
+        margin: 0 2vw;
+        line-height: 1;
+    }
 }

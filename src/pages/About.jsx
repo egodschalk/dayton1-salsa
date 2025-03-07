@@ -14,18 +14,18 @@ export default function About() {
     return (
         <div className="about-page">
             <div className='about-content'>
-                <ReactPlayer
+                {/* <ReactPlayer
                     url={video}
                     controls={false}
                     className='video'
                     playing={true}
                     loop={true}
                     width='100%'
-                />
+                /> */}
                 {/* <video className='video' autoPlay loop muted>
                     <source src={video} type='video/mp4' />
                 </video> */}
-                {/* <img className="video-placeholder" src={videoplaceholder} alt="" /> */}
+                <img className="video-placeholder" src={videoplaceholder} alt="" />
                 <h2 className='about-text'>
                     DaytOn1 Salsa strives to bring people together, share our love for Latin dance, and grow the dance community
                 </h2>

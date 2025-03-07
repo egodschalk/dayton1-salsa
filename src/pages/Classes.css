@@ -286,17 +286,16 @@
     }
 
     .class-level-heading {
-        text-shadow: 0 0 10px black, 0 0 20px black, 0 0 30px black;
+        text-shadow: 0 0 5px black, 0 0 10px black, 0 0 15px black, 0 0 20px black;
     }
 
-    .classes {
-        font-size: 18pt;
-    }
-
+    .times, 
+    .classes,
     .days p {
         font-size: 18pt;
     }
-    
+
+   
 }
 
 @media screen and (max-width: 380px) {
