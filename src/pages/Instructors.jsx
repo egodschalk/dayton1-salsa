@@ -1,7 +1,8 @@
 import './Instructors.css'
 import heather from '../assets/Heather-headshot.jpeg'
 import david from '../assets/David-headshot.jpeg'
-import rj from '../assets/RJ-headshot.jpeg'
+import rj from '../assets/RJ-headshot2.jpg'
+import brian from '../assets/Brian-headshot.jpg'
 
 export default function Instructors() {
     return (
@@ -44,7 +45,7 @@ export default function Instructors() {
             </div>
             <div className='instructor2'>
                 <div className='instructor2-picture'>
-                    <img src={david} alt="" />
+                    <img src={brian} alt="" />
                 </div>
                 <div className='instructor2-text'>
                     <h3>Brian Lugo</h3>
