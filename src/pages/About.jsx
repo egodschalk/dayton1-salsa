@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom'
 import React from 'react'
 import ReactPlayer from 'react-player'
 import videoplaceholder from '../assets/dayton1-group.jpg'
-import video from '../assets/heather-dave-dance.mov'
-import noel1 from '../assets/noel-1.png'
-import group2 from '../assets/group-2.png'
-import timTeach from '../assets/tim-teaching.png'
+// import video from '../assets/heather-dave-dance.mov'
 import event1 from '../assets/Event-1.jpeg'
 import event2 from '../assets/Event-2.jpeg'
+import salsa from '../assets/heather-dave.jpg'
+import bachata from '../assets/class-pic.jpg'
+import social from '../assets/sots-group.jpg'
 
 export default function About() {
     return (
@@ -38,7 +38,7 @@ export default function About() {
                             }}
                             >
                                 <h3 className='about-class-heading'>Salsa</h3>
-                                <img src={noel1} alt="" />
+                                <img src={salsa} alt="" />
                             </Link>
                         </div>
                         <div className='about-class-offerings'>
@@ -47,7 +47,7 @@ export default function About() {
                             }}
                             >
                                 <h3 className='about-class-heading'>Bachata</h3>
-                                <img src={group2} alt="" />
+                                <img src={bachata} alt="" />
                             </Link>
                         </div>
                         <div className='about-class-offerings'>
@@ -56,7 +56,7 @@ export default function About() {
                             }}
                             >
                                 <h3 className='about-class-heading'>Social Dancing</h3>
-                                <img src={timTeach} alt="" />
+                                <img src={social} alt="" />
                             </Link>
                         </div>
                     </div>
