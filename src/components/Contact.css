@@ -2,6 +2,7 @@
     width: 100vw;
     margin-top: 100px;
     padding-bottom: 50px;
+    font-family: "Urbanist", sans-serif;
 }
 
 .contact-header {
@@ -38,9 +39,7 @@
 }
 
 .contact-form {
-    font-family: "Sanchez", serif;
-    font-weight: 400;
-    font-style: normal;
+    font-family: "Urbanist", sans-serif;
     width: 60vw;
     display: flex;
     flex-direction: column;
@@ -65,7 +64,7 @@
 .name,
 .email,
 .phone {
-    font-family: "Sanchez", serif;
+    font-family: "Urbanist", sans-serif;
     font-size: 13pt;
     text-align: center;
     width: 250px;
@@ -75,7 +74,7 @@
 }
 
 .message {
-    font-family: "Sanchez", serif;
+    font-family: "Urbanist", sans-serif;
     font-size: 13pt;
     text-align: center;
     border-radius: 5px;
