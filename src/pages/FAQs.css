@@ -26,18 +26,22 @@
 }
 
 .faqs-content h5 {
-    padding: 20px 0;
+    padding: 20px 10px;
     font-size: 16pt;
     position: relative;
     top: -40px;
-    background-image: linear-gradient(45deg, var(--secondary), var(--yellow-fade));    color: var(--tertiary);
+    background-image: linear-gradient(45deg, var(--secondary), var(--yellow-fade));    
+    color: var(--tertiary);
+    border-radius: 5px 5px 0 0;
 }
 
 .faqs-content p {
     border: 2px solid var(--secondary);
-    padding: 20px 0;
+    padding: 20px 10px;
     position: relative;
     top: -80px;
+    border-radius: 0 0 5px 5px;
+
 }
 
 @media screen and (max-width: 1020px) {

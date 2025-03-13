@@ -4,6 +4,7 @@ import './App.css';
 import Header from './components/Header';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import ScrollButton from './components/ScrollButton';
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Outlet />
       </main >
       <Contact />
+      <ScrollButton />
       <Footer className="footer-main"/>
     </>
   );
