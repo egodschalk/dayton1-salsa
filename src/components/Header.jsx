@@ -5,7 +5,7 @@ import dayton1Logo from '../assets/Dayton1-Logo.png'
 import hamburger from '../assets/hamburger.png'
 import { useState } from 'react';
 
-function Header() {
+export default function Header() {
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -26,10 +26,10 @@ function Header() {
             </div>
 
             <div className="navigation">
-                <li class="hamburger-button" onClick={toggleMenu}>
+                <li className="hamburger-button" onClick={toggleMenu}>
                     <img src={hamburger} className='hamburger' alt="" />
                 </li>
-                <div class={`nav-bar ${isOpen ? "is-open" : ""}`} >
+                <div className={`nav-bar ${isOpen ? "is-open" : ""}`} >
                     <NavLink to="/" className="nav-link" onClick={closeMenu}>
                         About
                     </NavLink>
@@ -54,5 +54,3 @@ function Header() {
         </div>
     );
 }
-
-export default Header

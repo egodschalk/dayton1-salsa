@@ -95,7 +95,7 @@
 
     .instructor1-picture,
     .instructor2-picture {
-        width: 300px;
+        max-width: 300px;
     }
 }
 

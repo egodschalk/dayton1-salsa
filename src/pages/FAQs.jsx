@@ -1,5 +1,6 @@
 import './FAQs.css'
 import React from 'react'
+import { useState } from 'react'
 
 const faqData = [
     {
@@ -29,7 +30,7 @@ const faqData = [
     },
     {
         id: 6,
-        question: 'What kind of dance classes does our dance company offer?',
+        question: 'What kind of dance classes does your dance company offer?',
         answer: 'We primarily offer Salsa On1 and Bachata classes (Traditional, Modern, and Sensual). On occasion, we offer specialty classes such as Rueda de Casino, Cha Cha, Lifts and tricks, and/or other dance styles. We are always open to suggestions and happy to consider a pop-up workshop or specialty classes in that desired genre.',
     },
     {
@@ -44,7 +45,7 @@ const faqData = [
     },
     {
         id: 9,
-        question: 'Do we offer privates?',
+        question: 'Do you offer privates?',
         answer: 'Privates can be arranged.  Prices vary depending on the instructor.  If you send us your name and phone number we can have someone contact you to set up an appointment.  ',
     },
     {
@@ -56,6 +57,7 @@ const faqData = [
 
 export default function FAQs() {
 
+    const [showAnswer, setShowAnswer] = useState(false);
 
     return (
         <div className="faqs-page">
@@ -65,10 +67,15 @@ export default function FAQs() {
                 </h2>
             </div>
             <div className='faqs-content'>
-                {faqData.map((item, index) => (
+                {faqData.map((faq, index) => (
                     <div key={index} className='faqs-boxes'>
-                    <h5>{item.question}</h5>
-                    <p>{item.answer}</p>
+                        <h5 className="faqs-question" onClick={() => setShowAnswer(!showAnswer)}>{faq.question}
+                            {
+                                showAnswer ? <button className='button-open'>+</button> : <button className='button-close'>+</button>
+                            }
+
+                        </h5>
+                        {showAnswer && <p>{faq.answer}</p>}
                     </div>
                 ))}
             </div>
