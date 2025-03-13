@@ -1,8 +1,6 @@
 .instructors-page {
     color: var(--primary);
-    font-family: "Sanchez", serif;
-    font-weight: 400;
-    font-style: regular;
+    font-family: "Urbanist", sans-serif;
 }
 
 .instructors-header h2 {
@@ -46,7 +44,8 @@
 
 .instructor1-picture,
 .instructor2-picture {
-    width: 38vw;
+    min-width: 38vw;
+    max-width: 30vw;
     padding: 20px 2vw;
     align-self: center;
 }

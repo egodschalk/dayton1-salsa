@@ -7,6 +7,13 @@
 
 }
 
+.urbanist-dayton1 {
+  font-family: "Urbanist", sans-serif;
+  /* font-optical-sizing: auto; */
+  font-weight: 200;
+  font-style: normal;
+}
+
 .sanchez-regular {
   font-family: "Sanchez", serif;
   font-weight: 400;

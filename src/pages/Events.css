@@ -1,8 +1,6 @@
 .events-page {
     color: var(--primary);
-    font-family: "Sanchez", serif;
-    font-weight: 400;
-    font-style: regular;
+    font-family: "Urbanist", sans-serif;
 }
 
 .events-text {

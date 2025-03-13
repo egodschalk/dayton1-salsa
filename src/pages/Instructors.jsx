@@ -16,7 +16,7 @@ export default function Instructors() {
                 <div className='instructor1-text'>
                     <h3>Heather Sommer</h3>
                     <h4>Owner / Creative Director</h4>
-                    <p>text here...</p>
+                    <p>coming soon...</p>
                 </div>
                 <div className='instructor1-picture'>
                     <img src={heather} alt="" />
@@ -37,7 +37,9 @@ export default function Instructors() {
             <div className='instructor1'>
                 <div className='instructor1-text'>
                     <h3>Ricky RJ Williams</h3>
-                    <p>text here...</p>
+                    <p>Ricky RJ Williams has been dancing since 2017 and teaching since 2021. Since then, he has traveled the country learning, performing, and training. As a teacher of DaytOn1 & Salsannati, he believes that to truly understand it, you must teach it.</p> 
+                    <p>As a professional musician, Ricky brings the unique combination of musicality and education background to the dance floor. The amount of relationships & opportunities that have come from wandering into a dance class one day has been irreplaceable. He hopes to create that feeling for others the same way it was created for him.
+                    </p>
                 </div>
                 <div className='instructor1-picture'>
                     <img src={rj} alt="" />
@@ -49,7 +51,7 @@ export default function Instructors() {
                 </div>
                 <div className='instructor2-text'>
                     <h3>Brian Lugo</h3>
-                    <p>text here...</p>
+                    <p>coming soon...</p>
                 </div>
             </div>
         </div>
