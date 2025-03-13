@@ -14,5 +14,6 @@
 }
 
 .scroll-button:hover {
-    background-color: var(--primary);
+    background-color: rgb(255, 255, 255, .8);
+    cursor: pointer;
 }
