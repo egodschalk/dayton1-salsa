@@ -1,0 +1,37 @@
+:root {
+  --primary: white;
+  --secondary: #e7c125;
+  --tertiary: black;
+  --yellow-fade: #F8E66E;
+  background-color: #000000;
+
+}
+
+.urbanist-dayton1 {
+  font-family: "Urbanist", sans-serif;
+  /* font-optical-sizing: auto; */
+  font-weight: 200;
+  font-style: normal;
+}
+
+.sanchez-regular {
+  font-family: "Sanchez", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.sanchez-regular-italic {
+  font-family: "Sanchez", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.julius-sans-one-regular {
+  font-family: "Julius Sans One", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+button:hover {
+  cursor: pointer;
+}

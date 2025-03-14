@@ -54,7 +54,6 @@ export default function Classes() {
                             </div>
                         </div>
                         <p>Social dancing included in all monthly memberships</p>
-                        {/* <p>All monthly memberships are ONLY valid for the duration of the month that it is purchased. Classes do not roll over to the next month.</p> */}
                     </div>
                     <div className='classes-picture'>
                         <img src={classesPagePic} alt="picture of couples dancing in a circle" />

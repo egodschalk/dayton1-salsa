@@ -4,18 +4,21 @@
     width: 100vw;
 }
 
-.classes-location h3 {
-    font-family: "Julius Sans One", serif;
-    color: var(--secondary);
-    font-size: 24pt;
-
-}
-
 .classes-location {
     font-size: 20pt;
     line-height: 8pt;
     color: var(--primary);
     padding: 25px 0;
+}
+
+.classes-location h3 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 24pt;
+}
+
+.classes-location p {
+    letter-spacing: 2px;
 }
 
 .classes-schedule-section {
@@ -34,11 +37,6 @@
     font-size: 35pt;
 }
 
-/* .class-schedule h3 {
-    font-family: "Julius Sans One", serif;
-    font-size: 20pt;
-} */
-
 .days {
     display: flex;
     flex-direction: column;
@@ -48,6 +46,7 @@
 
 .class-schedule {
     padding: 10px 20px;
+    letter-spacing: 2px;
 }
 
 .schedule {
@@ -81,6 +80,10 @@
     font-size: 24pt;
     line-height: 8pt;
     color: var(--secondary);
+}
+
+.classes-rates p {
+    letter-spacing: 2px;
 }
 
 .rates {
@@ -127,6 +130,7 @@
     font-size: 14pt;
     text-align: left;
     padding-left: 20px;
+    letter-spacing: 2px;
 }
 
 .classes-levels-section {
@@ -154,6 +158,7 @@
     position: relative;
     top: -80px;
     margin-bottom: -40px;
+    letter-spacing: 1px;
 }
 
 .class-levels img {
