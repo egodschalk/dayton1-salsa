@@ -2,6 +2,7 @@
     color: var(--primary);
     font-family: "Urbanist", sans-serif;
     margin-bottom: 100px;
+    width: 100vw;
 }
 
 .events-header {

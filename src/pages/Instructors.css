@@ -1,6 +1,7 @@
 .instructors-page {
     color: var(--primary);
     font-family: "Urbanist", sans-serif;
+    width: 100vw;
 }
 
 .instructors-header {
