@@ -71,7 +71,7 @@ export default function Events() {
                         </a>
                     </div>
                 </div>
-                <div className='event3'></div>
+                <div className='events-event3'></div>
 
             </div>
         </div>
