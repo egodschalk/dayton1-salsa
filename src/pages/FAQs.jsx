@@ -12,7 +12,7 @@ export default function FAQs() {
         <div className="faqs-page">
             <div className='faqs-header'>
                 <h2>
-                    Frequently Asked Questions
+                    FAQs
                 </h2>
             </div>
             <div className='faqs-content'>

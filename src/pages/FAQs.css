@@ -2,10 +2,12 @@
     color: var(--primary);
     font-family: "Urbanist", sans-serif;
     font-size: 16pt;
+    margin-bottom: 100px;
 }
 
 .faqs-header {
     padding: 20px 0;
+    margin-bottom: -20px;
 }
 
 .faqs-header h2 {
@@ -26,7 +28,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    height: 40px;
+    height: 55px;
     padding: 10px 20px;
     background-image: linear-gradient(45deg, var(--secondary), var(--yellow-fade));    
     color: var(--tertiary);
