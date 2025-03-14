@@ -207,6 +207,14 @@
         margin-bottom: -70px;
     }
 
+    .classes-levels {
+        margin-bottom: 10px;
+    }
+
+    .class-levels {
+        margin-bottom: -50px;
+    }
+
     .level-desc {
         position: relative;
         top: -40px;
