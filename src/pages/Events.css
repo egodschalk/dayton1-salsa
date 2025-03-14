@@ -3,11 +3,35 @@
     font-family: "Urbanist", sans-serif;
 }
 
-.events-text {
+.events-header {
     color: var(--secondary);
+    font-family: "Julius Sans One", sans-serif;
+    padding: 20px 0;
+    font-size: 32pt;
+}
+
+.event1 {
+    width: 100vw;
+    height: 400px;
+    background-image: linear-gradient(45deg, var(--secondary), var(--yellow-fade));
+    transform: skewY(10deg);
+    margin-top: 70px;
     display: flex;
-    justify-content: center;
-    width: 70vw;
-    padding: 3vh 15vw;
-    font-size: 35pt;
+    align-items: center;
+    justify-content: left;
+}
+
+.event2 {
+    height: 400px;
+}
+
+.event3 {
+    width: 100vw;
+    height: 400px;
+    background-image: linear-gradient(45deg, var(--secondary), var(--yellow-fade));
+    transform: skewY(-10deg);
+    margin-top: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: left;
 }

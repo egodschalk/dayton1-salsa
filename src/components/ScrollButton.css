@@ -4,7 +4,6 @@
     bottom: 80px;
     right: 30px;
     background-color: rgb(255, 255, 255, .7);
-    /* border: 2px solid white; */
     border-radius: 10px;
     font-family: "Julius Sans One", serif;
     font-size: 35pt;
@@ -14,6 +13,6 @@
 }
 
 .scroll-button:hover {
-    background-color: rgb(255, 255, 255, .8);
+    background-color: rgb(255, 255, 255, .85);
     cursor: pointer;
 }

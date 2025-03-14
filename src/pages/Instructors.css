@@ -3,10 +3,18 @@
     font-family: "Urbanist", sans-serif;
 }
 
+.instructors-header {
+    padding: 20px 0;
+}
+
 .instructors-header h2 {
     font-family: "Julius Sans One", serif;
     color: var(--secondary);
     font-size: 32pt;
+}
+.instructors-header img {
+    padding: 20px 0;
+    width: 500px;
 }
 
 .instructor1 {
