@@ -3,7 +3,7 @@ import heather from '../assets/Heather-headshot.jpeg'
 import david from '../assets/David-headshot.jpeg'
 import rj from '../assets/RJ-headshot2.jpg'
 import brian from '../assets/Brian-headshot.jpg'
-import group from '../assets/instructors-group.jpg'
+import teacherGroup from '../assets/instructors-group.jpg'
 
 export default function Instructors() {
     return (
@@ -12,7 +12,7 @@ export default function Instructors() {
                 <h2>
                     Meet Our Instructors
                 </h2>
-                <img src={group} alt="" />
+                <img src={teacherGroup} alt="" />
             </div>
             <div className='instructor1'>
                 <div className='instructor1-text'>
