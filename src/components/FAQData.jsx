@@ -39,7 +39,7 @@ export const faqData = [
     {
         id: 8,
         question: 'How do I register for classes?',
-        answer: 'For new students, message your name, cell phone number, and payment preference. If you have questions about pricing let us know. Otherwise, we will confirm once we receive your payment and personal information. You can pay ahead or pay at the door.',
+        answer: 'For new students, use the contact form below to message your name, cell phone number, and payment preference. If you have questions about pricing let us know. Otherwise, we will confirm once we receive your payment and personal information. You can pay ahead or pay at the door.',
     },
     {
         id: 9,
