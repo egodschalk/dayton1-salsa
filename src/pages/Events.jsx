@@ -1,4 +1,5 @@
 import './Events.css'
+import { Link } from 'react-router-dom'
 import event1 from '../assets/Event-1.jpeg'
 import event2 from '../assets/Event-2.jpeg'
 
@@ -32,12 +33,6 @@ export default function Events() {
                 <h2 className='events-header'>
                     DaytOn1 Events
                 </h2>
-                {/* {faqData.map((item, index) => (
-                     <div key={index} className='faqs-boxes'>
-                     <h5>{item.question}</h5>
-                     <p>{item.answer}</p>
-                     </div>
-                 ))} */}
                 <div className='events-event1'>
                     <div className='event1-content'>
                         <div className='event1-info'>
@@ -47,9 +42,14 @@ export default function Events() {
                                 <p>{eventData[0].time}</p>
                                 <p>{eventData[0].location}</p>
                                 <p>{eventData[0].info}</p>
+                                <a href={eventData[0].eventUrl} target= 'blank'>
+                                    <button>More Info</button>
+                                </a>
                             </div>
                         </div>
-                        <img src={eventData[0].imgUrl} alt="" />
+                        <a href={eventData[0].eventUrl} target= 'blank'>
+                            <img src={eventData[0].imgUrl} alt="" />
+                        </a>
                     </div>
                 </div>
                 <div className='events-event2'>
@@ -61,9 +61,14 @@ export default function Events() {
                                 <p>{eventData[1].time}</p>
                                 <p>{eventData[1].location}</p>
                                 <p>{eventData[1].info}</p>
+                                <a href={eventData[1].eventUrl} target= 'blank'>
+                                    <button>More Info</button>
+                                </a>
                             </div>
                         </div>
-                        <img src={eventData[1].imgUrl} alt="" />
+                        <a href={eventData[1].eventUrl} target= 'blank'>
+                            <img src={eventData[1].imgUrl} alt="" />
+                        </a>
                     </div>
                 </div>
                 <div className='event3'></div>

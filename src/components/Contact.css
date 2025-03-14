@@ -89,7 +89,8 @@ button {
     background-color: var(--secondary);
     color: var(--tertiary);
     /* font-family: "Sanchez", serif; */
-    font-family: "Julius Sans One", serif;
+    font-family: "Urbanist", serif;
+    letter-spacing: 1px;
     font-size: 14pt;
     padding: 10px;
     width: fit-content;

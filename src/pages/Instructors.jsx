@@ -3,7 +3,6 @@ import heather from '../assets/Heather-headshot.jpeg'
 import david from '../assets/David-headshot.jpeg'
 import rj from '../assets/RJ-headshot2.jpg'
 import brian from '../assets/Brian-headshot.jpg'
-// import teacherGroup from '../assets/instructors-group.jpg'
 import teacherGroup from '../assets/teacher-group.jpg'
 
 export default function Instructors() {
