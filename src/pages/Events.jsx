@@ -38,7 +38,7 @@ export default function Events() {
                      <p>{item.answer}</p>
                      </div>
                  ))} */}
-                <div className='event1'>
+                <div className='events-event1'>
                     <div className='event1-content'>
                         <div className='event1-info'>
                             <h5 className='event1-title'>{eventData[0].title}</h5>
@@ -52,7 +52,7 @@ export default function Events() {
                         <img src={eventData[0].imgUrl} alt="" />
                     </div>
                 </div>
-                <div className='event2'>
+                <div className='events-event2'>
                     <div className='event2-content'>
                         <div className='event2-info'>
                             <h5 className='event2-title'>{eventData[1].title}</h5>
