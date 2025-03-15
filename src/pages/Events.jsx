@@ -21,7 +21,7 @@ const eventData = [
         date: "May 9, 2025",
         time: "8PM - 12AM",
         location: "Dayton Liederkranz Turner German Club",
-        info: "Presented by Brian Lugo. Live Performance by Dayton Salsa Project",
+        info: "Presented by Brian Lugo. Live performance by Dayton Salsa Project, Salsa lesson with DaytOn1",
         eventUrl: 'https://www.facebook.com/events/2548047955404925'
     },
 ]
