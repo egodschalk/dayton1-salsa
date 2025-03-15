@@ -127,3 +127,12 @@
     }
 
 }
+
+@media screen and (max-width: 500px) {
+ 
+    .instructor1 h4,
+    .instructor2 h4 {
+        font-size: 14pt;
+    }
+
+}
