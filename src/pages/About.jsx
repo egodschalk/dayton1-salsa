@@ -47,6 +47,7 @@ export default function About() {
                             }}
                             > */}
                                 <h3 className='about-class-heading'>Bachata</h3>
+                                <div className='about-class-heading overlay'></div>
                                 <img src={bachata} alt="" />
                             {/* </Link> */}
                         </div>
