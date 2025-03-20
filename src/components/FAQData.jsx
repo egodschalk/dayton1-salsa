@@ -51,4 +51,14 @@ export const faqData = [
         question: 'Do I need to come with a partner?',
         answer: 'No! Many students come by themselves or with friends. We rotate throughout the class to give everyone a chance to practice with a partner.',
     },
+    {
+        id: 11,
+        question: 'What days are classes offered?',
+        answer: 'We have regular classes on Monday nights but always check our Classes page in case there are any Mondays we do not have classes for the month. On occasion, we offer a special 8-week series of classes on Tuesday nights (at Genuine Work in Dayton) or Thursday nights at our Sharonville location. (Note: Drop-in is not an option for these classes.) We also offer pop-up workshops on occasion and other dance events on the weekends. To find information on any of our future events, you can always find them on our website, Fb, or Instagram pages.',
+    },
+    {
+        id: 12,
+        question: 'What are your current hours?',
+        answer: 'Typically, on Monday nights we have Bachata classes at 6:30pm, Social dancing at 7:15pm, and Salsa Classes at 7:45pm. If there is a special Monday night social at the end of the month our Bachata classes are at 6:30pm, Salsa classes are at 7:15pm, and the dance social is then, held at 8pm at an off site location.  Always check the current schedule on our website or social media outlets (Fb or Instagram) for that detailed information.',
+    },
 ]

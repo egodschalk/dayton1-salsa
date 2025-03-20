@@ -100,6 +100,7 @@
 .event2-info {
     position: relative;
     top: -10px;
+    padding: 0 20px;
 }
 
 .event2-title {
@@ -124,7 +125,7 @@
     justify-content: left;
 }
 
-@media screen and (max-width: 875px) {
+@media screen and (max-width: 950px) {
 
     .events-event1 {
         height: 650px;
@@ -157,8 +158,10 @@
         height: 225px;
     }
 
-    .event2-info {
+    .event2-content {
         margin-bottom: 20px;
+        position: relative;
+        top: 20px;
     }
 
     .events-event3 {

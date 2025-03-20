@@ -33,31 +33,31 @@ export default function About() {
                     <h2>Our Classes</h2>
                     <div className='about-classes'>
                         <div className='about-class-offerings'>
-                            <Link to="/Classes#" onClick={() => {
+                            {/* <Link to="/Classes#" onClick={() => {
                                 window.scroll(0, 0);
                             }}
-                            >
+                            > */}
                                 <h3 className='about-class-heading'>Salsa</h3>
                                 <img src={salsa} alt="" />
-                            </Link>
+                            {/* </Link> */}
                         </div>
                         <div className='about-class-offerings'>
-                            <Link to="/Classes#" onClick={() => {
+                            {/* <Link to="/Classes#" onClick={() => {
                                 window.scroll(0, 0);
                             }}
-                            >
+                            > */}
                                 <h3 className='about-class-heading'>Bachata</h3>
                                 <img src={bachata} alt="" />
-                            </Link>
+                            {/* </Link> */}
                         </div>
                         <div className='about-class-offerings'>
-                            <Link to="/Classes#" onClick={() => {
+                            {/* <Link to="/Classes#" onClick={() => {
                                 window.scroll(0, 0);
                             }}
-                            >
+                            > */}
                                 <h3 className='about-class-heading'>Social Dancing</h3>
                                 <img src={social} alt="" />
-                            </Link>
+                            {/* </Link> */}
                         </div>
                     </div>
                     <Link to="/Classes" onClick={() => {

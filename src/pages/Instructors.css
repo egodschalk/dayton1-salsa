@@ -13,6 +13,7 @@
     color: var(--secondary);
     font-size: 32pt;
 }
+
 .instructors-header img {
     padding: 20px 0;
     width: 500px;
@@ -24,6 +25,7 @@
     display: flex;
     flex-direction: row;
     width: 100vw;
+    align-items: center;
 }
 
 .instructor1-text {
@@ -32,7 +34,7 @@
     color: var(--tertiary);
 }
 
-.instructor1 h3, 
+.instructor1 h3,
 .instructor2 h3 {
     font-family: "Julius Sans One", serif;
     font-size: 28pt;
@@ -46,7 +48,7 @@
     line-height: 8pt;
 }
 
-.instructor1 p, 
+.instructor1 p,
 .instructor2 p {
     font-size: 16pt;
     letter-spacing: 2px;
@@ -83,7 +85,24 @@
     color: var(--primary);
 }
 
+@media screen and (min-width: 1100px) {
+
+    .instructor1-picture,
+    .instructor2-picture {
+        min-width: 30vw;
+        max-width: 30vw;
+        padding: 20px 2vw;
+        align-self: center;
+    }
+
+    .instructor1-picture img,
+    .instructor2-picture img {
+        width: 400px;
+    }
+}
+
 @media screen and (max-width: 900px) {
+
     .instructor1,
     .instructor2 {
         display: flex;
@@ -116,11 +135,11 @@
         padding: 0;
     }
 
-    .instructor1 h3, 
+    .instructor1 h3,
     .instructor2 h3 {
         font-size: 23pt;
     }
-    
+
     .instructor1 h4,
     .instructor2 h4 {
         font-size: 15pt;
@@ -128,8 +147,8 @@
 
 }
 
-@media screen and (max-width: 500px) {
- 
+@media screen and (max-width: 400px) {
+
     .instructor1 h4,
     .instructor2 h4 {
         font-size: 14pt;
