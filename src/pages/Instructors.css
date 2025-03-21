@@ -87,10 +87,27 @@
 
 @media screen and (min-width: 1100px) {
 
+    .instructor2 {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .instructor1-text {
+        width: 55vw;
+        padding: 20px 3vw;
+    }
+
+    .instructor2-text {
+        width: 55vw;
+        padding: 20px 3vw;
+    }
+
     .instructor1-picture,
     .instructor2-picture {
-        min-width: 30vw;
-        max-width: 30vw;
+        min-width: 450px;
+        max-width: 450px;
         padding: 20px 2vw;
         align-self: center;
     }
