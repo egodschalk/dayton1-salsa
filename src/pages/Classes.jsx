@@ -34,7 +34,8 @@ export default function Classes() {
                                 <p>Salsa (all levels)</p>
                             </div>
                         </div>
-                        <h3>March 24 (Special Schedule)</h3>
+                        <h3>March 24</h3> 
+                        <h3>(Special Schedule)</h3>
                         <div className='schedule'>
                             <div className='times'>
                                 <p>6:30</p>
