@@ -172,9 +172,9 @@
 
 @media screen and (max-width: 460px) {
 
-.event2-details {
-    font-size: 18pt;
-    line-height: 1;
-    width: 100vw;
-}
+    .event2-details {
+        font-size: 18pt;
+        line-height: 1;
+        width: 100vw;
+    }
 }

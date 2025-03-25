@@ -29,7 +29,6 @@
     flex-wrap: wrap;
     justify-content: space-around;
     font-size: 20pt;
-    line-height: 8pt;
 }
 
 .days h3 {
@@ -42,11 +41,20 @@
     flex-direction: column;
     justify-content: center;
     padding: 10px 20px;
+    line-height: 8pt;
+}
+
+.days p {
+    letter-spacing: 1px;
 }
 
 .class-schedule {
     padding: 10px 20px;
     letter-spacing: 2px;
+}
+
+.class-schedule h3 {
+    line-height: 8pt;
 }
 
 .schedule {
@@ -56,10 +64,17 @@
 
 .times {
     padding-right: 15px;
+    line-height: 18pt;
 }
 
 .classes {
     text-align: left;
+    line-height: 18pt;
+}
+
+.special {
+    font-size: 20pt;
+    line-height: 8pt;
 }
 
 .classes-membership-section {
@@ -119,7 +134,7 @@
 }
 
 .classes-first-time h3 {
-    font-family: "Julius Sans One", serif;    
+    font-family: "Julius Sans One", serif;
     color: var(--secondary);
     width: 40vw;
     font-size: 24pt;
@@ -219,7 +234,7 @@
         position: relative;
         top: -40px;
     }
-    
+
 }
 
 @media screen and (max-width: 965px) {
@@ -253,11 +268,11 @@
         flex-direction: column;
         align-items: center;
     }
-    
+
     .classes-first-time h3 {
         width: 90vw;
     }
-    
+
     .first-time-info {
         width: 90vw;
         text-align: center;
@@ -302,22 +317,25 @@
         font-size: 19pt;
     }
 
-    .times, 
+    .days {
+        line-height: 0pt;
+    }
+
+    .times,
     .classes,
     .days p {
         font-size: 18pt;
+        line-height: 18pt;
     }
 
-   
 }
 
 @media screen and (max-width: 380px) {
 
     .classes-schedule-section {
         font-size: 18pt;
-        line-height: 8pt;
     }
-    
+
     .days,
     .class-schedule {
         padding: 0px 0px;
@@ -327,5 +345,5 @@
     .rate-cost p {
         font-size: 14pt;
     }
-    
+
 }

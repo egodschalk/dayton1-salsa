@@ -18,7 +18,7 @@ export default function Classes() {
                 <div className='classes-schedule-section'>
                     <div className='days'>
                         <h3>Mondays</h3>
-                        <p>March 3rd, 10th, 17th, 24th</p>
+                        <p>April 7th, 14th, 21st, 28th</p>
                     </div>
                     <div className='class-schedule'>
                         <h3>Class Schedule</h3>
@@ -34,8 +34,8 @@ export default function Classes() {
                                 <p>Salsa (all levels)</p>
                             </div>
                         </div>
-                        <h3>March 24</h3> 
-                        <h3 className='special-schedule'>(Special Schedule)</h3>
+                        <h3>April 28</h3> 
+                        <h3 className='special'>(Special Schedule)</h3>
                         <div className='schedule'>
                             <div className='times'>
                                 <p>6:30</p>
@@ -44,13 +44,13 @@ export default function Classes() {
                             </div>
                             <div className='classes'>
                                 <p>Bachata (all levels)</p>
-                                <p>Salsa</p>
-                                <Link to="/Events" onClick={() => {
+                                <p>Salsa (all levels)</p>
+                                {/* <Link to="/Events" onClick={() => {
                                     window.scroll(0, 0);
                                 }}
-                                >
-                                    <p>Latin Night at Joui</p>
-                                </Link>
+                                > */}
+                                    <p>Latin Night @ OnPAR Entertainment</p>
+                                {/* </Link> */}
                             </div>
                         </div>
                     </div>
