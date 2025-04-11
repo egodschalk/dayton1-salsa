@@ -49,7 +49,7 @@ export default function Classes() {
                                     window.scroll(0, 0);
                                 }}
                                 >
-                                    <p>Latin Night @ OnPAR Entertainment</p>
+                                    <p>Class & Social @ OnPAR</p>
                                 </Link>
                             </div>
                         </div>
