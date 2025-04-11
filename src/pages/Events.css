@@ -196,6 +196,13 @@
         top: 20px;
     }
 
+    .event1-details,
+    .event3-details {
+        font-size: 18pt;
+        line-height: 1;
+        width: 100vw;
+    }
+
 }
 
 @media screen and (max-width: 460px) {
