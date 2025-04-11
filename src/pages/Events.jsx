@@ -1,18 +1,20 @@
 import './Events.css'
 import { Link } from 'react-router-dom'
-import event1 from '../assets/Event-1.jpeg'
+import event1 from '../assets/Event-1.jpg'
 import event2 from '../assets/Event-2.jpeg'
+import event3 from '../assets/Event-3b.jpg'
+
 
 const eventData = [
     {
         id: 1,
         imgUrl: event1,
-        title: "Latin Night at Joui",
-        date: "March 24, 2025",
+        title: "Latin Night @ OnPar Entertainment",
+        date: "April 28, 2025",
         time: "8 - 11 PM",
-        location: "117 E 3rd Street, Dayton, OH",
+        location: "4464 Indian Ripple Rd",
         info: "Presented by DaytOn1",
-        eventUrl: 'https://www.facebook.com/events/622783237211842/'
+        eventUrl: 'https://www.facebook.com/events/1162455215052940'
     },
     {
         id: 2,
@@ -23,6 +25,16 @@ const eventData = [
         location: "Dayton Liederkranz Turner German Club",
         info: "Presented by Brian Lugo. Live performance by Dayton Salsa Project, Salsa lesson with DaytOn1",
         eventUrl: 'https://www.facebook.com/events/2548047955404925'
+    },
+    {
+        id: 3,
+        imgUrl: event3,
+        title: "Salsa on the Square",
+        date: "May 22, 2025",
+        time: "6PM - 10PM",
+        location: "520 Vine St, Cincinnati, OH",
+        info: "DaytOn1 will be teaching May 22 & Sept 18",
+        eventUrl: 'https://www.facebook.com/events/1976907526052415/'
     },
 ]
 
@@ -71,8 +83,25 @@ export default function Events() {
                         </a>
                     </div>
                 </div>
-                <div className='events-event3'></div>
-
+                <div className='events-event3'>
+                    <div className='event3-content'>
+                        <div className='event3-info'>
+                            <h5 className='event3-title'>{eventData[2].title}</h5>
+                            <div className='event3-details'>
+                                <p>{eventData[2].date}</p>
+                                <p>{eventData[2].time}</p>
+                                <p>{eventData[2].location}</p>
+                                <p>{eventData[2].info}</p>
+                                <a href={eventData[2].eventUrl} target= 'blank'>
+                                    <button>More Info</button>
+                                </a>
+                            </div>
+                        </div>
+                        <a href={eventData[2].eventUrl} target= 'blank'>
+                            <img src={eventData[2].imgUrl} alt="" />
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     );

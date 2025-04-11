@@ -45,12 +45,12 @@ export default function Classes() {
                             <div className='classes'>
                                 <p>Bachata (all levels)</p>
                                 <p>Salsa (all levels)</p>
-                                {/* <Link to="/Events" onClick={() => {
+                                <Link to="/Events" onClick={() => {
                                     window.scroll(0, 0);
                                 }}
-                                > */}
+                                >
                                     <p>Latin Night @ OnPAR Entertainment</p>
-                                {/* </Link> */}
+                                </Link>
                             </div>
                         </div>
                     </div>
