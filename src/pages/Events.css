@@ -155,7 +155,8 @@
 
 @media screen and (max-width: 950px) {
 
-    .events-event1 {
+    .events-event1,
+    .events-event3 {
         height: 650px;
     }
 
@@ -164,17 +165,20 @@
     }
 
     .event1-content,
-    .event2-content {
+    .event2-content,
+    .event3-content {
         flex-direction: column;
         align-items: center;
     }
 
-    .event1-content {
+    .event1-content,
+    .event3-content {
         position: relative;
         top: -30px;
     }
 
-    .event1-info {
+    .event1-info,
+    .event3-info {
         position: relative;
         top: 0px;
     }
@@ -190,10 +194,6 @@
         margin-bottom: 20px;
         position: relative;
         top: 20px;
-    }
-
-    .events-event3 {
-        height: 100px;
     }
 
 }
