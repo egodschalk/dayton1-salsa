@@ -1,23 +1,23 @@
 import './Events.css'
 import { Link } from 'react-router-dom'
-import event1 from '../assets/Event-1.jpg'
+// import event1 from '../assets/Event-1.jpg'
 import event2 from '../assets/Event-2.jpeg'
 import event3 from '../assets/Event-3b.jpg'
 
 
 const eventData = [
+    // {
+    //     id: 1,
+    //     imgUrl: event1,
+    //     title: "Latin Night @ OnPar Entertainment",
+    //     date: "April 28, 2025",
+    //     time: "8 - 11 PM",
+    //     location: "4464 Indian Ripple Rd",
+    //     info: "Presented by DaytOn1",
+    //     eventUrl: 'https://www.facebook.com/events/1162455215052940'
+    // },
     {
         id: 1,
-        imgUrl: event1,
-        title: "Latin Night @ OnPar Entertainment",
-        date: "April 28, 2025",
-        time: "8 - 11 PM",
-        location: "4464 Indian Ripple Rd",
-        info: "Presented by DaytOn1",
-        eventUrl: 'https://www.facebook.com/events/1162455215052940'
-    },
-    {
-        id: 2,
         imgUrl: event2,
         title: "Salsa for a Cause",
         date: "May 9, 2025",
@@ -27,7 +27,7 @@ const eventData = [
         eventUrl: 'https://www.facebook.com/events/2548047955404925'
     },
     {
-        id: 3,
+        id: 2,
         imgUrl: event3,
         title: "Salsa on the Square",
         date: "May 22, 2025",
@@ -83,7 +83,7 @@ export default function Events() {
                         </a>
                     </div>
                 </div>
-                <div className='events-event3'>
+                {/* <div className='events-event3'>
                     <div className='event3-content'>
                         <div className='event3-info'>
                             <h5 className='event3-title'>{eventData[2].title}</h5>
@@ -100,8 +100,8 @@ export default function Events() {
                         <a href={eventData[2].eventUrl} target= 'blank'>
                             <img src={eventData[2].imgUrl} alt="" />
                         </a>
-                    </div>
-                </div>
+                    </div> */}
+                {/* </div> */}
             </div>
         </div>
     );

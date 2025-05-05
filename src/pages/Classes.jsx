@@ -18,7 +18,7 @@ export default function Classes() {
                 <div className='classes-schedule-section'>
                     <div className='days'>
                         <h3>Mondays</h3>
-                        <p>April 7th, 14th, 21st, 28th</p>
+                        <p>May 5th, 12th, 19th, 26th</p>
                     </div>
                     <div className='class-schedule'>
                         <h3>Class Schedule</h3>
@@ -34,7 +34,7 @@ export default function Classes() {
                                 <p>Salsa (all levels)</p>
                             </div>
                         </div>
-                        <h3>April 28</h3> 
+                        <h3>May 26</h3> 
                         <h3 className='special'>(Special Schedule)</h3>
                         <div className='schedule'>
                             <div className='times'>
@@ -45,12 +45,12 @@ export default function Classes() {
                             <div className='classes'>
                                 <p>Bachata (all levels)</p>
                                 <p>Salsa (all levels)</p>
-                                <Link to="/Events" onClick={() => {
+                                {/* <Link to="/Events" onClick={() => {
                                     window.scroll(0, 0);
                                 }}
-                                >
-                                    <p>Social @ OnPAR Entertainment</p>
-                                </Link>
+                                > */}
+                                    <p>Social @ Joui</p>
+                                {/* </Link> */}
                             </div>
                         </div>
                     </div>
