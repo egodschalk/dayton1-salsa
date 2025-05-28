@@ -35,7 +35,7 @@ export default function Classes() {
                                 <p>Salsa (all levels)</p>
                             </div>
                         </div>
-                        <h3>End of Month Social: </h3>
+                        <h3>End of Month Social </h3>
                         <h3 className='special'>Saturday, June 28</h3>
                         {/* <h3 className='special'>(Special Schedule)</h3> */}
                         <div className='schedule'>
