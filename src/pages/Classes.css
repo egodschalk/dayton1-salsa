@@ -60,6 +60,7 @@
 .schedule {
     display: flex;
     flex-direction: row;
+    justify-content: center;
 }
 
 .times {
@@ -74,13 +75,13 @@
 
 .classes2 {
     text-align: center;
-    line-height: 18pt;
+    line-height: 8pt;
+    font-size: 16pt;
 }
 
 .special {
     font-size: 20pt;
     line-height: 8pt;
-    letter-spacing: 0.5;
 }
 
 .classes-membership-section {
