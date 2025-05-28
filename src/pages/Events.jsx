@@ -1,7 +1,7 @@
 import './Events.css'
 import { Link } from 'react-router-dom'
 // import event1 from '../assets/Event-1.jpg'
-import event2 from '../assets/Event-2.jpeg'
+import event2 from '../assets/Event-2.jpg'
 import event3 from '../assets/Event-3b.jpg'
 
 
@@ -19,12 +19,12 @@ const eventData = [
     {
         id: 1,
         imgUrl: event2,
-        title: "Salsa for a Cause",
-        date: "May 9, 2025",
+        title: "Silent Disco: Latin Edition",
+        date: "June 28, 2025",
         time: "8PM - 12AM",
-        location: "Dayton Liederkranz Turner German Club",
-        info: "Presented by Brian Lugo. Live performance by Dayton Salsa Project, Salsa lesson with DaytOn1",
-        eventUrl: 'https://www.facebook.com/events/2548047955404925'
+        location: "OnPar Entertainment",
+        info: "DaytOn1 Presents the Latin Edition Silent Disco at On Par Entertainment",
+        eventUrl: 'https://www.eventbrite.com/e/dayton1-presents-the-latin-edition-silent-disco-at-on-par-entertainment-tickets-1359474929109'
     },
     {
         id: 2,
@@ -64,7 +64,7 @@ export default function Events() {
                         </a>
                     </div>
                 </div>
-                <div className='events-event2'>
+                {/* <div className='events-event2'>
                     <div className='event2-content'>
                         <div className='event2-info'>
                             <h5 className='event2-title'>{eventData[1].title}</h5>
@@ -82,7 +82,7 @@ export default function Events() {
                             <img src={eventData[1].imgUrl} alt="" />
                         </a>
                     </div>
-                </div>
+                </div> */}
                 {/* <div className='events-event3'>
                     <div className='event3-content'>
                         <div className='event3-info'>
