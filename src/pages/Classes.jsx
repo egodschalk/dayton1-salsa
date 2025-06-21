@@ -15,107 +15,115 @@ export default function Classes() {
                     <p>15 Mc Donough Street</p>
                     <p>Dayton, OH 45402</p>
                 </div>
-                <div className='classes-schedule-section'>
-                    <div className='days'>
-                        <h3>Mondays</h3>
-                        <p>June 2nd, 9th, 16th, 23rd</p>
-                        <p>(no classes June 30)</p>
+                <div className='classes-schedules'>
+                    <div className='classes-schedule-section'>
+                        <div className='days'>
+                            <h3>Mondays</h3>
+                            <p>July 7th, 14th, and 21st</p>
+                            <p>(no classes July 28)</p>
+                        </div>
+                        <div className='class-schedule'>
+                            <h3>Class Schedule</h3>
+                            <div className='schedule'>
+                                <div className='times'>
+                                    <p>6:30</p>
+                                    <p>7:15</p>
+                                    <p>7:45</p>
+                                </div>
+                                <div className='classes'>
+                                    <p>Bachata (all levels)</p>
+                                    <p>Social Dancing</p>
+                                    <p>Salsa (all levels)</p>
+                                </div>
+                            </div>
+                            {/* <h3 className='special'>End of Month Social </h3> */}
+                            <h3 className='special'>Monday, July 21</h3>
+                            <h3 className='special'>(Special Schedule)</h3>
+                            <div className='schedule'>
+                                <div className='times'>
+                                    <p>6:30</p>
+                                    <p>7:15</p>
+                                    <p>8:00</p>
+                                </div>
+                                <div className='classes'>
+                                    {/* <div className='classes2'> */}
+                                    <p>Bachata (all levels)</p>
+                                    <p>Salsa (all levels)</p>
+                                    <Link to="/Events" onClick={() => {
+                                        window.scroll(0, 0);
+                                    }}
+                                    >
+                                        <p>Social @ Joui</p>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className='class-schedule'>
-                        <h3>Class Schedule</h3>
-                        <div className='schedule'>
-                            <div className='times'>
-                                <p>6:30</p>
-                                <p>7:15</p>
-                                <p>7:45</p>
-                            </div>
-                            <div className='classes'>
-                                <p>Bachata (all levels)</p>
-                                <p>Social Dancing</p>
-                                <p>Salsa (all levels)</p>
-                            </div>
-                        </div>
-                        <h3 className='special'>End of Month Social </h3>
-                        <h3 className='special'>Saturday, June 28</h3>
-                        {/* <h3 className='special'>(Special Schedule)</h3> */}
-                        <div className='schedule'>
-                            {/* <div className='times'>
-                                <p>6:30</p>
-                                <p>7:15</p>
-                                <p>8:00</p>
-                            </div> */}
-                            {/* <div className='classes'> */}
-                            <div className='classes2'>
-                                {/* <p>Bachata (all levels)</p>
-                                <p>Salsa (all levels)</p> */}
-                            <Link to="/Events" onClick={() => {
-                                window.scroll(0, 0);
-                            }}
-                            >
-                                <p>@ OnPar Entertainment</p>
-                            </Link>
-                            </div>
-                        </div>
+                    <div>
+                        <h3>For information about teams, click here:</h3>
+                        <a href="https://www.facebook.com/share/v/1CnCBHdvxx/" target='_blank' className='classes-teams'>Tuesday Teams</a>
+                        <p></p>
+                        <a href="https://www.facebook.com/share/v/1EiXMJ8TgW/" target='_blank' className='classes-teams'>Thursday Teams</a>
                     </div>
                 </div>
-                <div className='classes-membership-section'>
-                    <div className='classes-rates'>
-                        <h3>Monthly Rates:</h3>
-                        <h3>June</h3>
+            </div>
+            <div className='classes-membership-section'>
+                <div className='classes-rates'>
+                    <h3>Monthly Rates:</h3>
+                    <h3>July</h3>
 
-                        <p>We offer classes in monthly cycles</p>
-                        {/* <h3>March 2024</h3> */}
-                        <div className='rates'>
-                            <div className='rate-category'>
-                                <p>1 Style:</p>
-                                <p>Both Styles:</p>
-                            </div>
-                            <div className='rate-cost'>
-                                <p>$60</p>
-                                <p>$80</p>
-                            </div>
+                    <p>We offer classes in monthly cycles</p>
+                    {/* <h3>March 2024</h3> */}
+                    <div className='rates'>
+                        <div className='rate-category'>
+                            <p>1 Style:</p>
+                            <p>Both Styles:</p>
                         </div>
-                        <p>Social dancing included in all monthly memberships</p>
+                        <div className='rate-cost'>
+                            <p>$45</p>
+                            <p>$60</p>
+                        </div>
                     </div>
-                    <div className='classes-picture'>
-                        <img src={classesPagePic} alt="picture of couples dancing in a circle" />
-                    </div>
+                    <p>Social dancing included in all monthly memberships</p>
                 </div>
-                <div className='classes-first-time'>
-                    <h3>First time? No problem!</h3>
-                    <div className='first-time-info'>
-                        <p>Message us each person’s name, phone number, and preferred payment method to be registered if it's your first time attending our classes</p>
-                        <Link to="/FAQs" onClick={() => {
-                            window.scroll(0, 0);
-                        }}
-                        >
-                            <button>Check out our FAQs</button>
-                        </Link>
-                    </div>
+                <div className='classes-picture'>
+                    <img src={classesPagePic} alt="picture of couples dancing in a circle" />
                 </div>
-                <div className='classes-levels-section'>
-                    <h2>About Our Levels</h2>
-                    <div className='classes-levels'>
-                        <div className='class-levels'>
-                            <h3 className='class-level-heading'>Level 1</h3>
-                            <img src={level1} alt="" />
-                            <div className='level-desc'>
-                                <p><strong>Beginner: </strong>dancers with little to no experience</p>
-                            </div>
+            </div>
+            <div className='classes-first-time'>
+                <h3>First time? No problem!</h3>
+                <div className='first-time-info'>
+                    <p>Message us each person’s name, phone number, and preferred payment method to be registered if it's your first time attending our classes</p>
+                    <Link to="/FAQs" onClick={() => {
+                        window.scroll(0, 0);
+                    }}
+                    >
+                        <button>Check out our FAQs</button>
+                    </Link>
+                </div>
+            </div>
+            <div className='classes-levels-section'>
+                <h2>About Our Levels</h2>
+                <div className='classes-levels'>
+                    <div className='class-levels'>
+                        <h3 className='class-level-heading'>Level 1</h3>
+                        <img src={level1} alt="" />
+                        <div className='level-desc'>
+                            <p><strong>Beginner: </strong>dancers with little to no experience</p>
                         </div>
-                        <div className='class-levels'>
-                            <h3 className='class-level-heading'>Level 2</h3>
-                            <img src={level2} alt="" />
-                            <div className='level-desc'>
-                                <p><strong>Beyond the Basics: </strong>dancers with 1-2 years of experience</p>
-                            </div>
+                    </div>
+                    <div className='class-levels'>
+                        <h3 className='class-level-heading'>Level 2</h3>
+                        <img src={level2} alt="" />
+                        <div className='level-desc'>
+                            <p><strong>Beyond the Basics: </strong>dancers with 1-2 years of experience</p>
                         </div>
-                        <div className='class-levels'>
-                            <h3 className='class-level-heading'>Level 3</h3>
-                            <img src={level3} alt="" />
-                            <div className='level-desc'>
-                                <p><strong>Next Level: </strong>for advanced dancers with 3 years or more experience</p>
-                            </div>
+                    </div>
+                    <div className='class-levels'>
+                        <h3 className='class-level-heading'>Level 3</h3>
+                        <img src={level3} alt="" />
+                        <div className='level-desc'>
+                            <p><strong>Next Level: </strong>for advanced dancers with 3 years or more experience</p>
                         </div>
                     </div>
                 </div>

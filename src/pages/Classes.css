@@ -21,14 +21,34 @@
     letter-spacing: 2px;
 }
 
-.classes-schedule-section {
+.classes-schedule-header {
+    background-image: var(--tertiary);
+    color: var(--secondary);
+    padding: 20px;
+    font-family: "Julius Sans One", serif;
+    font-size: 35pt;
+    margin: 0;
+}
+
+.classes-schedule-header p {
+    font-family: "Urbanist", sans-serif;
+    font-size: 20pt;
+    letter-spacing: 1px;
+}
+
+.classes-schedules {
     background-image: linear-gradient(45deg, var(--secondary), var(--yellow-fade));
     color: var(--tertiary);
     padding: 20px;
+    font-size: 20pt;
+    letter-spacing: 1px;
+
+}
+
+.classes-schedule-section {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    font-size: 20pt;
 }
 
 .days h3 {
@@ -332,7 +352,12 @@
     .classes,
     .days p {
         font-size: 18pt;
-        line-height: 18pt;
+        line-height: 0pt;
+    }
+    
+    .schedule p {
+        font-size: 18pt;
+        line-height: 10pt;
     }
 
 }
