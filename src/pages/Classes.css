@@ -104,6 +104,19 @@
     line-height: 8pt;
 }
 
+.team-info h3 {
+    font-size: 20pt;
+}
+
+.team-info a {
+    font-size: 18pt;
+}
+
+.team-info p {
+    font-size: 16pt;
+    font-style: italic;
+}
+
 .classes-membership-section {
     display: flex;
     flex-direction: row;

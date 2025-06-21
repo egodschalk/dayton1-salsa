@@ -59,11 +59,12 @@ export default function Classes() {
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <h3>For information about teams, click here:</h3>
+                    <div className='team-info'>
+                        <h3 >Information about special classes and teams:</h3>
                         <a href="https://www.facebook.com/share/v/1CnCBHdvxx/" target='_blank' className='classes-teams'>Tuesday Teams</a>
                         <p></p>
-                        <a href="https://www.facebook.com/share/v/1EiXMJ8TgW/" target='_blank' className='classes-teams'>Thursday Teams</a>
+                        <a href="https://www.facebook.com/share/v/1EiXMJ8TgW/" target='_blank' className='classes-teams'>Thursday Bachata in Sharonville</a>
+                        <p>Message DaytOn1 with any questions</p>
                     </div>
                 </div>
             </div>
