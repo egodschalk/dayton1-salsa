@@ -2,20 +2,10 @@ import './Events.css'
 import { Link } from 'react-router-dom'
 // import event1 from '../assets/Event-1.jpg'
 import event2 from '../assets/Event-2.jpg'
-import event3 from '../assets/Event-3b.jpg'
+import event1 from '../assets/Event-1.jpg'
 
 
 const eventData = [
-    // {
-    //     id: 1,
-    //     imgUrl: event1,
-    //     title: "Latin Night @ OnPar Entertainment",
-    //     date: "April 28, 2025",
-    //     time: "8 - 11 PM",
-    //     location: "4464 Indian Ripple Rd",
-    //     info: "Presented by DaytOn1",
-    //     eventUrl: 'https://www.facebook.com/events/1162455215052940'
-    // },
     {
         id: 1,
         imgUrl: event2,
@@ -28,14 +18,24 @@ const eventData = [
     },
     {
         id: 2,
-        imgUrl: event3,
-        title: "Salsa on the Square",
-        date: "May 22, 2025",
-        time: "6PM - 10PM",
-        location: "520 Vine St, Cincinnati, OH",
-        info: "DaytOn1 will be teaching May 22 & Sept 18",
-        eventUrl: 'https://www.facebook.com/events/1976907526052415/'
+        imgUrl: event1,
+        title: "Social @ Joui Wine Bar",
+        date: "July 21, 2025",
+        time: "8 - 11 PM",
+        location: "117 E 3rd St, Dayton, OH",
+        info: "Presented by DaytOn1",
+        eventUrl: ''
     },
+    // {
+    //     id: 2,
+    //     imgUrl: event3,
+    //     title: "Salsa on the Square",
+    //     date: "May 22, 2025",
+    //     time: "6PM - 10PM",
+    //     location: "520 Vine St, Cincinnati, OH",
+    //     info: "DaytOn1 will be teaching May 22 & Sept 18",
+    //     eventUrl: 'https://www.facebook.com/events/1976907526052415/'
+    // },
 ]
 
 export default function Events() {
@@ -64,7 +64,7 @@ export default function Events() {
                         </a>
                     </div>
                 </div>
-                {/* <div className='events-event2'>
+                <div className='events-event2'>
                     <div className='event2-content'>
                         <div className='event2-info'>
                             <h5 className='event2-title'>{eventData[1].title}</h5>
@@ -73,18 +73,18 @@ export default function Events() {
                                 <p>{eventData[1].time}</p>
                                 <p>{eventData[1].location}</p>
                                 <p>{eventData[1].info}</p>
-                                <a href={eventData[1].eventUrl} target= 'blank'>
+                                {/* <a href={eventData[1].eventUrl} target= 'blank'>
                                     <button>More Info</button>
-                                </a>
+                                </a> */}
                             </div>
                         </div>
                         <a href={eventData[1].eventUrl} target= 'blank'>
                             <img src={eventData[1].imgUrl} alt="" />
                         </a>
                     </div>
-                </div> */}
-                {/* <div className='events-event3'>
-                    <div className='event3-content'>
+                </div>
+                <div className='events-event3'>
+                    {/* <div className='event3-content'>
                         <div className='event3-info'>
                             <h5 className='event3-title'>{eventData[2].title}</h5>
                             <div className='event3-details'>
@@ -101,7 +101,7 @@ export default function Events() {
                             <img src={eventData[2].imgUrl} alt="" />
                         </a>
                     </div> */}
-                {/* </div> */}
+                </div>
             </div>
         </div>
     );
