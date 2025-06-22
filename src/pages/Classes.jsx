@@ -61,7 +61,7 @@ export default function Classes() {
                     </div>
                     <div className='team-info'>
                         <h3 >Information about special classes and teams:</h3>
-                        <a href="https://www.facebook.com/share/v/1CnCBHdvxx/" target='_blank' className='classes-teams'>Tuesday Teams</a>
+                        <a href="https://www.facebook.com/share/v/1CnCBHdvxx/" target='_blank' className='classes-teams'>Tuesday Intensives- A Team Training Experience</a>
                         <p></p>
                         <a href="https://www.facebook.com/share/v/1EiXMJ8TgW/" target='_blank' className='classes-teams'>Thursday Bachata in Sharonville</a>
                         <p>Message DaytOn1 with any questions</p>
@@ -70,8 +70,8 @@ export default function Classes() {
             </div>
             <div className='classes-membership-section'>
                 <div className='classes-rates'>
-                    <h3>Monthly Rates:</h3>
-                    <h3>July</h3>
+                    <h3>Monthly Rates (Mondays):</h3>
+                    <h4>July</h4>
 
                     <p>We offer classes in monthly cycles</p>
                     {/* <h3>March 2024</h3> */}
