@@ -81,7 +81,7 @@ export default function About() {
                             window.scroll(0, 0);
                         }}
                         >
-                            <button className='about-event-button'>More Info</button>
+                            <button className='about-event-button'>more info</button>
                         </Link>
                     </div>
 

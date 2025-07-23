@@ -61,4 +61,14 @@ export const faqData = [
         question: 'What are your current hours?',
         answer: 'Typically, on Monday nights we have Bachata classes at 6:30pm, Social dancing at 7:15pm, and Salsa Classes at 7:45pm. If there is a special Monday night social at the end of the month our Bachata classes are at 6:30pm, Salsa classes are at 7:15pm, and the dance social is then, held at 8pm at an off site location.  Always check the current schedule on our website or social media outlets (Fb or Instagram) for that detailed information.',
     },
+    {
+        id: 13,
+        question: 'Do you offer drop in classes?',
+        answer: 'Yes, but if you are a beginner we recommend dropping in on the first Monday of the month. Int/Adv dancers are welcome to drop in anytime throughout the month.',
+    },
+    {
+        id: 14,
+        question: 'What are your drop in rates?',
+        answer: 'If you message us your name(s), phone number(s), and payment preference (Venmo, PayPal, or cash) the drop in rates would be $15 per person per class or $25 for the night. If you do not send in your personal information, drop in rate at the door is $20 per person/class.',
+    },
 ]
