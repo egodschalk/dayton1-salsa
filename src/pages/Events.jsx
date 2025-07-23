@@ -6,21 +6,21 @@ import event1 from '../assets/Event-1.jpg'
 
 
 const eventData = [
+    // {
+    //     id: 1,
+    //     imgUrl: event2,
+    //     title: "Silent Disco: Latin Edition",
+    //     date: "June 28, 2025",
+    //     time: "8PM - 12AM",
+    //     location: "OnPar Entertainment",
+    //     info: "DaytOn1 Presents the Latin Edition Silent Disco at On Par Entertainment",
+    //     eventUrl: 'https://www.eventbrite.com/e/dayton1-presents-the-latin-edition-silent-disco-at-on-par-entertainment-tickets-1359474929109'
+    // },
     {
         id: 1,
-        imgUrl: event2,
-        title: "Silent Disco: Latin Edition",
-        date: "June 28, 2025",
-        time: "8PM - 12AM",
-        location: "OnPar Entertainment",
-        info: "DaytOn1 Presents the Latin Edition Silent Disco at On Par Entertainment",
-        eventUrl: 'https://www.eventbrite.com/e/dayton1-presents-the-latin-edition-silent-disco-at-on-par-entertainment-tickets-1359474929109'
-    },
-    {
-        id: 2,
         imgUrl: event1,
         title: "Social @ Joui Wine Bar",
-        date: "July 21, 2025",
+        date: "August 25, 2025",
         time: "8 - 11 PM",
         location: "117 E 3rd St, Dayton, OH",
         info: "Presented by DaytOn1",
@@ -64,7 +64,7 @@ export default function Events() {
                         </a>
                     </div>
                 </div>
-                <div className='events-event2'>
+                {/* <div className='events-event2'>
                     <div className='event2-content'>
                         <div className='event2-info'>
                             <h5 className='event2-title'>{eventData[1].title}</h5>
@@ -72,18 +72,18 @@ export default function Events() {
                                 <p>{eventData[1].date}</p>
                                 <p>{eventData[1].time}</p>
                                 <p>{eventData[1].location}</p>
-                                <p>{eventData[1].info}</p>
+                                <p>{eventData[1].info}</p> */}
                                 {/* <a href={eventData[1].eventUrl} target= 'blank'>
                                     <button>More Info</button>
                                 </a> */}
-                            </div>
+                            {/* </div>
                         </div>
                         <a href={eventData[1].eventUrl} target= 'blank'>
                             <img src={eventData[1].imgUrl} alt="" />
                         </a>
                     </div>
-                </div>
-                <div className='events-event3'>
+                </div> */}
+                {/* <div className='events-event3'> */}
                     {/* <div className='event3-content'>
                         <div className='event3-info'>
                             <h5 className='event3-title'>{eventData[2].title}</h5>
@@ -101,7 +101,7 @@ export default function Events() {
                             <img src={eventData[2].imgUrl} alt="" />
                         </a>
                     </div> */}
-                </div>
+                {/* </div> */}
             </div>
         </div>
     );

@@ -19,8 +19,8 @@ export default function Classes() {
                     <div className='classes-schedule-section'>
                         <div className='days'>
                             <h3>Mondays</h3>
-                            <p>July 7th, 14th, and 21st</p>
-                            <p>(no classes July 28)</p>
+                            <p>August 4th, 11th, 19th, 25th</p>
+                            {/* <p>(no classes July 28)</p> */}
                         </div>
                         <div className='class-schedule'>
                             <h3>Class Schedule</h3>
@@ -37,7 +37,7 @@ export default function Classes() {
                                 </div>
                             </div>
                             {/* <h3 className='special'>End of Month Social </h3> */}
-                            <h3 className='special'>Monday, July 21</h3>
+                            <h3 className='special'>Monday, Aug 25</h3>
                             <h3 className='special'>(Special Schedule)</h3>
                             <div className='schedule'>
                                 <div className='times'>
@@ -71,7 +71,7 @@ export default function Classes() {
             <div className='classes-membership-section'>
                 <div className='classes-rates'>
                     <h3>Monthly Rates (Mondays):</h3>
-                    <h4>July</h4>
+                    <h4>August</h4>
 
                     <p>We offer classes in monthly cycles</p>
                     {/* <h3>March 2024</h3> */}
@@ -81,8 +81,8 @@ export default function Classes() {
                             <p>Both Styles:</p>
                         </div>
                         <div className='rate-cost'>
-                            <p>$45</p>
                             <p>$60</p>
+                            <p>$80</p>
                         </div>
                     </div>
                     <p>Social dancing included in all monthly memberships</p>
