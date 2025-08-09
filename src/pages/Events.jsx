@@ -1,41 +1,41 @@
 import './Events.css'
 import { Link } from 'react-router-dom'
-// import event1 from '../assets/Event-1.jpg'
+import event3 from '../assets/Event-3.jpg'
 import event2 from '../assets/Event-2.jpg'
 import event1 from '../assets/Event-1.jpg'
 
 
 const eventData = [
-    // {
-    //     id: 1,
-    //     imgUrl: event2,
-    //     title: "Silent Disco: Latin Edition",
-    //     date: "June 28, 2025",
-    //     time: "8PM - 12AM",
-    //     location: "OnPar Entertainment",
-    //     info: "DaytOn1 Presents the Latin Edition Silent Disco at On Par Entertainment",
-    //     eventUrl: 'https://www.eventbrite.com/e/dayton1-presents-the-latin-edition-silent-disco-at-on-par-entertainment-tickets-1359474929109'
-    // },
     {
         id: 1,
         imgUrl: event1,
+        title: "Salsa Workshops with Danny Alicea",
+        date: "August 23, 2025",
+        time: "1 - 5 PM",
+        location: "11256 Cornell Park Dr #506, Blue Ash, OH",
+        info: "Presented by Saoco Sesion & DaytOn1",
+        eventUrl: 'https://www.facebook.com/share/p/1CForakFWs/'
+    },
+        {
+        id: 2,
+        imgUrl: event2,
         title: "Social @ Joui Wine Bar",
         date: "August 25, 2025",
         time: "8 - 11 PM",
         location: "117 E 3rd St, Dayton, OH",
         info: "Presented by DaytOn1",
+        eventUrl: 'https://www.facebook.com/share/p/1CForakFWs/'
+    },
+    {
+        id: 3,
+        imgUrl: event3,
+        title: "Bachata Vibes",
+        date: "October 4, 2025",
+        time: "8 - 11 PM",
+        location: "Elegance in Dance, Dayton, OH",
+        info: "Hosted by DaytOn1 with Special Guest David Storey",
         eventUrl: ''
     },
-    // {
-    //     id: 2,
-    //     imgUrl: event3,
-    //     title: "Salsa on the Square",
-    //     date: "May 22, 2025",
-    //     time: "6PM - 10PM",
-    //     location: "520 Vine St, Cincinnati, OH",
-    //     info: "DaytOn1 will be teaching May 22 & Sept 18",
-    //     eventUrl: 'https://www.facebook.com/events/1976907526052415/'
-    // },
 ]
 
 export default function Events() {
@@ -64,7 +64,7 @@ export default function Events() {
                         </a>
                     </div>
                 </div>
-                {/* <div className='events-event2'>
+                <div className='events-event2'>
                     <div className='event2-content'>
                         <div className='event2-info'>
                             <h5 className='event2-title'>{eventData[1].title}</h5>
@@ -72,19 +72,19 @@ export default function Events() {
                                 <p>{eventData[1].date}</p>
                                 <p>{eventData[1].time}</p>
                                 <p>{eventData[1].location}</p>
-                                <p>{eventData[1].info}</p> */}
+                                <p>{eventData[1].info}</p>
                                 {/* <a href={eventData[1].eventUrl} target= 'blank'>
                                     <button>More Info</button>
                                 </a> */}
-                            {/* </div>
+                            </div>
                         </div>
                         <a href={eventData[1].eventUrl} target= 'blank'>
                             <img src={eventData[1].imgUrl} alt="" />
                         </a>
                     </div>
-                </div> */}
-                {/* <div className='events-event3'> */}
-                    {/* <div className='event3-content'>
+                </div>
+                <div className='events-event3'>
+                    <div className='event3-content'>
                         <div className='event3-info'>
                             <h5 className='event3-title'>{eventData[2].title}</h5>
                             <div className='event3-details'>
@@ -92,16 +92,16 @@ export default function Events() {
                                 <p>{eventData[2].time}</p>
                                 <p>{eventData[2].location}</p>
                                 <p>{eventData[2].info}</p>
-                                <a href={eventData[2].eventUrl} target= 'blank'>
+                                {/* <a href={eventData[2].eventUrl} target= 'blank'>
                                     <button>More Info</button>
-                                </a>
+                                </a> */}
                             </div>
                         </div>
                         <a href={eventData[2].eventUrl} target= 'blank'>
                             <img src={eventData[2].imgUrl} alt="" />
                         </a>
-                    </div> */}
-                {/* </div> */}
+                    </div>
+                </div>
             </div>
         </div>
     );
