@@ -197,7 +197,8 @@
     }
 
     .event1-details,
-    .event2-details {
+    .event2-details,
+    .event3-details {
         font-size: 18pt;
         line-height: 1;
         width: 100vw;
