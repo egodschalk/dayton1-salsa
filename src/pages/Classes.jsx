@@ -19,7 +19,7 @@ export default function Classes() {
                     <div className='classes-schedule-section'>
                         <div className='days'>
                             <h3>Mondays</h3>
-                            <p>August 4th, 11th, 19th, 25th</p>
+                            <p>Sept 8th, 15th, 22nd, 29th</p>
                             {/* <p>(no classes July 28)</p> */}
                         </div>
                         <div className='class-schedule'>
@@ -37,26 +37,26 @@ export default function Classes() {
                                 </div>
                             </div>
                             {/* <h3 className='special'>End of Month Social </h3> */}
-                            <h3 className='special'>Monday, Aug 25</h3>
-                            <h3 className='special'>(Special Schedule)</h3>
-                            <div className='schedule'>
-                                <div className='times'>
+                            {/* <h3 className='special'>Monday, Aug 25</h3>
+                            <h3 className='special'>(Special Schedule)</h3> */}
+                            {/* <div className='schedule'> */}
+                                {/* <div className='times'>
                                     <p>6:30</p>
                                     <p>7:15</p>
                                     <p>8:00</p>
-                                </div>
-                                <div className='classes'>
+                                </div> */}
+                                {/* <div className='classes'> */}
                                     {/* <div className='classes2'> */}
-                                    <p>Bachata (all levels)</p>
-                                    <p>Salsa (all levels)</p>
-                                    <Link to="/Events" onClick={() => {
+                                    {/* <p>Bachata (all levels)</p>
+                                    <p>Salsa (all levels)</p> */}
+                                    {/* <Link to="/Events" onClick={() => {
                                         window.scroll(0, 0);
                                     }}
                                     >
                                         <p>Social @ Joui</p>
-                                    </Link>
-                                </div>
-                            </div>
+                                    </Link> */}
+                                {/* </div> */}
+                            {/* </div> */}
                         </div>
                     </div>
                     <div className='team-info'>
@@ -71,7 +71,7 @@ export default function Classes() {
             <div className='classes-membership-section'>
                 <div className='classes-rates'>
                     <h3>Monthly Rates (Mondays):</h3>
-                    <h4>August</h4>
+                    <h4>September</h4>
 
                     <p>We offer classes in monthly cycles</p>
                     {/* <h3>March 2024</h3> */}
