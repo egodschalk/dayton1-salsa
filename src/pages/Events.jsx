@@ -1,6 +1,6 @@
 import './Events.css'
 import { Link } from 'react-router-dom'
-import event3 from '../assets/Event-3.jpg'
+import event3 from '../assets/Event-3.png'
 import event2 from '../assets/Event-2.jpg'
 import event1 from '../assets/Event-1.jpg'
 
