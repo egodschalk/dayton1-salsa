@@ -1,6 +1,6 @@
 import './Events.css'
 import { Link } from 'react-router-dom'
-import event3 from '../assets/Event-3.png'
+import event3 from '../assets/Event-3.jpg'
 import event2 from '../assets/Event-2.jpg'
 import event1 from '../assets/Event-1.jpg'
 
@@ -30,11 +30,11 @@ const eventData = [
         id: 1,
         imgUrl: event3,
         title: "Bachata Vibes",
-        date: "October 4, 2025",
-        time: "8 - 11 PM",
+        date: "November 1, 2025",
+        time: "8:30 PM - 12 AM",
         location: "Elegance in Dance, Dayton, OH",
-        info: "Hosted by DaytOn1 with Special Guest David Storey",
-        eventUrl: ''
+        info: "Hosted by DaytOn1 feat. Amber Rose & Sagar Lalla",
+        eventUrl: 'https://www.facebook.com/events/2163903027468897'
     },
 ]
 

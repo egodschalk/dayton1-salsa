@@ -10,10 +10,10 @@ export default function Classes() {
         <div className="classes-page">
             <div className='classes-content'>
                 <div className='classes-location'>
-                    <h3>Location</h3>
-                    <p>Genuine Work</p>
-                    <p>15 Mc Donough Street</p>
-                    <p>Dayton, OH 45402</p>
+                    <h3>Interim Location</h3>
+                    <p>OnPar Entertainment</p>
+                    <p>4464 Indian Ripple Rd</p>
+                    <p>Beavercreek, OH 45440</p>
                 </div>
                 <div className='classes-schedules'>
                     <div className='classes-schedule-section'>
