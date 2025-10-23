@@ -4,7 +4,7 @@ export const faqData = [
     {
         id: 1,
         question: 'Where are you located?',
-        answer: '15 Mc Donough Street, Dayton, Ohio 45402',
+        answer: 'New location coming soon...',
     },
     {
         id: 2,
