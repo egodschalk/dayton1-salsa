@@ -72,7 +72,7 @@ export default function Classes() {
             </div>
             <div className='classes-membership-section'>
                 <div className='classes-rates'>
-                    <h3>Daily Rates (Mondays):</h3>
+                    <h3>Drop-in Rates (Mondays):</h3>
                     <h4>November</h4>
                     <p>We offer classes in monthly cycles</p>
                     {/* <h3>March 2024</h3> */}
