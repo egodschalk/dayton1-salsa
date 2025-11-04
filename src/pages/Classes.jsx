@@ -72,7 +72,7 @@ export default function Classes() {
             </div>
             <div className='classes-membership-section'>
                 <div className='classes-rates'>
-                    <h3>Monthly Rates (Mondays):</h3>
+                    <h3>Daily Rates (Mondays):</h3>
                     <h4>November</h4>
                     <p>We offer classes in monthly cycles</p>
                     {/* <h3>March 2024</h3> */}
@@ -82,8 +82,8 @@ export default function Classes() {
                             <p>Both Styles:</p>
                         </div>
                         <div className='rate-cost'>
-                            <p>$60</p>
-                            <p>$80</p>
+                            <p>$15</p>
+                            <p>$25</p>
                         </div>
                     </div>
                     <p>Social dancing included in all monthly memberships</p>
