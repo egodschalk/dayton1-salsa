@@ -19,9 +19,9 @@ export default function Classes() {
                     <div className='classes-schedule-section'>
                         <div className='days'>
                             <h3>Mondays</h3>
-                            <p>Oct 6th, 13th, 20th*, 27th</p>
-                            {/* <p>(no classes July 28)</p> */}
-                            <p>*Possible guest instructor</p>
+                            <p>Nov 3rd, 10th, 17th</p>
+                            <p>(no classes Nov 24th)</p>
+                            {/* <p>*Possible guest instructor</p> */}
                         </div>
                         <div className='class-schedule'>
                             <h3>Class Schedule</h3>
@@ -73,7 +73,7 @@ export default function Classes() {
             <div className='classes-membership-section'>
                 <div className='classes-rates'>
                     <h3>Monthly Rates (Mondays):</h3>
-                    <h4>October</h4>
+                    <h4>November</h4>
                     <p>We offer classes in monthly cycles</p>
                     {/* <h3>March 2024</h3> */}
                     <div className='rates'>

@@ -4,7 +4,7 @@ export const faqData = [
     {
         id: 1,
         question: 'Where are you located?',
-        answer: 'New location coming soon...',
+        answer: 'For November, we will be at OnPar Entertainment, 4464 Indian Ripple Rd, Beavercreek, OH 45440',
     },
     {
         id: 2,
