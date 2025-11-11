@@ -61,13 +61,13 @@ export default function Classes() {
                             {/* </div> */}
                         </div>
                     </div>
-                    <div className='team-info'>
+                    {/* <div className='team-info'>
                         <h3 >Information about special classes and teams:</h3>
                         <a href="https://www.facebook.com/share/v/1CnCBHdvxx/" target='_blank' className='classes-teams'>Tuesday Intensives- A Team Training Experience</a>
                         <p></p>
                         <a href="https://www.facebook.com/share/v/1EiXMJ8TgW/" target='_blank' className='classes-teams'>Thursday Bachata in Sharonville</a>
                         <p>Message DaytOn1 with any questions</p>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className='classes-membership-section'>
