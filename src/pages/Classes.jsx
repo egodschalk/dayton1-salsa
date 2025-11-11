@@ -74,7 +74,8 @@ export default function Classes() {
                 <div className='classes-rates'>
                     <h3>Drop-in Rates (Mondays):</h3>
                     <h4>November</h4>
-                    <p>We offer classes in monthly cycles</p>
+                    {/* <p>We offer classes in monthly cycles</p> */}
+                    <p>Drop-in rates are for 1 night</p>
                     {/* <h3>March 2024</h3> */}
                     <div className='rates'>
                         <div className='rate-category'>
@@ -86,7 +87,8 @@ export default function Classes() {
                             <p>$25</p>
                         </div>
                     </div>
-                    <p>Social dancing included in all monthly memberships</p>
+                    {/* <p>Social dancing included in all monthly memberships</p> */}
+                    <p>Free social dancing</p>
                 </div>
                 <div className='classes-picture'>
                     <img src={classesPagePic} alt="picture of couples dancing in a circle" />
