@@ -45,7 +45,8 @@ export default function Events() {
                 <h2 className='events-header'>
                     DaytOn1 Events
                 </h2>
-                <div className='events-event1'>
+                <h2>Nothing scheduled at this time, check back soon!</h2>
+                {/* <div className='events-event1'>
                     <div className='event1-content'>
                         <div className='event1-info'>
                             <h5 className='event1-title'>{eventData[0].title}</h5>
@@ -63,7 +64,7 @@ export default function Events() {
                             <img src={eventData[0].imgUrl} alt="" />
                         </a>
                     </div>
-                </div>
+                </div> */}
                 {/* <div className='events-event2'>
                     <div className='event2-content'>
                         <div className='event2-info'>

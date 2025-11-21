@@ -4,7 +4,7 @@ export const faqData = [
     {
         id: 1,
         question: 'Where are you located?',
-        answer: 'For November, we will be at OnPar Entertainment, 4464 Indian Ripple Rd, Beavercreek, OH 45440',
+        answer: 'The Galleria Event & Conference Center, 4140 Linden Ave, Dayton, OH 45432',
     },
     {
         id: 2,
