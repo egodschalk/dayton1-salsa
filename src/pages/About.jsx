@@ -68,7 +68,7 @@ export default function About() {
                         <button className='about-classes-button'>and more...</button>
                     </Link>
                 </div>
-                <div className='about-event-section'>
+                {/* <div className='about-event-section'>
                     <h2>Upcoming Events</h2>
                     <div className='about-event-content'>
                         <div className='event1'>
@@ -77,15 +77,15 @@ export default function About() {
                         {/* <div className='event2'>
                             <img src={event2} alt="" />
                         </div> */}
-                        <Link to="/Events" onClick={() => {
+                        {/* <Link to="/Events" onClick={() => {
                             window.scroll(0, 0);
                         }}
                         >
                             <button className='about-event-button'>more info</button>
-                        </Link>
-                    </div>
+                        </Link> */}
+                    {/* </div>
 
-                </div>
+                </div> */}
             </div>
         </div>
     );
