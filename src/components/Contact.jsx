@@ -39,9 +39,9 @@ function Contact() {
             <div className='contact-content'>
                 <div className='contact-info'>
                     <h3>Address:</h3>
-                    <p>Genuine Work</p>
-                    <p>15 Mc Donough Street</p>
-                    <p>Dayton, OH 45402</p>
+                    <p>The Galleria Event Center</p>
+                    <p>4140 Linden Ave</p>
+                    <p>Dayton, OH 45432</p>
                     <h3>Phone (Please Text):</h3>
                     <p>858-752-2578</p>
                     <h3>Email:</h3>

@@ -59,6 +59,7 @@
 .days {
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
     justify-content: center;
     padding: 10px 20px;
     line-height: 8pt;
@@ -69,8 +70,9 @@
 }
 
 .class-schedule {
-    padding: 10px 20px;
+    padding: 10px 5px 30px 5px;
     letter-spacing: 2px;
+    line-height: 20pt;
 }
 
 .class-schedule h3 {
@@ -393,6 +395,9 @@
         padding: 0px 0px;
     }
 
+    .class-schedule {
+        line-height: 16pt;
+    }
     .rate-category p,
     .rate-cost p {
         font-size: 14pt;

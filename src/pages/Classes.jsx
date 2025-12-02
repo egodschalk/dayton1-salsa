@@ -25,8 +25,9 @@ export default function Classes() {
                         </div>
                         <div className='class-schedule'>
                             <h3>Class Schedule</h3>
-                            <div className='schedule'>
-                                <p>6:30 - 8:30 Salsa & Bachata</p>
+                            {/* <div className='schedule'> */}
+                                <p className='special'>6:30 - 8:30</p>
+                                <p className='special'>Salsa & Bachata</p>
                                 {/* <div className='times'>
                                     <p>6:30</p>
                                     <p>7:15</p>
@@ -37,11 +38,17 @@ export default function Classes() {
                                     <p>Social Dancing</p>
                                     <p>Salsa (all levels)</p>
                                 </div> */}
-                            </div>
+                            {/* </div> */}
                             
-                            <h3 className='special'>End of Month Social </h3>
+                            <div className='class-schedule'>
+                            <h3>End of Month Social </h3>
                             <h3 className='special'>Monday, Dec 22</h3>
                             <h4 className='special'>8 - 11 PM</h4>
+                            <h4 className='special'>Joui Wine Bar</h4>
+                            <h4 className='special'>117 E 3rd St, Dayton</h4>
+                            </div>
+
+
                             {/* <h3 className='special'>(Special Schedule)</h3> */}
                             {/* <div className='schedule'> */}
                                 {/* <div className='times'>

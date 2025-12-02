@@ -69,6 +69,6 @@ export const faqData = [
     {
         id: 14,
         question: 'What are your drop in rates?',
-        answer: 'If you message us your name(s), phone number(s), and payment preference (Venmo, PayPal, or cash) the drop in rates would be $15 per person per class or $25 for the night. If you do not send in your personal information, drop in rate at the door is $20 per person/class.',
+        answer: 'The drop in rate is $25 per person for the night.',
     },
 ]
