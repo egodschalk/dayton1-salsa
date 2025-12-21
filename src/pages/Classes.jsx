@@ -39,11 +39,11 @@ export default function Classes() {
                             </div>
                             
                             <div className='class-schedule'>
-                            <h3>January 26</h3>
-                            <h3 className='special'>All classes at On Par Entertainment</h3>
+                            <h3>January 26:</h3>
+                            <h4 className='special'>All regular classes at On Par Entertainment</h4>
                             <h4 className='special'> Social 8:30 - 10:30 PM</h4>
-                            <h4 className='special'>(7:45 Beginner Drop-In Class</h4>
-                            <h4 className='special'>with David Sommer, $15)</h4>
+                            <h4 className='special'>(7:45 Drop-In Class with David Sommer, $15)</h4>
+                            <h4 className='special'></h4>
                             </div>
 
 
@@ -69,7 +69,7 @@ export default function Classes() {
                         </div>
                     </div>
                     <div className='team-info'>
-                        <h3 >Thursday Bachata in Sharonville: Jan 8 - Feb 26</h3>
+                        <h3>Thursday Bachata in Sharonville: Jan 8 - Feb 26</h3>
                         <a href="https://www.facebook.com/share/r/1CgAdMbSoS/" target='_blank' className='classes-teams'>Information Here</a>
                         {/* <p>Message DaytOn1 with any questions</p> */}
                     </div>

@@ -72,7 +72,7 @@
 .class-schedule {
     padding: 10px 5px 30px 5px;
     letter-spacing: 2px;
-    line-height: 20pt;
+    /* line-height: 20pt; */
 }
 
 .class-schedule h3 {
@@ -349,7 +349,17 @@
 
 @media screen and (max-width: 450px) {
 
-    .rate-category p,
+    .class-schedule {
+        padding: 0px 5px 0px 5px;
+        letter-spacing: 2px;
+        line-height: 0pt;
+    }
+    
+    .class-schedule h4 {
+        line-height: 24pt;
+        padding: 0px;
+    }
+    
     .rate-cost p {
         font-size: 16pt;
     }
