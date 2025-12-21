@@ -69,7 +69,8 @@ export default function Classes() {
                         </div>
                     </div>
                     <div className='team-info'>
-                        <h3>Thursday Bachata in Sharonville: Jan 8 - Feb 26</h3>
+                        <h3>Thursday Bachata Nights in Sharonville:</h3>
+                        <h3>An 8-week series, must pre-register</h3>
                         <a href="https://www.facebook.com/share/r/1CgAdMbSoS/" target='_blank' className='classes-teams'>Information Here</a>
                         {/* <p>Message DaytOn1 with any questions</p> */}
                     </div>
