@@ -69,6 +69,6 @@ export const faqData = [
     {
         id: 14,
         question: 'What are your drop in rates?',
-        answer: 'The drop in rate is $25 per person for the night.',
+        answer: 'The drop in rate is $25 per person for the night at Galleria. For nights at On Par Entertainment, the drop in rate will be $15',
     },
 ]

@@ -19,16 +19,14 @@ export default function Classes() {
                     <div className='classes-schedule-section'>
                         <div className='days'>
                             <h3>Mondays</h3>
-                            <p>Dec 1st, 8th, 15th</p>
+                            <p>Jan 5, 12, 19, 26</p>
                             {/* <p>(no classes Nov 24th)</p> */}
                             {/* <p>*Possible guest instructor</p> */}
                         </div>
                         <div className='class-schedule'>
                             <h3>Class Schedule</h3>
-                            {/* <div className='schedule'> */}
-                                <p className='special'>6:30 - 8:30</p>
-                                <p className='special'>Salsa & Bachata</p>
-                                {/* <div className='times'>
+                            <div className='schedule'>
+                                <div className='times'>
                                     <p>6:30</p>
                                     <p>7:15</p>
                                     <p>7:45</p>
@@ -37,15 +35,15 @@ export default function Classes() {
                                     <p>Bachata (all levels)</p>
                                     <p>Social Dancing</p>
                                     <p>Salsa (all levels)</p>
-                                </div> */}
-                            {/* </div> */}
+                                </div>
+                            </div>
                             
                             <div className='class-schedule'>
-                            <h3>End of Month Social </h3>
-                            <h3 className='special'>Monday, Dec 22</h3>
-                            <h4 className='special'>8 - 11 PM</h4>
-                            <h4 className='special'>Joui Wine Bar</h4>
-                            <h4 className='special'>117 E 3rd St, Dayton</h4>
+                            <h3>January 26</h3>
+                            <h3 className='special'>All classes at On Par Entertainment</h3>
+                            <h4 className='special'> Social 8:30 - 10:30 PM</h4>
+                            <h4 className='special'>(7:45 Beginner Drop-In Class</h4>
+                            <h4 className='special'>with David Sommer, $15)</h4>
                             </div>
 
 
@@ -70,19 +68,17 @@ export default function Classes() {
                             {/* </div> */}
                         </div>
                     </div>
-                    {/* <div className='team-info'>
-                        <h3 >Information about special classes and teams:</h3>
-                        <a href="https://www.facebook.com/share/v/1CnCBHdvxx/" target='_blank' className='classes-teams'>Tuesday Intensives- A Team Training Experience</a>
-                        <p></p>
-                        <a href="https://www.facebook.com/share/v/1EiXMJ8TgW/" target='_blank' className='classes-teams'>Thursday Bachata in Sharonville</a>
-                        <p>Message DaytOn1 with any questions</p>
-                    </div> */}
+                    <div className='team-info'>
+                        <h3 >Thursday Bachata in Sharonville: Jan 8 - Feb 26</h3>
+                        <a href="https://www.facebook.com/share/r/1CgAdMbSoS/" target='_blank' className='classes-teams'>Information Here</a>
+                        {/* <p>Message DaytOn1 with any questions</p> */}
+                    </div>
                 </div>
             </div>
             <div className='classes-membership-section'>
                 <div className='classes-rates'>
                     <h3>Monthly Rates:</h3>
-                    <h4>December</h4>
+                    <h4>January</h4>
                     <p>We offer classes in monthly cycles</p>
                     <div className='rates'>
                         <div className='rate-category'>
@@ -90,8 +86,8 @@ export default function Classes() {
                             <p>Both Styles:</p>
                         </div>
                         <div className='rate-cost'>
-                            <p>$50</p>
                             <p>$60</p>
+                            <p>$80</p>
                         </div>
                     </div>
                     {/* <p>Social dancing included in all monthly memberships</p> */}
