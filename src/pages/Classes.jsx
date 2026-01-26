@@ -19,7 +19,7 @@ export default function Classes() {
                     <div className='classes-schedule-section'>
                         <div className='days'>
                             <h3>Mondays</h3>
-                            <p>Jan 5, 12, 19, 26</p>
+                            <p>Feb 2, 9, 16, 23</p>
                             {/* <p>(no classes Nov 24th)</p> */}
                             {/* <p>*Possible guest instructor</p> */}
                         </div>
@@ -79,7 +79,7 @@ export default function Classes() {
             <div className='classes-membership-section'>
                 <div className='classes-rates'>
                     <h3>Monthly Rates:</h3>
-                    <h4>January</h4>
+                    <h4>February</h4>
                     <p>We offer classes in monthly cycles</p>
                     <div className='rates'>
                         <div className='rate-category'>
@@ -91,7 +91,8 @@ export default function Classes() {
                             <p>$80</p>
                         </div>
                     </div>
-                    {/* <p>Social dancing included in all monthly memberships</p> */}
+                    <p>Note: Any January monthly members who want to continue in Feb will receive a special rate since classes were canceled 1/26</p>
+                    <p>Note: If you paid for a drop-in class on 1/26, this will be honored for 1 night of your choice in February</p>
                 </div>
                 <div className='classes-picture'>
                     <img src={classesPagePic} alt="picture of couples dancing in a circle" />
