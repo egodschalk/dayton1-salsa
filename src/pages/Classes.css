@@ -102,7 +102,7 @@
 }
 
 .special {
-    font-size: 20pt;
+    font-size: 18pt;
     line-height: 8pt;
 }
 
@@ -358,10 +358,6 @@
     .class-schedule h4 {
         line-height: 24pt;
         padding: 0px;
-    }
-    
-    .rate-cost p {
-        font-size: 16pt;
     }
 
     .classes-levels-section {
