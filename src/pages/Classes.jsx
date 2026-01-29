@@ -39,10 +39,10 @@ export default function Classes() {
                             </div>
                             
                             <div className='class-schedule'>
-                            <h3>January 26:</h3>
-                            <h4 className='special'>All regular classes at On Par Entertainment</h4>
+                            <h3>February 23:</h3>
+                            <h4 className='special'>All classes and social will be held at On Par Entertainment</h4>
                             <h4 className='special'> Social 8:30 - 10:30 PM</h4>
-                            <h4 className='special'>(7:45 Drop-In Class with David Sommer, $15)</h4>
+                            <h4 className='special'>Special Guest Instructor & DJ David Storey from Orlando, FL</h4>
                             <h4 className='special'></h4>
                             </div>
 
@@ -69,9 +69,9 @@ export default function Classes() {
                         </div>
                     </div>
                     <div className='team-info'>
-                        <h3>Thursday Bachata Nights in Sharonville:</h3>
-                        <h3>An 8-week series, must pre-register</h3>
-                        <a href="https://www.facebook.com/share/r/1CgAdMbSoS/" target='_blank' className='classes-teams'>Information Here</a>
+                        {/* <h3>Thursday Bachata Nights in Sharonville:</h3> */}
+                        {/* <h3>An 8-week series, must pre-register</h3> */}
+                        {/* <a href="https://www.facebook.com/share/r/1CgAdMbSoS/" target='_blank' className='classes-teams'>Information Here</a> */}
                         {/* <p>Message DaytOn1 with any questions</p> */}
                     </div>
                 </div>
