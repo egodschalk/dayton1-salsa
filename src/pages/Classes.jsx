@@ -19,7 +19,7 @@ export default function Classes() {
                     <div className='classes-schedule-section'>
                         <div className='days'>
                             <h3>Mondays</h3>
-                            <p>Feb 2, 9, 16, 23</p>
+                            <p>March 2, 9, 16, 23</p>
                             {/* <p>(no classes Nov 24th)</p> */}
                             {/* <p>*Possible guest instructor</p> */}
                         </div>
@@ -39,10 +39,9 @@ export default function Classes() {
                             </div>
                             
                             <div className='class-schedule'>
-                            <h3>February 23:</h3>
+                            <h3>March 23:</h3>
                             <h4 className='special'>All classes and social will be held at On Par Entertainment</h4>
                             <h4 className='special'> Social 8:30 - 10:30 PM</h4>
-                            <h4 className='special'>Special Guest Instructor & DJ David Storey from Orlando, FL</h4>
                             <h4 className='special'></h4>
                             </div>
 
@@ -79,7 +78,7 @@ export default function Classes() {
             <div className='classes-membership-section'>
                 <div className='classes-rates'>
                     <h3>Monthly Rates:</h3>
-                    <h4>February</h4>
+                    <h4>March</h4>
                     <p>We offer classes in monthly cycles</p>
                     <div className='rates'>
                         <div className='rate-category'>
@@ -91,8 +90,7 @@ export default function Classes() {
                             <p>$80</p>
                         </div>
                     </div>
-                    <p>Note: Any January monthly members who want to continue in Feb will receive a special rate since classes were canceled 1/26</p>
-                    <p>Note: If you paid for a drop-in class on 1/26, this will be honored for 1 night of your choice in February</p>
+                    <p></p>
                 </div>
                 <div className='classes-picture'>
                     <img src={classesPagePic} alt="picture of couples dancing in a circle" />
@@ -131,7 +129,7 @@ export default function Classes() {
                         <h3 className='class-level-heading'>Level 3</h3>
                         <img src={level3} alt="" />
                         <div className='level-desc'>
-                            <p><strong>Next Level: </strong>for advanced dancers with 3 years or more experience</p>
+                            <p><strong>Team Experience: </strong>for advanced dancers with 3 years or more experience</p>
                         </div>
                     </div>
                 </div>
