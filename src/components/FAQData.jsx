@@ -4,7 +4,7 @@ export const faqData = [
     {
         id: 1,
         question: 'Where are you located?',
-        answer: 'The Galleria Event & Conference Center, 4140 Linden Ave, Dayton, OH 45432',
+        answer: 'On Par Entertainment, 4464 Indian Ripple Rd, Beavercreek, OH 45440',
     },
     {
         id: 2,
@@ -69,6 +69,6 @@ export const faqData = [
     {
         id: 14,
         question: 'What are your drop in rates?',
-        answer: 'The drop in rate is $25 per person for the night at Galleria. For nights at On Par Entertainment, the drop in rate will be $15',
+        answer: 'The drop in rate is $25 per person for the night at Galleria. For end of month socials, the drop in rate will be $15',
     },
 ]

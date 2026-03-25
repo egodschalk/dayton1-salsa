@@ -11,15 +11,15 @@ export default function Classes() {
             <div className='classes-content'>
                 <div className='classes-location'>
                     <h3>NEW Location</h3>
-                    <p>The Galleria Event Center</p>
-                    <p>4140 Linden Ave</p>
-                    <p>Dayton, OH 45432</p>
+                    <p>On Par Entertainment</p>
+                    <p>4464 Indian Ripple Rd</p>
+                    <p>Beavercreek, OH 45440</p>
                 </div>
                 <div className='classes-schedules'>
                     <div className='classes-schedule-section'>
                         <div className='days'>
                             <h3>Mondays</h3>
-                            <p>March 2, 9, 16, 23</p>
+                            <p>April 6, 13, 20, 27</p>
                             {/* <p>(no classes Nov 24th)</p> */}
                             {/* <p>*Possible guest instructor</p> */}
                         </div>
@@ -37,33 +37,45 @@ export default function Classes() {
                                     <p>Salsa (all levels)</p>
                                 </div>
                             </div>
-                            
+
                             <div className='class-schedule'>
-                            <h3>March 23:</h3>
-                            <h4 className='special'>All classes and social will be held at On Par Entertainment</h4>
-                            <h4 className='special'> Social 8:30 - 10:30 PM</h4>
-                            <h4 className='special'></h4>
+                                <h3>April 27:</h3>
+                                {/* <h4 className='special'>All classes and social will be held at On Par Entertainment</h4> */}
+                                {/* <h4 className='special'> Social 8:30 - 10:30 PM</h4> */}
+                                <div className='schedule'>
+                                    <div className='times'>
+                                        <p>6:30</p>
+                                        <p>7:30</p>
+                                        <p>8:30</p>
+                                    </div>
+                                    <div className='classes'>
+                                        <p>Bachata (all levels)</p>
+                                        <p>Salsa (all levels)</p>
+                                        <p>Social until 10:30</p>
+                                    </div>
+                                </div>
+
                             </div>
 
 
                             {/* <h3 className='special'>(Special Schedule)</h3> */}
                             {/* <div className='schedule'> */}
-                                {/* <div className='times'>
+                            {/* <div className='times'>
                                     <p>6:30</p>
                                     <p>7:15</p>
                                     <p>8:00</p>
                                 </div> */}
-                                {/* <div className='classes'> */}
-                                    {/* <div className='classes2'> */}
-                                    {/* <p>Bachata (all levels)</p>
+                            {/* <div className='classes'> */}
+                            {/* <div className='classes2'> */}
+                            {/* <p>Bachata (all levels)</p>
                                     <p>Salsa (all levels)</p> */}
-                                    {/* <Link to="/Events" onClick={() => {
+                            {/* <Link to="/Events" onClick={() => {
                                         window.scroll(0, 0);
                                     }}
                                     >
                                         <p>Social @ Joui</p>
                                     </Link> */}
-                                {/* </div> */}
+                            {/* </div> */}
                             {/* </div> */}
                         </div>
                     </div>
@@ -78,7 +90,7 @@ export default function Classes() {
             <div className='classes-membership-section'>
                 <div className='classes-rates'>
                     <h3>Monthly Rates:</h3>
-                    <h4>March</h4>
+                    <h4>April</h4>
                     <p>We offer classes in monthly cycles</p>
                     <div className='rates'>
                         <div className='rate-category'>
