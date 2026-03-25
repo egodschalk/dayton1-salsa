@@ -39,9 +39,9 @@ function Contact() {
             <div className='contact-content'>
                 <div className='contact-info'>
                     <h3>Address:</h3>
-                    <p>The Galleria Event Center</p>
-                    <p>4140 Linden Ave</p>
-                    <p>Dayton, OH 45432</p>
+                    <p>On Par Entertainment</p>
+                    <p>4464 Indian Ripple Rd</p>
+                    <p>Beavercreek, OH 45440</p>
                     <h3>Phone (Please Text):</h3>
                     <p>858-752-2578</p>
                     <h3>Email:</h3>
