@@ -41,8 +41,8 @@ export default function Classes() {
                             <div className='class-schedule'>
                                 <h3>April 27:</h3>
                                 {/* <h4 className='special'>All classes and social will be held at On Par Entertainment</h4> */}
-                                {/* <h4 className='special'> Social 8:30 - 10:30 PM</h4> */}
-                                <div className='schedule'>
+                                <h4 className='special'> Social 8:30 - 10:30 PM</h4>
+                                {/* <div className='schedule'>
                                     <div className='times'>
                                         <p>6:30</p>
                                         <p>7:30</p>
@@ -53,8 +53,7 @@ export default function Classes() {
                                         <p>Salsa (all levels)</p>
                                         <p>Social until 10:30</p>
                                     </div>
-                                </div>
-
+                                </div> */}
                             </div>
 
 
