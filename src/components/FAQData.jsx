@@ -59,7 +59,7 @@ export const faqData = [
     {
         id: 12,
         question: 'What are your current hours?',
-        answer: 'Typically, on Monday nights we have Bachata classes at 6:30pm, Social dancing at 7:15pm, and Salsa Classes at 7:45pm. If there is a special Monday night social at the end of the month our Bachata classes are at 6:30pm, Salsa classes are at 7:15pm, and the dance social is then, held at 8pm at an off site location.  Always check the current schedule on our website or social media outlets (Fb or Instagram) for that detailed information.',
+        answer: 'Typically, on Monday nights we have Bachata classes at 6:30pm, Social dancing at 7:15pm, and Salsa Classes at 7:45pm. On the last Monday of the month we typically have a social from 8:30-10:30. Please check the Classes section for all details about dates and times.',
     },
     {
         id: 13,
@@ -69,6 +69,6 @@ export const faqData = [
     {
         id: 14,
         question: 'What are your drop in rates?',
-        answer: 'The drop in rate is $25 per person for the night at Galleria. For end of month socials, the drop in rate will be $15',
+        answer: 'The drop in rate is $25 per person for the night. Drop-in cost or just end of month socials is $15 per person',
     },
 ]
