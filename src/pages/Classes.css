@@ -42,7 +42,6 @@
     padding: 20px;
     font-size: 20pt;
     letter-spacing: 1px;
-
 }
 
 .classes-schedule-section {
@@ -72,7 +71,6 @@
 .class-schedule {
     padding: 10px 5px 30px 5px;
     letter-spacing: 2px;
-    /* line-height: 20pt; */
 }
 
 .class-schedule h3 {
@@ -135,7 +133,6 @@
 .classes-rates h3 {
     font-family: "Julius Sans One", serif;
     font-size: 24pt;
-    /* line-height: 24pt; */
     color: var(--secondary);
 }
 
@@ -256,7 +253,6 @@
         flex-direction: column;
         top: 0;
         align-items: center;
-
     }
 
     .class-level-heading {
@@ -332,7 +328,6 @@
         margin-top: 20px;
     }
 
-
 }
 
 @media screen and (max-width: 665px) {
@@ -354,7 +349,7 @@
         letter-spacing: 2px;
         line-height: 0pt;
     }
-    
+
     .class-schedule h4 {
         line-height: 24pt;
         padding: 0px;
@@ -382,7 +377,7 @@
         font-size: 18pt;
         line-height: 0pt;
     }
-    
+
     .schedule p {
         font-size: 18pt;
         line-height: 10pt;
@@ -404,9 +399,186 @@
     .class-schedule {
         line-height: 16pt;
     }
+
     .rate-category p,
     .rate-cost p {
         font-size: 14pt;
     }
 
+}
+
+/* V─── PAYMENT FORM ─────────────────────────────────── V */
+
+.classes-paypal {
+    display: flex;
+    flex-direction: column;
+    margin: 30px 0;
+    width: 100%;
+}
+
+.checkout-form h3,
+.checkout-payment h3,
+.checkout-confirmation h3 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 20pt;
+    margin-bottom: 20px;
+    line-height: normal;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 12pt;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+    color: var(--primary);
+}
+
+.form-group input {
+    padding: 10px;
+    font-size: 12pt;
+    border: 1px solid var(--secondary);
+    border-radius: 4px;
+    font-family: "Urbanist", sans-serif;
+    background-color: transparent;
+    color: var(--primary);
+    box-sizing: border-box;
+}
+
+.form-group input::placeholder {
+    color: var(--primary);
+    opacity: 0.5;
+}
+
+.form-error {
+    color: red;
+    font-size: 10pt;
+    margin-top: 4px;
+}
+
+.pass-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.pass-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border: 2px solid var(--secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.6;
+    box-sizing: border-box;
+}
+
+.pass-option:hover {
+    opacity: 1;
+    background-color: var(--secondary);
+    color: var(--tertiary);
+}
+
+.pass-option.selected {
+    background-color: var(--secondary);
+    color: var(--tertiary);
+    opacity: 1;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.15);
+}
+
+.pass-option.selected p {
+    font-weight: bold;
+}
+
+.pass-option p {
+    margin: 0;
+    font-size: 13pt;
+}
+
+.monthly-unavailable {
+    font-size: 11pt;
+    font-style: italic;
+    color: var(--secondary);
+    letter-spacing: 1px;
+}
+
+.continue-btn {
+    margin-top: 20px;
+    padding: 12px 30px;
+    background-color: var(--secondary);
+    color: var(--tertiary);
+    border: none;
+    border-radius: 6px;
+    font-family: "Urbanist", sans-serif;
+    font-size: 13pt;
+    cursor: pointer;
+    letter-spacing: 1px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.continue-btn:hover {
+    opacity: 0.9;
+}
+
+.checkout-summary {
+    background-color: var(--secondary);
+    color: var(--tertiary);
+    padding: 15px 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 13pt;
+    letter-spacing: 1px;
+    box-sizing: border-box;
+}
+
+.checkout-summary p {
+    margin: 5px 0;
+}
+
+.back-btn {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: transparent;
+    border: 2px solid var(--secondary);
+    border-radius: 6px;
+    font-family: "Urbanist", sans-serif;
+    font-size: 12pt;
+    cursor: pointer;
+    width: 100%;
+    letter-spacing: 1px;
+    color: var(--primary);
+    box-sizing: border-box;
+}
+
+.back-btn:hover {
+    background-color: var(--secondary);
+    color: var(--tertiary);
+}
+
+.checkout-confirmation {
+    padding: 20px 0;
+    text-align: center;
+}
+
+.confirmation-icon {
+    font-size: 48pt;
+    color: green;
+    margin-bottom: 10px;
+}
+
+.confirmation-message {
+    font-size: 11pt;
+    font-style: italic;
+    letter-spacing: 1px;
+    margin-top: 15px;
+    color: var(--primary);
 }

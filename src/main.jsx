@@ -8,6 +8,7 @@ import Classes from './pages/Classes';
 import Events from './pages/Events';
 import Instructors from './pages/Instructors';
 import FAQs from './pages/FAQs';
+import Admin from './pages/Admin';
 
 
 const router = createBrowserRouter([
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: '/FAQs',
         element: <FAQs />,
+      },
+      {
+        path: '/admin',
+        element: <Admin />,
       },
     ],
   },
