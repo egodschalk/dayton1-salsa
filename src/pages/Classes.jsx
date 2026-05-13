@@ -18,7 +18,7 @@ function getExpiryDate(passType) {
         expiry.setMonth(expiry.getMonth() + 3)
         return expiry.toLocaleDateString()
     }
-    const expiry = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+    const expiry = new Date(now.getFullYear(), now.getMonth() + 1, 1)
     return expiry.toLocaleDateString()
 }
 
@@ -46,14 +46,14 @@ export default function Classes() {
     }
 
     function validate() {
-    const newErrors = {}
-    if (!formData.firstName.trim()) newErrors.firstName = 'First name is required'
-    if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required'
-    if (!formData.phone.trim()) newErrors.phone = 'Phone number is required'
-    if (formData.phone.length < 10) newErrors.phone = 'Please enter a valid 10 digit phone number'
-    if (!selectedPass) newErrors.selectedPass = 'Please select a pass'
-    return newErrors
-}
+        const newErrors = {}
+        if (!formData.firstName.trim()) newErrors.firstName = 'First name is required'
+        if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required'
+        if (!formData.phone.trim()) newErrors.phone = 'Phone number is required'
+        if (formData.phone.length < 10) newErrors.phone = 'Please enter a valid 10 digit phone number'
+        if (!selectedPass) newErrors.selectedPass = 'Please select a pass'
+        return newErrors
+    }
 
     function handleContinue() {
         const newErrors = validate()
@@ -83,6 +83,8 @@ export default function Classes() {
                         <div className='days'>
                             <h3>Mondays</h3>
                             <p>May 4, 11, 18, 25</p>
+                            {/* <p>(no classes Nov 24th)</p> */}
+                            {/* <p>*Possible guest instructor</p> */}
                         </div>
                         <div className='class-schedule'>
                             <h3>Class Schedule</h3>
@@ -98,31 +100,59 @@ export default function Classes() {
                                     <p>Salsa (all levels)</p>
                                 </div>
                             </div>
+
                             <div className='class-schedule'>
                                 <h3>May 25:</h3>
+                                {/* <h4 className='special'>All classes and social will be held at On Par Entertainment</h4> */}
+                                {/* <h4 className='special'> Social 8:30 - 10:30 PM</h4> */}
                                 <div className='schedule'>
                                     <div className='times'>
-                                        <p>6:30</p>
-                                        <p>7:30</p>
-                                        <p>8:30</p>
+                                        <p>Social 8:30 - 10:30 PM</p>
+                                        {/* <p>7:30</p> */}
+                                        {/* <p>8:30</p> */}
                                     </div>
-                                   {/* <div className='classes'>
+                                    {/* <div className='classes'>
                                         <p>Bachata (all levels)</p>
                                         <p>Salsa (all levels)</p>
                                         <p>Social until 10:30</p>
-                                    </div>*/}
+                                    </div> */}
                                 </div>
                             </div>
+
+                            {/* <h3 className='special'>(Special Schedule)</h3> */}
+                            {/* <div className='schedule'> */}
+                            {/* <div className='times'>
+                                    <p>6:30</p>
+                                    <p>7:15</p>
+                                    <p>8:00</p>
+                                </div> */}
+                            {/* <div className='classes'> */}
+                            {/* <div className='classes2'> */}
+                            {/* <p>Bachata (all levels)</p>
+                                    <p>Salsa (all levels)</p> */}
+                            {/* <Link to="/Events" onClick={() => {
+                                        window.scroll(0, 0);
+                                    }}
+                                    >
+                                        <p>Social @ Joui</p>
+                                    </Link> */}
+                            {/* </div> */}
+                            {/* </div> */}
                         </div>
                     </div>
-                    <div className='team-info'></div>
+                    <div className='team-info'>
+                        {/* <h3>Thursday Bachata Nights in Sharonville:</h3> */}
+                        {/* <h3>An 8-week series, must pre-register</h3> */}
+                        {/* <a href="https://www.facebook.com/share/r/1CgAdMbSoS/" target='_blank' className='classes-teams'>Information Here</a> */}
+                        {/* <p>Message DaytOn1 with any questions</p> */}
+                    </div>
                 </div>
             </div>
 
             <div className='classes-membership-section'>
                 <div className='classes-rates'>
                     <h3>Monthly Rates:</h3>
-                    <h4>April</h4>
+                    <h4>May</h4>
                     <p>We offer classes in monthly cycles</p>
                     <div className='rates'>
                         <div className='rate-category'>
@@ -133,7 +163,8 @@ export default function Classes() {
                         <div className='rate-cost'>
                             <p>$60</p>
                             <p>$80</p>
-                          {/*}  <p>$25</p> */}
+                            <p>$25</p>
+                            {/* <p>$25</p> */}
                         </div>
                     </div>
 
@@ -170,21 +201,21 @@ export default function Classes() {
                                 </div>
 
                                 <div className='form-group'>
-    <label>Phone Number</label>
-    <input
-        type='tel'
-        name='phone'
-        value={formData.phone}
-        onChange={(e) => {
-            const value = e.target.value.replace(/[^0-9]/g, '')
-            setFormData({ ...formData, phone: value })
-            setErrors({ ...errors, phone: '' })
-        }}
-        placeholder='Phone number'
-        maxLength={10}
-    />
-    {errors.phone && <span className='form-error'>{errors.phone}</span>}
-</div>
+                                    <label>Phone Number</label>
+                                    <input
+                                        type='tel'
+                                        name='phone'
+                                        value={formData.phone}
+                                        onChange={(e) => {
+                                            const value = e.target.value.replace(/[^0-9]/g, '')
+                                            setFormData({ ...formData, phone: value })
+                                            setErrors({ ...errors, phone: '' })
+                                        }}
+                                        placeholder='Phone number'
+                                        maxLength={10}
+                                    />
+                                    {errors.phone && <span className='form-error'>{errors.phone}</span>}
+                                </div>
 
                                 <div className='form-group'>
                                     <label>Email (optional)</label>
@@ -240,7 +271,7 @@ export default function Classes() {
                             </div>
                         )}
 
-                        {/* STEP 2 - Payppal screen with values */}
+                        {/* STEP 2 - Paypal screen with values */}
                         {step === 2 && (
                             <div className='checkout-payment'>
                                 <h3>Complete Your Payment</h3>
