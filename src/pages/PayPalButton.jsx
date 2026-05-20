@@ -59,7 +59,7 @@ async function saveMember(formData, selectedPass, transactionId) {
 
 export default function PayPalButton({ selectedPass, formData, onSuccess }) {
     const containerRef = useRef(null)
-    
+
     // Keep latest props in refs so the PayPal callbacks always use fresh values
     const formDataRef = useRef(formData)
     const onSuccessRef = useRef(onSuccess)
@@ -88,10 +88,19 @@ export default function PayPalButton({ selectedPass, formData, onSuccess }) {
                     })
                 },
                 onApprove: (data, actions) => {
-                    return actions.order.capture().then(async (details) => {
-                        await saveMember(formDataRef.current, selectedPassRef.current, details.id)
-                        onSuccessRef.current(details)
-                    })
+                    return actions.order.capture()
+                        .then(async (details) => {
+                            if (!details?.id) {
+                                alert('Payment could not be verified. Please try again.')
+                                return
+                            }
+                            await saveMember(formDataRef.current, selectedPassRef.current, details.id)
+                            onSuccessRef.current(details)
+                        })
+                        .catch((err) => {
+                            console.error('Capture failed:', err)
+                            alert('Payment was not completed. Please try again.')
+                        })
                 },
                 onError: (err) => {
                     console.error('PayPal error:', err)
@@ -122,7 +131,7 @@ export default function PayPalButton({ selectedPass, formData, onSuccess }) {
         script.onload = renderButtons
         document.body.appendChild(script)
 
-    }, []) // ← runs once on mount only; fresh values come from refs above
+    }, [])
 
     return <div ref={containerRef} />
 }
