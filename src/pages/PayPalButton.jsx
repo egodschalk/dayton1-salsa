@@ -2,11 +2,12 @@ import { useEffect, useRef } from 'react'
 import { db } from '../firebase'
 import { collection, addDoc } from 'firebase/firestore'
 
-const IS_SANDBOX = false 
+const IS_SANDBOX = false
 
 const CLIENT_ID = IS_SANDBOX
     ? 'ATa2uW4F2oDvrxNJ4TxL6hkZ4Zd8nF-K0KTzjZxFQbVhl9CUe1pNznPexU6cgfoLOLxcKWaIBpe2AuDt'
     : 'AVI4LpJe46rQQcObnfSR6qyf9dzp3ypfM9HI4pqp61LZLE5cynC16Z5ASlu73y5ggpX7tQTbE-exYM1I'
+
 const PASS_AMOUNTS = {
     day: '25.00',
     one_style: '60.00',
@@ -43,9 +44,9 @@ async function saveMember(formData, selectedPass, transactionId) {
             passLabel: PASS_LABELS[selectedPass],
             amount: PASS_AMOUNTS[selectedPass],
             purchaseDate: now.toISOString(),
-            expiryDate: expiryDate,
+            expiryDate,
             originalExpiryDate: expiryDate,
-            transactionId: transactionId,
+            transactionId,
             isActive: true,
             checkedIn: false,
             createdAt: now
@@ -58,52 +59,70 @@ async function saveMember(formData, selectedPass, transactionId) {
 
 export default function PayPalButton({ selectedPass, formData, onSuccess }) {
     const containerRef = useRef(null)
-    const scriptLoaded = useRef(false)
+    
+    // Keep latest props in refs so the PayPal callbacks always use fresh values
+    const formDataRef = useRef(formData)
+    const onSuccessRef = useRef(onSuccess)
+    const selectedPassRef = useRef(selectedPass)
+
+    useEffect(() => { formDataRef.current = formData }, [formData])
+    useEffect(() => { onSuccessRef.current = onSuccess }, [onSuccess])
+    useEffect(() => { selectedPassRef.current = selectedPass }, [selectedPass])
 
     useEffect(() => {
-        if (scriptLoaded.current) return
-        scriptLoaded.current = true
+        // Clear the container before (re)rendering buttons
+        if (containerRef.current) {
+            containerRef.current.innerHTML = ''
+        }
+
+        function renderButtons() {
+            if (!window.paypal || !containerRef.current) return
+
+            window.paypal.Buttons({
+                createOrder: (data, actions) => {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: { value: PASS_AMOUNTS[selectedPassRef.current] },
+                            description: PASS_LABELS[selectedPassRef.current]
+                        }]
+                    })
+                },
+                onApprove: (data, actions) => {
+                    return actions.order.capture().then(async (details) => {
+                        await saveMember(formDataRef.current, selectedPassRef.current, details.id)
+                        onSuccessRef.current(details)
+                    })
+                },
+                onError: (err) => {
+                    console.error('PayPal error:', err)
+                    alert('Something went wrong with your payment. Please try again.')
+                },
+                onCancel: () => {
+                    alert('Payment cancelled. You can try again when ready.')
+                }
+            }).render(containerRef.current)
+        }
+
+        // If SDK already loaded, render immediately — no need to re-add the script
+        if (window.paypal) {
+            renderButtons()
+            return
+        }
+
+        // Avoid duplicate script tags
+        const existingScript = document.querySelector(`script[src*="paypal.com/sdk"]`)
+        if (existingScript) {
+            existingScript.addEventListener('load', renderButtons)
+            return
+        }
 
         const script = document.createElement('script')
         script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=USD`
         script.async = true
-
-        script.onload = () => {
-            if (window.paypal && containerRef.current) {
-                window.paypal.Buttons({
-                    createOrder: (data, actions) => {
-                        return actions.order.create({
-                            purchase_units: [{
-                                amount: { value: PASS_AMOUNTS[selectedPass] },
-                                description: PASS_LABELS[selectedPass]
-                            }]
-                        })
-                    },
-                    onApprove: (data, actions) => {
-                        return actions.order.capture().then(async (details) => {
-                            await saveMember(formData, selectedPass, details.id)
-                            onSuccess(details)
-                        })
-                    },
-                    onError: (err) => {
-                        console.error('PayPal error:', err)
-                        alert('Something went wrong with your payment. Please try again.')
-                    },
-                    onCancel: () => {
-                        alert('Payment cancelled. You can try again when ready.')
-                    }
-                }).render(containerRef.current)
-            }
-        }
-
+        script.onload = renderButtons
         document.body.appendChild(script)
 
-        return () => {
-            if (document.body.contains(script)) {
-                document.body.removeChild(script)
-            }
-        }
-    }, [selectedPass])
+    }, []) // ← runs once on mount only; fresh values come from refs above
 
-    return <div ref={containerRef}></div>
+    return <div ref={containerRef} />
 }
