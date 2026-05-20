@@ -60,7 +60,6 @@ async function saveMember(formData, selectedPass, transactionId) {
 export default function PayPalButton({ selectedPass, formData, onSuccess }) {
     const containerRef = useRef(null)
 
-    // Keep latest props in refs so the PayPal callbacks always use fresh values
     const formDataRef = useRef(formData)
     const onSuccessRef = useRef(onSuccess)
     const selectedPassRef = useRef(selectedPass)
@@ -70,7 +69,6 @@ export default function PayPalButton({ selectedPass, formData, onSuccess }) {
     useEffect(() => { selectedPassRef.current = selectedPass }, [selectedPass])
 
     useEffect(() => {
-        // Clear the container before (re)rendering buttons
         if (containerRef.current) {
             containerRef.current.innerHTML = ''
         }
@@ -112,13 +110,11 @@ export default function PayPalButton({ selectedPass, formData, onSuccess }) {
             }).render(containerRef.current)
         }
 
-        // If SDK already loaded, render immediately — no need to re-add the script
         if (window.paypal) {
             renderButtons()
             return
         }
 
-        // Avoid duplicate script tags
         const existingScript = document.querySelector(`script[src*="paypal.com/sdk"]`)
         if (existingScript) {
             existingScript.addEventListener('load', renderButtons)
@@ -126,11 +122,20 @@ export default function PayPalButton({ selectedPass, formData, onSuccess }) {
         }
 
         const script = document.createElement('script')
-        script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=USD`
+        script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=USD&debug=true`
         script.async = true
         script.onload = renderButtons
+        script.onerror = () => {
+            console.error('Failed to load PayPal SDK')
+            alert('Could not load payment system. Please refresh and try again.')
+        }
         document.body.appendChild(script)
 
+        return () => {
+            if (document.body.contains(script)) {
+                document.body.removeChild(script)
+            }
+        }
     }, [])
 
     return <div ref={containerRef} />
