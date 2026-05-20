@@ -9,7 +9,7 @@ import PayPalButton from './PayPalButton'
 
 const today = new Date()
 const dayOfMonth = today.getDate()
-const isFirstWeek = dayOfMonth <= 7 // Change this value if you wish for the monthly options to show up pass seven days
+const isFirstWeek = dayOfMonth <= 7
 
 function getExpiryDate(passType) {
     const now = new Date()
@@ -65,6 +65,10 @@ export default function Classes() {
     }
 
     function handlePaymentSuccess(details) {
+        if (!details || !details.id) {
+            alert('Payment could not be verified. Please try again.')
+            return
+        }
         setPaymentDetails(details)
         setStep(3)
     }
@@ -83,8 +87,6 @@ export default function Classes() {
                         <div className='days'>
                             <h3>Mondays</h3>
                             <p>May 4, 11, 18, 25</p>
-                            {/* <p>(no classes Nov 24th)</p> */}
-                            {/* <p>*Possible guest instructor</p> */}
                         </div>
                         <div className='class-schedule'>
                             <h3>Class Schedule</h3>
@@ -103,48 +105,15 @@ export default function Classes() {
 
                             <div className='class-schedule'>
                                 <h3>May 25:</h3>
-                                {/* <h4 className='special'>All classes and social will be held at On Par Entertainment</h4> */}
-                                {/* <h4 className='special'> Social 8:30 - 10:30 PM</h4> */}
                                 <div className='schedule'>
                                     <div className='times'>
                                         <p>Social 8:30 - 10:30 PM</p>
-                                        {/* <p>7:30</p> */}
-                                        {/* <p>8:30</p> */}
                                     </div>
-                                    {/* <div className='classes'>
-                                        <p>Bachata (all levels)</p>
-                                        <p>Salsa (all levels)</p>
-                                        <p>Social until 10:30</p>
-                                    </div> */}
                                 </div>
                             </div>
-
-                            {/* <h3 className='special'>(Special Schedule)</h3> */}
-                            {/* <div className='schedule'> */}
-                            {/* <div className='times'>
-                                    <p>6:30</p>
-                                    <p>7:15</p>
-                                    <p>8:00</p>
-                                </div> */}
-                            {/* <div className='classes'> */}
-                            {/* <div className='classes2'> */}
-                            {/* <p>Bachata (all levels)</p>
-                                    <p>Salsa (all levels)</p> */}
-                            {/* <Link to="/Events" onClick={() => {
-                                        window.scroll(0, 0);
-                                    }}
-                                    >
-                                        <p>Social @ Joui</p>
-                                    </Link> */}
-                            {/* </div> */}
-                            {/* </div> */}
                         </div>
                     </div>
                     <div className='team-info'>
-                        {/* <h3>Thursday Bachata Nights in Sharonville:</h3> */}
-                        {/* <h3>An 8-week series, must pre-register</h3> */}
-                        {/* <a href="https://www.facebook.com/share/r/1CgAdMbSoS/" target='_blank' className='classes-teams'>Information Here</a> */}
-                        {/* <p>Message DaytOn1 with any questions</p> */}
                     </div>
                 </div>
             </div>
@@ -164,7 +133,6 @@ export default function Classes() {
                             <p>$60</p>
                             <p>$80</p>
                             <p>$25</p>
-                            {/* <p>$25</p> */}
                         </div>
                     </div>
 
@@ -271,7 +239,7 @@ export default function Classes() {
                             </div>
                         )}
 
-                        {/* STEP 2 - Paypal screen with values */}
+                        {/* STEP 2 - PayPal screen with values */}
                         {step === 2 && (
                             <div className='checkout-payment'>
                                 <h3>Complete Your Payment</h3>
@@ -334,9 +302,7 @@ export default function Classes() {
                 <h3>First time? No problem!</h3>
                 <div className='first-time-info'>
                     <p>Message us each person's name, phone number, and preferred payment method to be registered if it's your first time attending our classes</p>
-                    <Link to="/FAQs" onClick={() => {
-                        window.scroll(0, 0);
-                    }}>
+                    <Link to="/FAQs" onClick={() => { window.scroll(0, 0) }}>
                         <button>Check out our FAQs</button>
                     </Link>
                 </div>
