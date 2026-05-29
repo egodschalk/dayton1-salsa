@@ -122,7 +122,7 @@ export default function PayPalButton({ selectedPass, formData, onSuccess }) {
         }
 
         const script = document.createElement('script')
-        script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=USD&enable-funding=venmo&buyer-country=US`
+        script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=USD&enable-funding=venmo`
         script.async = true
         script.onload = renderButtons
         script.onerror = () => {
