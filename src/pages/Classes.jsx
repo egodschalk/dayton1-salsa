@@ -9,7 +9,8 @@ import PayPalButton from './PayPalButton'
 
 const today = new Date()
 const dayOfMonth = today.getDate()
-const isFirstWeek = dayOfMonth <= 7
+const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()
+const isFirstWeek = dayOfMonth <= 7 || dayOfMonth >= daysInMonth - 4
 
 function getExpiryDate(passType) {
     const now = new Date()
