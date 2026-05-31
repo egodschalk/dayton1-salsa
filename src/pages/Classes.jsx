@@ -19,8 +19,13 @@ function getExpiryDate(passType) {
         expiry.setMonth(expiry.getMonth() + 3)
         return expiry.toLocaleDateString()
     }
-    const expiry = new Date(now.getFullYear(), now.getMonth() + 1, 1)
-    return expiry.toLocaleDateString()
+    // Only push to month after next if in the last 5 days of the month
+    const daysInCurrentMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
+    const currentDay = now.getDate()
+    if (currentDay >= daysInCurrentMonth - 4) {
+        return new Date(now.getFullYear(), now.getMonth() + 2, 1).toLocaleDateString()
+    }
+    return new Date(now.getFullYear(), now.getMonth() + 1, 1).toLocaleDateString()
 }
 
 function getPassLabel(passType) {
