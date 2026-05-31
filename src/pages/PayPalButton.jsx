@@ -27,8 +27,14 @@ function getExpiryDate(passType) {
         expiry.setMonth(expiry.getMonth() + 3)
         return expiry.toISOString()
     }
-    const expiry = new Date(now.getFullYear(), now.getMonth() + 1, 1)
-    return expiry.toISOString()
+    // Find the first of next month
+    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1)
+    // If that's less than 30 days away, go to the month after
+    const diffDays = (nextMonth - now) / (1000 * 60 * 60 * 24)
+    if (diffDays < 30) {
+        return new Date(now.getFullYear(), now.getMonth() + 2, 1).toISOString()
+    }
+    return nextMonth.toISOString()
 }
 
 async function saveMember(formData, selectedPass, transactionId) {
