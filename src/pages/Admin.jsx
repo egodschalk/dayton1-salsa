@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { db, auth } from '../firebase'
-import { collection, getDocs, doc, updateDoc, orderBy, query, deleteDoc } from 'firebase/firestore'
+import { collection, doc, updateDoc, orderBy, query, deleteDoc, onSnapshot } from 'firebase/firestore'
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
 import './Admin.css'
 
@@ -22,15 +22,14 @@ export default function Admin() {
     }, [])
 
     useEffect(() => {
-        if (user) fetchMembers()
-    }, [user])
-
-    async function fetchMembers() {
+        if (!user) return
         const q = query(collection(db, 'members'), orderBy('purchaseDate', 'desc'))
-        const snapshot = await getDocs(q)
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-        setMembers(data)
-    }
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+            setMembers(data)
+        })
+        return unsubscribe
+    }, [user])
 
     async function handleLogin(e) {
         e.preventDefault()
@@ -55,38 +54,34 @@ export default function Admin() {
                 checkedIn: true
             })
         }
-        fetchMembers()
     }
 
-async function handleUndoCheckIn(memberId, passType, member) {
-    const memberRef = doc(db, 'members', memberId)
-    if (passType === 'day') {
-        // Use originalExpiryDate if it exists, otherwise calculate 3 months from purchase date
-        const restoreDate = member.originalExpiryDate 
-            ? member.originalExpiryDate
-            : (() => {
-                const expiry = new Date(member.purchaseDate)
-                expiry.setMonth(expiry.getMonth() + 3)
-                return expiry.toISOString()
-            })()
+    async function handleUndoCheckIn(memberId, passType, member) {
+        const memberRef = doc(db, 'members', memberId)
+        if (passType === 'day') {
+            const restoreDate = member.originalExpiryDate
+                ? member.originalExpiryDate
+                : (() => {
+                    const expiry = new Date(member.purchaseDate)
+                    expiry.setMonth(expiry.getMonth() + 3)
+                    return expiry.toISOString()
+                })()
 
-        await updateDoc(memberRef, {
-            checkedIn: false,
-            isActive: true,
-            expiryDate: restoreDate
-        })
-    } else {
-        await updateDoc(memberRef, {
-            checkedIn: false
-        })
+            await updateDoc(memberRef, {
+                checkedIn: false,
+                isActive: true,
+                expiryDate: restoreDate
+            })
+        } else {
+            await updateDoc(memberRef, {
+                checkedIn: false
+            })
+        }
     }
-    fetchMembers()
-}
 
     async function handleDelete(memberId) {
         if (window.confirm('Are you sure you want to delete this member? This cannot be undone.')) {
             await deleteDoc(doc(db, 'members', memberId))
-            fetchMembers()
         }
     }
 
