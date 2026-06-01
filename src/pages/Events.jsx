@@ -16,16 +16,16 @@ const eventData = [
         // info: "Presented by Saoco Sesion & DaytOn1",
         eventUrl: 'https://www.facebook.com/events/1531822261679572'
     },
-    // {
-    //     id: 2,
-    //     imgUrl: event2,
-    //     title: "Salsa for a Cause",
-    //     date: "May 8, 2026",
-    //     time: "8 PM - 12 AM",
-    //     location: "1400 E 5th St, Dayton, OH",
-    //     info: "Proceeds Benefit: Special Olympics of Greater DaytOn",
-    //     eventUrl: 'https://www.facebook.com/share/1JZUeD4h6z/'
-    // },
+    {
+        id: 2,
+        imgUrl: event2,
+        title: "Salsa for a Cause",
+        date: "May 8, 2026",
+        time: "8 PM - 12 AM",
+        location: "1400 E 5th St, Dayton, OH",
+        info: "Proceeds Benefit: Special Olympics of Greater DaytOn",
+        eventUrl: 'https://www.facebook.com/share/1JZUeD4h6z/'
+    },
     // {
     //     id: 3,
     //     imgUrl: event3,
@@ -65,7 +65,7 @@ export default function Events() {
                         </a>
                     </div>
                 </div>
-                {/* <div className='events-event2'>
+                <div className='events-event2'>
                     <div className='event2-content'>
                         <div className='event2-info'>
                             <h5 className='event2-title'>{eventData[1].title}</h5>
@@ -83,7 +83,7 @@ export default function Events() {
                             <img src={eventData[1].imgUrl} alt="" />
                         </a>
                     </div>
-                </div> */}
+                </div>
                 {/* <div className='events-event3'>
                     <div className='event3-content'>
                         <div className='event3-info'>
