@@ -1,30 +1,30 @@
 import './Events.css'
 import { Link } from 'react-router-dom'
 import event3 from '../assets/Event-3.jpg'
-import event2 from '../assets/Event-2.png'
-import event1 from '../assets/Event-1.png'
+import event2 from '../assets/Event-2.jpeg'
+import event1 from '../assets/Event-1.jpeg'
 
 
 const eventData = [
     {
         id: 1,
         imgUrl: event1,
-        title: "Cinco de Mayo Silent Disco",
-        date: "May 1, 2026",
-        time: "8:00 PM",
+        title: "Silent Disco",
+        date: "July 12, 2026",
+        time: "5 -8 PM",
         location: "4464 Indian Ripple Rd, Beavercreek, OH",
         // info: "Presented by Saoco Sesion & DaytOn1",
-        eventUrl: 'https://www.facebook.com/share/1EA7RYeRDx/'
+        eventUrl: 'https://www.facebook.com/events/1531822261679572'
     },
     {
         id: 2,
         imgUrl: event2,
-        title: "Salsa for a Cause",
-        date: "May 8, 2026",
-        time: "8 PM - 12 AM",
-        location: "1400 E 5th St, Dayton, OH",
-        info: "Proceeds Benefit: Special Olympics of Greater DaytOn",
-        eventUrl: 'https://www.facebook.com/share/1JZUeD4h6z/'
+        title: "Tuesday Bachata Classes",
+        date: "June 2 - July 7",
+        time: "6:00 PM",
+        location: "8967 Kingsridge Dr. Dayton. OH 45458",
+        // info: "Proceeds Benefit: Special Olympics of Greater DaytOn",
+        eventUrl: 'https://www.facebook.com/share/p/1cV5Dm15rN/'
     },
     // {
     //     id: 3,
