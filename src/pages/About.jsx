@@ -74,9 +74,9 @@ export default function About() {
                         <div className='event1'>
                             <img src={event1} alt="" />
                         </div>
-                        <div className='event2'>
+                        {/* <div className='event2'>
                             <img src={event2} alt="" />
-                        </div>
+                        </div> */}
                         <Link to="/Events" onClick={() => {
                             window.scroll(0, 0);
                         }}

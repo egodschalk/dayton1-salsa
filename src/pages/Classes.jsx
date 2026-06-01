@@ -303,16 +303,6 @@ export default function Classes() {
                 </div>
             </div>
 
-            <div className='classes-first-time'>
-                <h3>First time? No problem!</h3>
-                <div className='first-time-info'>
-                    <p>Message us each person's name, phone number, and preferred payment method to be registered if it's your first time attending our classes</p>
-                    <Link to="/FAQs" onClick={() => { window.scroll(0, 0) }}>
-                        <button>Check out our FAQs</button>
-                    </Link>
-                </div>
-            </div>
-
             <div className='classes-levels-section'>
                 <h2>About Our Levels</h2>
                 <div className='classes-levels'>
