@@ -91,7 +91,7 @@ export default function Classes() {
                     <div className='classes-schedule-section'>
                         <div className='days'>
                             <h3>Mondays</h3>
-                            <p>May 4, 11, 18, 25</p>
+                            <p>June 1, 8, 15, 22</p>
                         </div>
                         <div className='class-schedule'>
                             <h3>Class Schedule</h3>
@@ -109,10 +109,10 @@ export default function Classes() {
                             </div>
 
                             <div className='class-schedule'>
-                                <h3>May 25:</h3>
+                                {/*<h3>May 25:</h3>*/}
                                 <div className='schedule'>
                                     <div className='times'>
-                                        <p>Social 8:30 - 10:30 PM</p>
+                                        {/*<p>Social 8:30 - 10:30 PM</p>*/}
                                     </div>
                                 </div>
                             </div>
@@ -126,7 +126,7 @@ export default function Classes() {
             <div className='classes-membership-section'>
                 <div className='classes-rates'>
                     <h3>Monthly Rates:</h3>
-                    <h4>May</h4>
+                    <h4>June</h4>
                     <p>We offer classes in monthly cycles</p>
                     <div className='rates'>
                         <div className='rate-category'>
