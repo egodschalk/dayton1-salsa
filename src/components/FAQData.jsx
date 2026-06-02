@@ -34,12 +34,12 @@ export const faqData = [
     {
         id: 7,
         question: 'What kind of payments do you accept?',
-        answer: 'We only take Venmo @DaytOn1Salsa, Paypal using DaytOn1.salsa@gmail.com, or cash at this time.  We do not take any other forms of payment.',
+        answer: 'We take credit cards, Venmo, and PayPal',
     },
     {
         id: 8,
         question: 'How do I register for classes?',
-        answer: 'For new students, use the contact form below to message your name, cell phone number, and payment preference. If you have questions about pricing let us know. Otherwise, we will confirm once we receive your payment and personal information. You can pay ahead or pay at the door.',
+        answer: 'Please visit the Classes page of our website (Dayton1-salsa.com) to register and pay for classes.',
     },
     {
         id: 9,
@@ -54,7 +54,7 @@ export const faqData = [
     {
         id: 11,
         question: 'What days are classes offered?',
-        answer: 'We have regular classes on Monday nights but always check our Classes page in case there are any Mondays we do not have classes for the month. On occasion, we offer a special 8-week series of classes on Tuesday nights (at Genuine Work in Dayton) or Thursday nights at our Sharonville location. (Note: Drop-in is not an option for these classes.) We also offer pop-up workshops on occasion and other dance events on the weekends. To find information on any of our future events, you can always find them on our website, Fb, or Instagram pages.',
+        answer: 'We have regular classes on Monday nights but always check our Classes page in case there are any Mondays we do not have classes for the month. We also offer pop-up series, workshops, and other dance events.  Information on future events can be found on our website, Facebook, or Instagram page.',
     },
     {
         id: 12,
