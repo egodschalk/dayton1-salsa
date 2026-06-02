@@ -108,17 +108,21 @@ export default function Classes() {
                                 </div>
                             </div>
 
-                            <div className='class-schedule'>
-                                {/*<h3>May 25:</h3>*/}
-                                <div className='schedule'>
-                                    <div className='times'>
-                                        {/*<p>Social 8:30 - 10:30 PM</p>*/}
-                                    </div>
-                                </div>
-                            </div>
+                            {/* <div className='class-schedule'> */}
+                            {/*<h3>May 25:</h3>*/}
+                            {/* <div className='schedule'> */}
+                            {/* <div className='times'> */}
+                            {/*<p>Social 8:30 - 10:30 PM</p>*/}
+                            {/* </div> */}
+                            {/* </div> */}
+                            {/* </div> */}
                         </div>
                     </div>
                     <div className='team-info'>
+                        <h3>Tuesday Classes</h3>
+                        <p>From June 2 - July 7, we will be offering Bachata classes on Tuesdays. Find the information <a href="https://www.facebook.com/share/p/1cV5Dm15rN/" target='blank'>
+                            HERE
+                        </a></p>
                     </div>
                 </div>
             </div>
