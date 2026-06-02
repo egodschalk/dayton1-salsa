@@ -78,7 +78,7 @@ export default function Admin() {
 
     function isCheckedInToday(member) {
         const checkIns = member.checkIns || []
-        return checkIns.includes(getTodayString()) || member.checkedIn === true
+        return checkIns.includes(getTodayString())
     }
 
     function isCheckedInOnDate(member, date) {
@@ -193,19 +193,19 @@ export default function Admin() {
     function isActive(member) {
         if (member.passType === 'day') {
             const checkIns = member.checkIns || []
-            return checkIns.length === 0 && !member.checkedIn && new Date(member.expiryDate) >= new Date()
+            return checkIns.length === 0 && new Date(member.expiryDate) >= new Date()
         }
         return new Date(member.expiryDate) >= new Date()
     }
 
     function getStatusLabel(member) {
-        if (member.passType === 'day' && ((member.checkIns || []).length > 0 || member.checkedIn)) return 'Used'
+        if (member.passType === 'day' && (member.checkIns || []).length > 0) return 'Used'
         if (!isActive(member)) return 'Expired'
         return 'Active'
     }
 
     function getStatusClass(member) {
-        if (member.passType === 'day' && ((member.checkIns || []).length > 0 || member.checkedIn)) return 'status-used'
+        if (member.passType === 'day' && (member.checkIns || []).length > 0) return 'status-used'
         if (!isActive(member)) return 'status-expired'
         return 'status-active'
     }
