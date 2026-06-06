@@ -89,20 +89,24 @@ export default function PayPalButton({ selectedPass, formData, onSuccess }) {
                         }]
                     })
                 },
-                onApprove: (data, actions) => {
-                    return actions.order.capture()
-                        .then(async (details) => {
-                            if (!details?.id) {
-                                alert('Payment could not be verified. Please try again.')
-                                return
-                            }
-                            await saveMember(formDataRef.current, selectedPassRef.current, details.id)
-                            onSuccessRef.current(details)
+                onApprove: async (data) => {
+                    try {
+                        const res = await fetch('/.netlify/functions/capture-order', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ orderID: data.orderID })
                         })
-                        .catch((err) => {
-                            console.error('Capture failed:', err)
-                            alert('Payment was not completed. Please try again.')
-                        })
+                        const details = await res.json()
+                        if (!details?.id) {
+                            alert('Payment could not be verified. Please try again.')
+                            return
+                        }
+                        await saveMember(formDataRef.current, selectedPassRef.current, details.id)
+                        onSuccessRef.current(details)
+                    } catch (err) {
+                        console.error('Capture failed:', err)
+                        alert('Payment was not completed. Please try again.')
+                    }
                 },
                 onError: (err) => {
                     console.error('PayPal error:', err)
