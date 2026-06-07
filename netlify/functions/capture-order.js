@@ -12,7 +12,7 @@ async function getAccessToken() {
         body: 'grant_type=client_credentials'
     })
     const data = await res.json()
-    return data.access_token
+    return data
 }
 
 export const handler = async (event) => {
@@ -20,28 +20,15 @@ export const handler = async (event) => {
         return { statusCode: 405, body: 'Method not allowed' }
     }
 
-    // Temp debug — remove after testing
-    console.log('CLIENT_ID exists:', !!CLIENT_ID)
-    console.log('SECRET_KEY exists:', !!SECRET_KEY)
-    console.log('CLIENT_ID length:', CLIENT_ID?.length)
-    console.log('SECRET_KEY length:', SECRET_KEY?.length)
-
     try {
-        const { orderID } = JSON.parse(event.body)
-        const accessToken = await getAccessToken()
-
-        const res = await fetch(`https://api.paypal.com/v2/checkout/orders/${orderID}/capture`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
-            }
-        })
-
-        const data = await res.json()
+        const tokenResponse = await getAccessToken()
         return {
             statusCode: 200,
-            body: JSON.stringify(data)
+            body: JSON.stringify({
+                clientIdLength: CLIENT_ID?.length,
+                secretKeyLength: SECRET_KEY?.length,
+                tokenResponse
+            })
         }
     } catch (error) {
         return {
