@@ -25,8 +25,8 @@ export const handler = async (event) => {
         return {
             statusCode: 200,
             body: JSON.stringify({
-                clientIdLength: CLIENT_ID?.length,
-                secretKeyLength: SECRET_KEY?.length,
+                clientIdPreview: `${CLIENT_ID?.slice(0,4)}...${CLIENT_ID?.slice(-4)}`,
+                secretKeyPreview: `${SECRET_KEY?.slice(0,4)}...${SECRET_KEY?.slice(-4)}`,
                 tokenResponse
             })
         }
