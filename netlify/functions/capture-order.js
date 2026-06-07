@@ -1,5 +1,3 @@
-const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args))
-
 const CLIENT_ID = process.env.PP_CLIENT
 const SECRET_KEY = process.env.PP_SECRET
 
