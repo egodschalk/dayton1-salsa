@@ -12,7 +12,7 @@ async function getAccessToken() {
         body: 'grant_type=client_credentials'
     })
     const data = await res.json()
-    return data
+    return data.access_token
 }
 
 export const handler = async (event) => {
@@ -21,14 +21,21 @@ export const handler = async (event) => {
     }
 
     try {
-        const tokenResponse = await getAccessToken()
+        const { orderID } = JSON.parse(event.body)
+        const accessToken = await getAccessToken()
+
+        const res = await fetch(`https://api.paypal.com/v2/checkout/orders/${orderID}/capture`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        })
+
+        const data = await res.json()
         return {
             statusCode: 200,
-            body: JSON.stringify({
-                clientIdPreview: `${CLIENT_ID?.slice(0,4)}...${CLIENT_ID?.slice(-4)}`,
-                secretKeyPreview: `${SECRET_KEY?.slice(0,4)}...${SECRET_KEY?.slice(-4)}`,
-                tokenResponse
-            })
+            body: JSON.stringify(data)
         }
     } catch (error) {
         return {
