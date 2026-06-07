@@ -20,6 +20,12 @@ export const handler = async (event) => {
         return { statusCode: 405, body: 'Method not allowed' }
     }
 
+    // Temp debug — remove after testing
+    console.log('CLIENT_ID exists:', !!CLIENT_ID)
+    console.log('SECRET_KEY exists:', !!SECRET_KEY)
+    console.log('CLIENT_ID length:', CLIENT_ID?.length)
+    console.log('SECRET_KEY length:', SECRET_KEY?.length)
+
     try {
         const { orderID } = JSON.parse(event.body)
         const accessToken = await getAccessToken()
