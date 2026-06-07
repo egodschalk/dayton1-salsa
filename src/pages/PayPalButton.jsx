@@ -97,6 +97,7 @@ export default function PayPalButton({ selectedPass, formData, onSuccess }) {
                             body: JSON.stringify({ orderID: data.orderID })
                         })
                         const details = await res.json()
+                        console.log('Capture response:', JSON.stringify(details))
                         if (!details?.id) {
                             alert('Payment could not be verified. Please try again.')
                             return
