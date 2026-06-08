@@ -20,6 +20,8 @@ export default function Admin() {
     const [loginError, setLoginError] = useState('')
     const [loading, setLoading] = useState(true)
     const [filter, setFilter] = useState('all')
+    const [sortBy, setSortBy] = useState('alpha')
+    const [search, setSearch] = useState('')
     const [showManualEntry, setShowManualEntry] = useState(false)
     const [attendanceDate, setAttendanceDate] = useState(getTodayString())
     const [manualForm, setManualForm] = useState({
@@ -27,7 +29,8 @@ export default function Admin() {
         lastName: '',
         phone: '',
         email: '',
-        passType: 'day'
+        passType: 'day',
+        paymentMethod: 'cash'
     })
     const [manualErrors, setManualErrors] = useState({})
 
@@ -121,13 +124,13 @@ export default function Admin() {
             purchaseDate: now.toISOString(),
             expiryDate,
             originalExpiryDate: expiryDate,
-            transactionId: 'CASH',
+            transactionId: manualForm.paymentMethod === 'cash' ? 'CASH' : 'VENMO',
             isActive: true,
             checkIns: [],
             createdAt: now
         })
 
-        setManualForm({ firstName: '', lastName: '', phone: '', email: '', passType: 'day' })
+        setManualForm({ firstName: '', lastName: '', phone: '', email: '', passType: 'day', paymentMethod: 'cash' })
         setManualErrors({})
         setShowManualEntry(false)
     }
@@ -145,7 +148,6 @@ export default function Admin() {
     async function handleCheckIn(memberId, passType) {
         const memberRef = doc(db, 'members', memberId)
         const today = getTodayString()
-
         if (passType === 'day') {
             await updateDoc(memberRef, {
                 checkIns: arrayUnion(today),
@@ -162,7 +164,6 @@ export default function Admin() {
     async function handleUndoCheckIn(memberId, passType, member) {
         const memberRef = doc(db, 'members', memberId)
         const today = getTodayString()
-
         if (passType === 'day') {
             const restoreDate = member.originalExpiryDate
                 ? member.originalExpiryDate
@@ -171,7 +172,6 @@ export default function Admin() {
                     expiry.setMonth(expiry.getMonth() + 3)
                     return expiry.toISOString()
                 })()
-
             await updateDoc(memberRef, {
                 checkIns: arrayRemove(today),
                 isActive: true,
@@ -214,6 +214,12 @@ export default function Admin() {
         return new Date(dateString).toLocaleDateString()
     }
 
+    function getPaymentLabel(member) {
+        if (member.transactionId === 'CASH') return 'Cash'
+        if (member.transactionId === 'VENMO') return 'Venmo'
+        return 'PayPal'
+    }
+
     function exportToCSV() {
         const headers = ['First Name', 'Last Name', 'Phone', 'Email', 'Pass Type', 'Amount', 'Purchase Date', 'Expiry Date', 'Status', 'Total Attendance', 'Payment']
         const rows = filteredMembers.map(m => [
@@ -227,7 +233,7 @@ export default function Admin() {
             formatDate(m.expiryDate),
             getStatusLabel(m),
             getAttendanceCount(m),
-            m.transactionId === 'CASH' ? 'Cash' : 'PayPal'
+            getPaymentLabel(m)
         ])
 
         const csvContent = [headers, ...rows]
@@ -245,6 +251,9 @@ export default function Admin() {
 
     const filteredMembers = members
         .filter(m => {
+            const matchesSearch = search === '' ||
+                `${m.firstName} ${m.lastName}`.toLowerCase().includes(search.toLowerCase())
+            if (!matchesSearch) return false
             if (filter === 'active') return isActive(m)
             if (filter === 'expired') return !isActive(m)
             if (filter === 'day') return m.passType === 'day'
@@ -253,9 +262,15 @@ export default function Admin() {
             return true
         })
         .sort((a, b) => {
-            const nameA = `${a.firstName} ${a.lastName}`.toLowerCase()
-            const nameB = `${b.firstName} ${b.lastName}`.toLowerCase()
-            return nameA.localeCompare(nameB)
+            if (sortBy === 'alpha') {
+                const nameA = `${a.firstName} ${a.lastName}`.toLowerCase()
+                const nameB = `${b.firstName} ${b.lastName}`.toLowerCase()
+                return nameA.localeCompare(nameB)
+            }
+            if (sortBy === 'date') {
+                return new Date(b.purchaseDate) - new Date(a.purchaseDate)
+            }
+            return 0
         })
 
     const todayCount = members.filter(m => isCheckedInToday(m)).length
@@ -321,6 +336,17 @@ export default function Admin() {
                 </div>
             </div>
 
+            {/* Search bar */}
+            <div className='admin-search'>
+                <input
+                    type='text'
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    placeholder='Search by name...'
+                    className='admin-search-input'
+                />
+            </div>
+
             <div className='admin-attendance'>
                 <h3>Attendance Lookup</h3>
                 <div className='attendance-lookup'>
@@ -346,6 +372,20 @@ export default function Admin() {
                     ))}
                 </div>
                 <div className='admin-actions'>
+                    <div className='admin-sort'>
+                        <button
+                            className={`admin-filter-btn ${sortBy === 'alpha' ? 'active' : ''}`}
+                            onClick={() => setSortBy('alpha')}
+                        >
+                            A–Z
+                        </button>
+                        <button
+                            className={`admin-filter-btn ${sortBy === 'date' ? 'active' : ''}`}
+                            onClick={() => setSortBy('date')}
+                        >
+                            By Date
+                        </button>
+                    </div>
                     <button className='admin-btn' onClick={() => setShowManualEntry(!showManualEntry)}>
                         {showManualEntry ? 'Cancel' : '+ Add Member'}
                     </button>
@@ -357,7 +397,7 @@ export default function Admin() {
 
             {showManualEntry && (
                 <div className='admin-manual-entry'>
-                    <h3>Add Member (Cash Payment)</h3>
+                    <h3>Add Member</h3>
                     <div className='manual-entry-form'>
                         <div className='admin-form-group'>
                             <label>First Name</label>
@@ -420,6 +460,16 @@ export default function Admin() {
                                 <option value='both_styles'>Monthly Both Styles — $80</option>
                             </select>
                         </div>
+                        <div className='admin-form-group'>
+                            <label>Payment Method</label>
+                            <select
+                                value={manualForm.paymentMethod}
+                                onChange={e => setManualForm({ ...manualForm, paymentMethod: e.target.value })}
+                            >
+                                <option value='cash'>Cash</option>
+                                <option value='venmo'>Venmo</option>
+                            </select>
+                        </div>
                         <button className='admin-btn' onClick={handleManualEntry}>
                             Add Member
                         </button>
@@ -427,6 +477,7 @@ export default function Admin() {
                 </div>
             )}
 
+            {/* Desktop table */}
             <div className='admin-table-wrapper'>
                 <table className='admin-table'>
                     <thead>
@@ -460,7 +511,7 @@ export default function Admin() {
                                             {getStatusLabel(member)}
                                         </span>
                                     </td>
-                                    <td>{member.transactionId === 'CASH' ? 'Cash' : 'PayPal'}</td>
+                                    <td>{getPaymentLabel(member)}</td>
                                     <td>{getAttendanceCount(member)}</td>
                                     <td>{isCheckedInToday(member) ? '✓ Yes' : 'No'}</td>
                                     <td>
@@ -495,6 +546,57 @@ export default function Admin() {
                         )}
                     </tbody>
                 </table>
+            </div>
+
+            {/* Mobile list */}
+            <div className='admin-mobile-list'>
+                {filteredMembers.length === 0 ? (
+                    <p className='admin-empty'>No members found</p>
+                ) : (
+                    filteredMembers.map(member => (
+                        <div key={member.id} className={`admin-mobile-card ${!isActive(member) ? 'expired-card' : ''}`}>
+                            <div>
+                                <div className='admin-mobile-top'>
+                                    <span className='admin-mobile-name'>{member.firstName} {member.lastName}</span>
+                                    <span className={`status-badge ${getStatusClass(member)}`}>
+                                        {getStatusLabel(member)}
+                                    </span>
+                                </div>
+                                <div className='admin-mobile-meta'>
+                                    <span>{member.passLabel}</span>
+                                    <span>Exp: {formatDate(member.expiryDate)}</span>
+                                    <span>{getPaymentLabel(member)}</span>
+                                    <span>Attended: {getAttendanceCount(member)}x</span>
+                                </div>
+                            </div>
+                            <div className='admin-mobile-buttons'>
+                                {isCheckedInToday(member) ? (
+                                    <button
+                                        className='checkin-btn checkin-btn-undo'
+                                        onClick={() => handleUndoCheckIn(member.id, member.passType, member)}
+                                    >
+                                        Undo
+                                    </button>
+                                ) : (
+                                    <button
+                                        className='checkin-btn'
+                                        onClick={() => handleCheckIn(member.id, member.passType)}
+                                        disabled={!isActive(member)}
+                                        style={{ opacity: !isActive(member) ? 0.4 : 1, cursor: !isActive(member) ? 'not-allowed' : 'pointer' }}
+                                    >
+                                        Check In
+                                    </button>
+                                )}
+                                <button
+                                    className='delete-btn'
+                                    onClick={() => handleDelete(member.id)}
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
         </div>
     )
