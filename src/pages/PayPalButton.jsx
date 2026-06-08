@@ -97,12 +97,16 @@ export default function PayPalButton({ selectedPass, formData, onSuccess }) {
                             body: JSON.stringify({ orderID: data.orderID })
                         })
                         const details = await res.json()
-                        console.log('Capture response:', JSON.stringify(details))
-                        if (!details?.id) {
+
+                        // Get transaction ID from capture or order level
+                        const transactionId = details?.purchase_units?.[0]?.payments?.captures?.[0]?.id || details?.id
+
+                        if (!transactionId) {
                             alert('Payment could not be verified. Please try again.')
                             return
                         }
-                        await saveMember(formDataRef.current, selectedPassRef.current, details.id)
+
+                        await saveMember(formDataRef.current, selectedPassRef.current, transactionId)
                         onSuccessRef.current(details)
                     } catch (err) {
                         console.error('Capture failed:', err)
