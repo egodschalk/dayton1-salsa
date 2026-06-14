@@ -563,6 +563,58 @@
         grid-template-columns: 1fr;
     }
 
+       /*Option to  make */   
+    .admin-checkin-date {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid var(--secondary);
+    border-radius: 8px;
+}
+
+.admin-checkin-date h3 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 14pt;
+    margin: 0 0 10px 0;
+}
+
+.checkin-date-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.checkin-date-row input[type="date"] {
+    padding: 8px 12px;
+    font-size: 12pt;
+    border: 1px solid var(--secondary);
+    border-radius: 4px;
+    font-family: "Urbanist", sans-serif;
+    background-color: transparent;
+    color: var(--primary);
+}
+
+.checkin-date-warning {
+    font-size: 11pt;
+    color: #cc8800;
+    letter-spacing: 1px;
+}
+
+@media screen and (max-width: 768px) {
+    .checkin-date-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .checkin-date-row input[type="date"] {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+}
+
 .kiosk-page {
     position: fixed;
     top: 0;
