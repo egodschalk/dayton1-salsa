@@ -24,6 +24,7 @@ export default function Admin() {
     const [search, setSearch] = useState('')
     const [showManualEntry, setShowManualEntry] = useState(false)
     const [attendanceDate, setAttendanceDate] = useState(getTodayString())
+    const [checkInDate, setCheckInDate] = useState(getTodayString())
     const [manualForm, setManualForm] = useState({
         firstName: '',
         lastName: '',
@@ -149,25 +150,25 @@ export default function Admin() {
         }
     }
 
-    async function handleCheckIn(memberId, passType) {
+    async function handleCheckIn(memberId, passType, date) {
         const memberRef = doc(db, 'members', memberId)
-        const today = getTodayString()
+
         if (passType === 'day') {
             await updateDoc(memberRef, {
-                checkIns: arrayUnion(today),
+                checkIns: arrayUnion(date),
                 isActive: false,
-                expiryDate: new Date().toISOString()
+                expiryDate: new Date(date + 'T23:59:59').toISOString()
             })
         } else {
             await updateDoc(memberRef, {
-                checkIns: arrayUnion(today)
+                checkIns: arrayUnion(date)
             })
         }
     }
 
-    async function handleUndoCheckIn(memberId, passType, member) {
+    async function handleUndoCheckIn(memberId, passType, member, date) {
         const memberRef = doc(db, 'members', memberId)
-        const today = getTodayString()
+
         if (passType === 'day') {
             const restoreDate = member.originalExpiryDate
                 ? member.originalExpiryDate
@@ -176,14 +177,15 @@ export default function Admin() {
                     expiry.setMonth(expiry.getMonth() + 3)
                     return expiry.toISOString()
                 })()
+
             await updateDoc(memberRef, {
-                checkIns: arrayRemove(today),
+                checkIns: arrayRemove(date),
                 isActive: true,
                 expiryDate: restoreDate
             })
         } else {
             await updateDoc(memberRef, {
-                checkIns: arrayRemove(today)
+                checkIns: arrayRemove(date)
             })
         }
     }
@@ -280,6 +282,7 @@ export default function Admin() {
 
     const todayCount = members.filter(m => isCheckedInToday(m)).length
     const attendanceDateCount = members.filter(m => isCheckedInOnDate(m, attendanceDate)).length
+    const isCheckInDateToday = checkInDate === getTodayString()
 
     if (loading) return <div className='admin-loading'>Loading...</div>
 
@@ -361,6 +364,29 @@ export default function Admin() {
                         onChange={e => setAttendanceDate(e.target.value)}
                     />
                     <p>{attendanceDateCount} member{attendanceDateCount !== 1 ? 's' : ''} checked in on {new Date(attendanceDate + 'T12:00:00').toLocaleDateString()}</p>
+                </div>
+            </div>
+
+            {/* Check-in date selector */}
+            <div className='admin-checkin-date'>
+                <h3>Check-In Date</h3>
+                <div className='checkin-date-row'>
+                    <input
+                        type='date'
+                        value={checkInDate}
+                        max={getTodayString()}
+                        onChange={e => setCheckInDate(e.target.value)}
+                    />
+                    {!isCheckInDateToday && (
+                        <span className='checkin-date-warning'>
+                            Checking in for {new Date(checkInDate + 'T12:00:00').toLocaleDateString()}
+                        </span>
+                    )}
+                    {!isCheckInDateToday && (
+                        <button className='admin-btn-outline' onClick={() => setCheckInDate(getTodayString())}>
+                            Reset to Today
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -495,7 +521,7 @@ export default function Admin() {
                             <th>Status</th>
                             <th>Payment</th>
                             <th>Attendance</th>
-                            <th>Today</th>
+                            <th>{isCheckInDateToday ? 'Today' : 'Selected Date'}</th>
                             <th>Action</th>
                             <th>Delete</th>
                         </tr>
@@ -519,21 +545,21 @@ export default function Admin() {
                                     </td>
                                     <td>{getPaymentLabel(member)}</td>
                                     <td>{getAttendanceCount(member)}</td>
-                                    <td>{isCheckedInToday(member) ? '✓ Yes' : 'No'}</td>
+                                    <td>{isCheckedInOnDate(member, checkInDate) ? '✓ Yes' : 'No'}</td>
                                     <td>
-                                        {isCheckedInToday(member) ? (
+                                        {isCheckedInOnDate(member, checkInDate) ? (
                                             <button
                                                 className='checkin-btn checkin-btn-undo'
-                                                onClick={() => handleUndoCheckIn(member.id, member.passType, member)}
+                                                onClick={() => handleUndoCheckIn(member.id, member.passType, member, checkInDate)}
                                             >
                                                 Undo
                                             </button>
                                         ) : (
                                             <button
                                                 className='checkin-btn'
-                                                onClick={() => handleCheckIn(member.id, member.passType)}
-                                                disabled={!isActive(member)}
-                                                style={{ opacity: !isActive(member) ? 0.4 : 1, cursor: !isActive(member) ? 'not-allowed' : 'pointer' }}
+                                                onClick={() => handleCheckIn(member.id, member.passType, checkInDate)}
+                                                disabled={!isActive(member) && isCheckInDateToday}
+                                                style={{ opacity: (!isActive(member) && isCheckInDateToday) ? 0.4 : 1, cursor: (!isActive(member) && isCheckInDateToday) ? 'not-allowed' : 'pointer' }}
                                             >
                                                 Check In
                                             </button>
@@ -576,19 +602,19 @@ export default function Admin() {
                                 </div>
                             </div>
                             <div className='admin-mobile-buttons'>
-                                {isCheckedInToday(member) ? (
+                                {isCheckedInOnDate(member, checkInDate) ? (
                                     <button
                                         className='checkin-btn checkin-btn-undo'
-                                        onClick={() => handleUndoCheckIn(member.id, member.passType, member)}
+                                        onClick={() => handleUndoCheckIn(member.id, member.passType, member, checkInDate)}
                                     >
                                         Undo
                                     </button>
                                 ) : (
                                     <button
                                         className='checkin-btn'
-                                        onClick={() => handleCheckIn(member.id, member.passType)}
-                                        disabled={!isActive(member)}
-                                        style={{ opacity: !isActive(member) ? 0.4 : 1, cursor: !isActive(member) ? 'not-allowed' : 'pointer' }}
+                                        onClick={() => handleCheckIn(member.id, member.passType, checkInDate)}
+                                        disabled={!isActive(member) && isCheckInDateToday}
+                                        style={{ opacity: (!isActive(member) && isCheckInDateToday) ? 0.4 : 1, cursor: (!isActive(member) && isCheckInDateToday) ? 'not-allowed' : 'pointer' }}
                                     >
                                         Check In
                                     </button>
