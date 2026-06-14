@@ -113,6 +113,10 @@ export default function Admin() {
         const now = new Date()
         const expiryDate = getExpiryDate(manualForm.passType)
 
+        let transactionId = 'CASH'
+        if (manualForm.paymentMethod === 'venmo') transactionId = 'VENMO'
+        if (manualForm.paymentMethod === 'paypal') transactionId = 'PAYPAL'
+
         await addDoc(collection(db, 'members'), {
             firstName: manualForm.firstName,
             lastName: manualForm.lastName,
@@ -124,7 +128,7 @@ export default function Admin() {
             purchaseDate: now.toISOString(),
             expiryDate,
             originalExpiryDate: expiryDate,
-            transactionId: manualForm.paymentMethod === 'cash' ? 'CASH' : 'VENMO',
+            transactionId,
             isActive: true,
             checkIns: [],
             createdAt: now
@@ -217,6 +221,7 @@ export default function Admin() {
     function getPaymentLabel(member) {
         if (member.transactionId === 'CASH') return 'Cash'
         if (member.transactionId === 'VENMO') return 'Venmo'
+        if (member.transactionId === 'PAYPAL') return 'PayPal'
         return 'PayPal'
     }
 
@@ -468,6 +473,7 @@ export default function Admin() {
                             >
                                 <option value='cash'>Cash</option>
                                 <option value='venmo'>Venmo</option>
+                                <option value='paypal'>PayPal</option>
                             </select>
                         </div>
                         <button className='admin-btn' onClick={handleManualEntry}>
