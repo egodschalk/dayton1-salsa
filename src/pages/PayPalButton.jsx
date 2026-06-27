@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { db } from '../firebase'
 import { collection, addDoc } from 'firebase/firestore'
+import { usePassTypes, getExpiryDate } from '../hooks/usePassTypes'
 
 const IS_SANDBOX = false
 
@@ -8,51 +9,24 @@ const CLIENT_ID = IS_SANDBOX
     ? 'ATa2uW4F2oDvrxNJ4TxL6hkZ4Zd8nF-K0KTzjZxFQbVhl9CUe1pNznPexU6cgfoLOLxcKWaIBpe2AuDt'
     : 'AVI4LpJe46rQQcObnfSR6qyf9dzp3ypfM9HI4pqp61LZLE5cynC16Z5ASlu73y5ggpX7tQTbE-exYM1l'
 
-const PASS_AMOUNTS = {
-    day: '25.00',
-    one_style: '60.00',
-    both_styles: '80.00'
-}
-
-const PASS_LABELS = {
-    day: 'Day Pass — $25',
-    one_style: 'Monthly 1 Style — $60',
-    both_styles: 'Monthly Both Styles — $80'
-}
-
-function getExpiryDate(passType) {
+async function saveMember(formData, pass, transactionId) {
     const now = new Date()
-    if (passType === 'day') {
-        const expiry = new Date(now)
-        expiry.setMonth(expiry.getMonth() + 3)
-        return expiry.toISOString()
-    }
-    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1)
-    const diffDays = (nextMonth - now) / (1000 * 60 * 60 * 24)
-    if (diffDays < 5) {
-        return new Date(now.getFullYear(), now.getMonth() + 2, 1).toISOString()
-    }
-    return nextMonth.toISOString()
-}
-
-async function saveMember(formData, selectedPass, transactionId) {
-    const now = new Date()
-    const expiryDate = getExpiryDate(selectedPass)
+    const expiryDate = getExpiryDate(pass)
     try {
         await addDoc(collection(db, 'members'), {
             firstName: formData.firstName,
             lastName: formData.lastName,
             phone: formData.phone,
             email: formData.email || '',
-            passType: selectedPass,
-            passLabel: PASS_LABELS[selectedPass],
-            amount: PASS_AMOUNTS[selectedPass],
+            passType: pass.key,
+            passLabel: pass.label,
+            amount: pass.amount,
             purchaseDate: now.toISOString(),
             expiryDate,
             originalExpiryDate: expiryDate,
             transactionId,
             isActive: true,
-            checkedIn: false,
+            checkIns: [],
             createdAt: now
         })
         console.log('Member saved to Firebase!')
@@ -63,18 +37,25 @@ async function saveMember(formData, selectedPass, transactionId) {
 
 export default function PayPalButton({ selectedPass, formData, onSuccess }) {
     const containerRef = useRef(null)
+    const { passTypes } = usePassTypes()
 
     const formDataRef = useRef(formData)
     const onSuccessRef = useRef(onSuccess)
     const selectedPassRef = useRef(selectedPass)
+    const passTypesRef = useRef(passTypes)
 
     useEffect(() => { formDataRef.current = formData }, [formData])
     useEffect(() => { onSuccessRef.current = onSuccess }, [onSuccess])
     useEffect(() => { selectedPassRef.current = selectedPass }, [selectedPass])
+    useEffect(() => { passTypesRef.current = passTypes }, [passTypes])
 
     useEffect(() => {
         if (containerRef.current) {
             containerRef.current.innerHTML = ''
+        }
+
+        function findPass() {
+            return passTypesRef.current.find(p => p.key === selectedPassRef.current)
         }
 
         function renderButtons() {
@@ -82,10 +63,15 @@ export default function PayPalButton({ selectedPass, formData, onSuccess }) {
 
             window.paypal.Buttons({
                 createOrder: (data, actions) => {
+                    const pass = findPass()
+                    if (!pass) {
+                        alert('Selected pass is no longer available. Please refresh.')
+                        return
+                    }
                     return actions.order.create({
                         purchase_units: [{
-                            amount: { value: PASS_AMOUNTS[selectedPassRef.current] },
-                            description: PASS_LABELS[selectedPassRef.current]
+                            amount: { value: pass.amount },
+                            description: pass.label
                         }]
                     })
                 },
@@ -98,7 +84,6 @@ export default function PayPalButton({ selectedPass, formData, onSuccess }) {
                         })
                         const details = await res.json()
 
-                        // Get transaction ID from capture or order level
                         const transactionId = details?.purchase_units?.[0]?.payments?.captures?.[0]?.id || details?.id
 
                         if (!transactionId) {
@@ -106,7 +91,13 @@ export default function PayPalButton({ selectedPass, formData, onSuccess }) {
                             return
                         }
 
-                        await saveMember(formDataRef.current, selectedPassRef.current, transactionId)
+                        const pass = findPass()
+                        if (!pass) {
+                            alert('Pass data missing. Please contact the front desk.')
+                            return
+                        }
+
+                        await saveMember(formDataRef.current, pass, transactionId)
                         onSuccessRef.current(details)
                     } catch (err) {
                         console.error('Capture failed:', err)

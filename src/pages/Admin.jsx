@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { db, auth } from '../firebase'
-import { collection, doc, updateDoc, addDoc, orderBy, query, deleteDoc, onSnapshot, arrayUnion, arrayRemove } from 'firebase/firestore'
+import { collection, doc, updateDoc, addDoc, orderBy, query, deleteDoc, onSnapshot, arrayUnion, arrayRemove, setDoc, getDoc, getDocs, where } from 'firebase/firestore'
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
+import { usePassTypes, getExpiryDate } from '../hooks/usePassTypes'
 import './Admin.css'
+
+const STAFF_VIEW_EMAILS = ['dayton1salsa@gmail.com', 'ahiciano@icanoki.com']
 
 function getTodayString() {
     const now = new Date()
@@ -12,9 +16,19 @@ function getTodayString() {
     return `${year}-${month}-${day}`
 }
 
+function getStaffName(email) {
+    if (!email) return 'Unknown'
+    const namePart = email.split('@')[0]
+    return namePart.charAt(0).toUpperCase() + namePart.slice(1)
+}
+
 export default function Admin() {
+    const navigate = useNavigate()
+    const { passTypes } = usePassTypes()
     const [user, setUser] = useState(null)
     const [members, setMembers] = useState([])
+    const [shifts, setShifts] = useState([])
+    const [checkInLog, setCheckInLog] = useState([])
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loginError, setLoginError] = useState('')
@@ -25,20 +39,49 @@ export default function Admin() {
     const [showManualEntry, setShowManualEntry] = useState(false)
     const [attendanceDate, setAttendanceDate] = useState(getTodayString())
     const [checkInDate, setCheckInDate] = useState(getTodayString())
+    const [staffDate, setStaffDate] = useState(getTodayString())
     const [manualForm, setManualForm] = useState({
         firstName: '',
         lastName: '',
         phone: '',
         email: '',
-        passType: 'day',
+        passType: '',
         paymentMethod: 'cash'
     })
     const [manualErrors, setManualErrors] = useState({})
 
+    // All active passes, for the manual-entry dropdown
+    const activePasses = passTypes.filter(p => p.active)
+
+    // Default the manual form's passType to the first active pass once loaded
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        if (!manualForm.passType && activePasses.length > 0) {
+            setManualForm(f => ({ ...f, passType: activePasses[0].key }))
+        }
+    }, [activePasses, manualForm.passType])
+
+    // Auth + shift logging
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             setUser(currentUser)
             setLoading(false)
+            if (currentUser) {
+                const today = getTodayString()
+                const shiftId = `${currentUser.email}_${today}`
+                const shiftRef = doc(db, 'shifts', shiftId)
+                try {
+                    const existing = await getDoc(shiftRef)
+                    if (!existing.exists()) {
+                        await setDoc(shiftRef, {
+                            email: currentUser.email,
+                            date: today,
+                            signInTime: new Date().toISOString()
+                        })
+                    }
+                } catch (e) {
+                    console.error('Error logging shift:', e)
+                }
+            }
         })
         return unsubscribe
     }, [])
@@ -53,32 +96,16 @@ export default function Admin() {
         return unsubscribe
     }, [user])
 
-    function getExpiryDate(passType) {
-        const now = new Date()
-        if (passType === 'day') {
-            const expiry = new Date(now)
-            expiry.setMonth(expiry.getMonth() + 3)
-            return expiry.toISOString()
-        }
-        const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1)
-        const diffDays = (nextMonth - now) / (1000 * 60 * 60 * 24)
-        if (diffDays < 5) {
-            return new Date(now.getFullYear(), now.getMonth() + 2, 1).toISOString()
-        }
-        return nextMonth.toISOString()
-    }
-
-    const PASS_AMOUNTS = {
-        day: '25.00',
-        one_style: '60.00',
-        both_styles: '80.00'
-    }
-
-    const PASS_LABELS = {
-        day: 'Day Pass — $25',
-        one_style: 'Monthly 1 Style — $60',
-        both_styles: 'Monthly Both Styles — $80'
-    }
+    useEffect(() => {
+        if (!user) return
+        const unsubShifts = onSnapshot(collection(db, 'shifts'), (snapshot) => {
+            setShifts(snapshot.docs.map(d => ({ id: d.id, ...d.data() })))
+        })
+        const unsubLog = onSnapshot(collection(db, 'checkInLog'), (snapshot) => {
+            setCheckInLog(snapshot.docs.map(d => ({ id: d.id, ...d.data() })))
+        })
+        return () => { unsubShifts(); unsubLog() }
+    }, [user])
 
     function isCheckedInToday(member) {
         const checkIns = member.checkIns || []
@@ -100,6 +127,7 @@ export default function Admin() {
         if (!manualForm.lastName.trim()) errors.lastName = 'Last name is required'
         if (!manualForm.phone.trim()) errors.phone = 'Phone number is required'
         if (manualForm.phone.length < 10) errors.phone = 'Please enter a valid 10 digit phone number'
+        if (!manualForm.passType) errors.passType = 'Please select a pass'
         return errors
     }
 
@@ -111,8 +139,14 @@ export default function Admin() {
             return
         }
 
+        const pass = passTypes.find(p => p.key === manualForm.passType)
+        if (!pass) {
+            setManualErrors({ passType: 'Selected pass is no longer available.' })
+            return
+        }
+
         const now = new Date()
-        const expiryDate = getExpiryDate(manualForm.passType)
+        const expiryDate = getExpiryDate(pass)
 
         let transactionId = 'CASH'
         if (manualForm.paymentMethod === 'venmo') transactionId = 'VENMO'
@@ -123,9 +157,9 @@ export default function Admin() {
             lastName: manualForm.lastName,
             phone: manualForm.phone,
             email: manualForm.email || '',
-            passType: manualForm.passType,
-            passLabel: PASS_LABELS[manualForm.passType],
-            amount: PASS_AMOUNTS[manualForm.passType],
+            passType: pass.key,
+            passLabel: pass.label,
+            amount: pass.amount,
             purchaseDate: now.toISOString(),
             expiryDate,
             originalExpiryDate: expiryDate,
@@ -135,7 +169,7 @@ export default function Admin() {
             createdAt: now
         })
 
-        setManualForm({ firstName: '', lastName: '', phone: '', email: '', passType: 'day', paymentMethod: 'cash' })
+        setManualForm({ firstName: '', lastName: '', phone: '', email: '', passType: activePasses[0]?.key || '', paymentMethod: 'cash' })
         setManualErrors({})
         setShowManualEntry(false)
     }
@@ -152,6 +186,8 @@ export default function Admin() {
 
     async function handleCheckIn(memberId, passType, date) {
         const memberRef = doc(db, 'members', memberId)
+        const member = members.find(m => m.id === memberId)
+        const memberName = member ? `${member.firstName} ${member.lastName}` : ''
 
         if (passType === 'day') {
             await updateDoc(memberRef, {
@@ -163,6 +199,18 @@ export default function Admin() {
             await updateDoc(memberRef, {
                 checkIns: arrayUnion(date)
             })
+        }
+
+        try {
+            await addDoc(collection(db, 'checkInLog'), {
+                memberId,
+                memberName,
+                date,
+                adminEmail: user?.email || 'unknown',
+                loggedAt: new Date().toISOString()
+            })
+        } catch (e) {
+            console.error('Error logging check-in:', e)
         }
     }
 
@@ -187,6 +235,20 @@ export default function Admin() {
             await updateDoc(memberRef, {
                 checkIns: arrayRemove(date)
             })
+        }
+
+        try {
+            const logQuery = query(
+                collection(db, 'checkInLog'),
+                where('memberId', '==', memberId),
+                where('date', '==', date)
+            )
+            const snapshot = await getDocs(logQuery)
+            for (const docSnap of snapshot.docs) {
+                await deleteDoc(doc(db, 'checkInLog', docSnap.id))
+            }
+        } catch (e) {
+            console.error('Error removing check-in log:', e)
         }
     }
 
@@ -220,11 +282,23 @@ export default function Admin() {
         return new Date(dateString).toLocaleDateString()
     }
 
+    function formatTime(dateString) {
+        return new Date(dateString).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+    }
+
     function getPaymentLabel(member) {
         if (member.transactionId === 'CASH') return 'Cash'
         if (member.transactionId === 'VENMO') return 'Venmo'
         if (member.transactionId === 'PAYPAL') return 'PayPal'
+        if (member.transactionId === 'PENDING') {
+            const labels = { cash: 'Cash', venmo: 'Venmo', paypal: 'PayPal' }
+            return `Pending (${labels[member.paymentMethod] || '?'})`
+        }
         return 'PayPal'
+    }
+
+    function getCheckInCountForAdmin(adminEmail, date) {
+        return checkInLog.filter(l => l.adminEmail === adminEmail && l.date === date).length
     }
 
     function exportToCSV() {
@@ -283,6 +357,14 @@ export default function Admin() {
     const todayCount = members.filter(m => isCheckedInToday(m)).length
     const attendanceDateCount = members.filter(m => isCheckedInOnDate(m, attendanceDate)).length
     const isCheckInDateToday = checkInDate === getTodayString()
+    const canViewStaff = user && STAFF_VIEW_EMAILS.includes(user.email)
+
+    const staffOnDate = shifts.filter(s => s.date === staffDate)
+    const checkInsOnStaffDate = checkInLog.filter(l => l.date === staffDate)
+    const staffEmailsOnDate = [...new Set([
+        ...staffOnDate.map(s => s.email),
+        ...checkInsOnStaffDate.map(l => l.adminEmail)
+    ])]
 
     if (loading) return <div className='admin-loading'>Loading...</div>
 
@@ -320,9 +402,15 @@ export default function Admin() {
         <div className='admin-page'>
             <div className='admin-header'>
                 <h2>DaytOn1 Members</h2>
-                <button className='admin-btn-outline' onClick={() => signOut(auth)}>
-                    Log Out
-                </button>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <span className='admin-current-user'>{getStaffName(user.email)}</span>
+                    <button className='admin-btn' onClick={() => navigate('/kiosk')}>
+                        Kiosk Mode
+                    </button>
+                    <button className='admin-btn-outline' onClick={() => signOut(auth)}>
+                        Log Out
+                    </button>
+                </div>
             </div>
 
             <div className='admin-stats'>
@@ -354,6 +442,39 @@ export default function Admin() {
                     className='admin-search-input'
                 />
             </div>
+
+            {/* Staff Activity — only visible to authorized emails */}
+            {canViewStaff && (
+                <div className='admin-staff'>
+                    <h3>Staff Activity</h3>
+                    <div className='staff-lookup'>
+                        <input
+                            type='date'
+                            value={staffDate}
+                            max={getTodayString()}
+                            onChange={e => setStaffDate(e.target.value)}
+                        />
+                    </div>
+                    {staffEmailsOnDate.length === 0 ? (
+                        <p className='staff-empty'>No staff activity on {new Date(staffDate + 'T12:00:00').toLocaleDateString()}</p>
+                    ) : (
+                        <div className='staff-list'>
+                            {staffEmailsOnDate.map(emailAddr => {
+                                const shift = staffOnDate.find(s => s.email === emailAddr)
+                                return (
+                                    <div key={emailAddr} className='staff-row'>
+                                        <span className='staff-name'>{getStaffName(emailAddr)}</span>
+                                        <span className='staff-meta'>
+                                            {shift ? `Signed in ${formatTime(shift.signInTime)}` : 'No sign-in record'}
+                                        </span>
+                                        <span className='staff-count'>{getCheckInCountForAdmin(emailAddr, staffDate)} check-ins</span>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    )}
+                </div>
+            )}
 
             <div className='admin-attendance'>
                 <h3>Attendance Lookup</h3>
@@ -484,12 +605,19 @@ export default function Admin() {
                             <label>Pass Type</label>
                             <select
                                 value={manualForm.passType}
-                                onChange={e => setManualForm({ ...manualForm, passType: e.target.value })}
+                                onChange={e => {
+                                    setManualForm({ ...manualForm, passType: e.target.value })
+                                    setManualErrors({ ...manualErrors, passType: '' })
+                                }}
                             >
-                                <option value='day'>Day Pass — $25</option>
-                                <option value='one_style'>Monthly 1 Style — $60</option>
-                                <option value='both_styles'>Monthly Both Styles — $80</option>
+                                <option value='' disabled>Select a pass</option>
+                                {activePasses.map(pass => (
+                                    <option key={pass.id} value={pass.key}>
+                                        {pass.label} — ${pass.amount}
+                                    </option>
+                                ))}
                             </select>
+                            {manualErrors.passType && <span className='form-error'>{manualErrors.passType}</span>}
                         </div>
                         <div className='admin-form-group'>
                             <label>Payment Method</label>

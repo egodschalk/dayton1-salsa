@@ -54,15 +54,12 @@
     box-sizing: border-box;
     width: 100%;
 }
-.admin-form-group select {
-    background-color: #1a1a1a;
-    color: var(--primary);
-}
 
 .admin-form-group select option {
     background-color: #1a1a1a;
     color: #ffffff;
 }
+
 .form-error {
     color: red;
     font-size: 10pt;
@@ -122,6 +119,12 @@
     margin: 0;
 }
 
+.admin-current-user {
+    font-size: 11pt;
+    color: var(--secondary);
+    letter-spacing: 1px;
+}
+
 .admin-stats {
     display: flex;
     gap: 20px;
@@ -167,6 +170,76 @@
     box-sizing: border-box;
 }
 
+.admin-staff {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid var(--secondary);
+    border-radius: 8px;
+}
+
+.admin-staff h3 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 14pt;
+    margin: 0 0 10px 0;
+}
+
+.staff-lookup {
+    margin-bottom: 12px;
+}
+
+.staff-lookup input[type="date"] {
+    padding: 8px 12px;
+    font-size: 12pt;
+    border: 1px solid var(--secondary);
+    border-radius: 4px;
+    font-family: "Urbanist", sans-serif;
+    background-color: transparent;
+    color: var(--primary);
+}
+
+.staff-empty {
+    font-size: 11pt;
+    opacity: 0.5;
+    font-style: italic;
+    margin: 0;
+}
+
+.staff-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.staff-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.staff-name {
+    font-size: 12pt;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    color: var(--secondary);
+}
+
+.staff-meta {
+    font-size: 10pt;
+    opacity: 0.7;
+    letter-spacing: 0.5px;
+}
+
+.staff-count {
+    font-size: 11pt;
+    letter-spacing: 0.5px;
+}
+
 .admin-attendance {
     margin-bottom: 20px;
     padding: 15px;
@@ -201,6 +274,43 @@
 .attendance-lookup p {
     margin: 0;
     font-size: 11pt;
+    letter-spacing: 1px;
+}
+
+.admin-checkin-date {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid var(--secondary);
+    border-radius: 8px;
+}
+
+.admin-checkin-date h3 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 14pt;
+    margin: 0 0 10px 0;
+}
+
+.checkin-date-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.checkin-date-row input[type="date"] {
+    padding: 8px 12px;
+    font-size: 12pt;
+    border: 1px solid var(--secondary);
+    border-radius: 4px;
+    font-family: "Urbanist", sans-serif;
+    background-color: transparent;
+    color: var(--primary);
+}
+
+.checkin-date-warning {
+    font-size: 11pt;
+    color: #cc8800;
     letter-spacing: 1px;
 }
 
@@ -388,6 +498,10 @@
         font-size: 18pt;
     }
 
+    .admin-current-user {
+        display: none;
+    }
+
     .admin-btn,
     .admin-btn-outline {
         padding: 10px 14px;
@@ -424,6 +538,18 @@
         padding: 14px;
     }
 
+    .staff-lookup input[type="date"] {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+
+    .staff-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
     .admin-attendance {
         padding: 12px;
         margin-bottom: 12px;
@@ -436,6 +562,18 @@
     }
 
     .attendance-lookup input[type="date"] {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+
+    .checkin-date-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .checkin-date-row input[type="date"] {
         width: 100%;
         box-sizing: border-box;
         font-size: 16px;
@@ -479,12 +617,10 @@
         padding: 15px;
     }
 
-    /* Hide desktop table */
     .admin-table-wrapper {
         display: none;
     }
 
-    /* Mobile list */
     .admin-mobile-list {
         display: flex;
         flex-direction: column;
@@ -562,242 +698,4 @@
     .admin-mobile-meta {
         grid-template-columns: 1fr;
     }
-
-       /*Option to  make */   
-    .admin-checkin-date {
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid var(--secondary);
-    border-radius: 8px;
-}
-
-.admin-checkin-date h3 {
-    font-family: "Julius Sans One", serif;
-    color: var(--secondary);
-    font-size: 14pt;
-    margin: 0 0 10px 0;
-}
-
-.checkin-date-row {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.checkin-date-row input[type="date"] {
-    padding: 8px 12px;
-    font-size: 12pt;
-    border: 1px solid var(--secondary);
-    border-radius: 4px;
-    font-family: "Urbanist", sans-serif;
-    background-color: transparent;
-    color: var(--primary);
-}
-
-.checkin-date-warning {
-    font-size: 11pt;
-    color: #cc8800;
-    letter-spacing: 1px;
-}
-
-@media screen and (max-width: 768px) {
-    .checkin-date-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-
-    .checkin-date-row input[type="date"] {
-        width: 100%;
-        box-sizing: border-box;
-        font-size: 16px;
-    }
-}
-
-.kiosk-page {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: var(--background, #000);
-    z-index: 9999;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    font-family: "Urbanist", sans-serif;
-    color: var(--primary);
-    padding: 30px 20px;
-    box-sizing: border-box;
-}
-
-.kiosk-inner {
-    max-width: 700px;
-    width: 100%;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.kiosk-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 50px;
-}
-
-.kiosk-header h1 {
-    font-family: "Julius Sans One", serif;
-    color: var(--secondary);
-    font-size: 28pt;
-    margin: 0;
-}
-
-.kiosk-exit-btn {
-    padding: 8px 16px;
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 4px;
-    font-family: "Urbanist", sans-serif;
-    font-size: 10pt;
-    cursor: pointer;
-    color: rgba(255,255,255,0.3);
-    letter-spacing: 1px;
-}
-
-.kiosk-exit-btn:hover {
-    color: var(--primary);
-    border-color: var(--primary);
-}
-
-.kiosk-search-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    width: 100%;
-}
-
-.kiosk-search-section h2 {
-    font-family: "Julius Sans One", serif;
-    color: var(--secondary);
-    font-size: 22pt;
-    text-align: center;
-    margin: 0;
-}
-
-.kiosk-search-input {
-    width: 100%;
-    padding: 20px;
-    font-size: 20pt;
-    border: 2px solid var(--secondary);
-    border-radius: 8px;
-    font-family: "Urbanist", sans-serif;
-    background-color: transparent;
-    color: var(--primary);
-    box-sizing: border-box;
-    text-align: center;
-}
-
-.kiosk-search-input:focus {
-    outline: none;
-    border-color: var(--secondary);
-}
-
-.kiosk-results {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.kiosk-result-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 20px;
-    border: 1px solid var(--secondary);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.kiosk-result-item:hover {
-    background-color: var(--secondary);
-    color: var(--tertiary);
-}
-
-.kiosk-result-item:hover .status-badge {
-    background-color: rgba(0,0,0,0.2);
-    color: white;
-}
-
-.kiosk-result-name {
-    font-size: 16pt;
-    letter-spacing: 1px;
-}
-
-.kiosk-no-results {
-    font-size: 14pt;
-    opacity: 0.6;
-    text-align: center;
-}
-
-.kiosk-confirmation {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex: 1;
-}
-
-.kiosk-confirm-card {
-    border: 2px solid var(--secondary);
-    border-radius: 12px;
-    padding: 40px;
-    width: 100%;
-    text-align: center;
-}
-
-.kiosk-confirm-card h2 {
-    font-family: "Julius Sans One", serif;
-    color: var(--secondary);
-    font-size: 28pt;
-    margin: 0 0 30px 0;
-}
-
-.kiosk-confirm-details {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-.kiosk-confirm-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    font-size: 14pt;
-}
-
-.kiosk-confirm-row span:first-child {
-    opacity: 0.6;
-    letter-spacing: 1px;
-}
-
-.kiosk-wait {
-    font-size: 14pt;
-    letter-spacing: 1px;
-    margin: 0 0 10px 0;
-}
-
-.kiosk-countdown {
-    font-size: 12pt;
-    opacity: 0.5;
-    letter-spacing: 1px;
-    margin: 0;
-}
 }
