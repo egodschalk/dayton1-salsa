@@ -91,7 +91,7 @@ export default function Classes() {
                     <div className='classes-schedule-section'>
                         <div className='days'>
                             <h3>Mondays</h3>
-                            <p>June 1, 8, 15, 22</p>
+                            <p>July 6, 13, 20, 27</p>
                         </div>
                         <div className='class-schedule'>
                             <h3>Class Schedule</h3>
@@ -108,14 +108,14 @@ export default function Classes() {
                                 </div>
                             </div>
 
-                            {/* <div className='class-schedule'> */}
-                            {/*<h3>May 25:</h3>*/}
-                            {/* <div className='schedule'> */}
-                            {/* <div className='times'> */}
-                            {/*<p>Social 8:30 - 10:30 PM</p>*/}
-                            {/* </div> */}
-                            {/* </div> */}
-                            {/* </div> */}
+                             <div className='class-schedule'> 
+                            <h3>July 27th</h3>
+                             <div className='schedule'> 
+                             <div className='times'> 
+                            <p>Social 8:30 - 10:30 PM</p>
+                             </div> 
+                             </div> 
+                             </div> 
                         </div>
                     </div>
                     <div className='team-info'>
