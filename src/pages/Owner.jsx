@@ -4,6 +4,7 @@ import { db, auth } from '../firebase'
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore'
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
 import { usePassTypes, createPassType, updatePassType } from '../hooks/usePassTypes'
+import { useInstructors, createInstructor, setInstructorActive, seedInstructors } from '../hooks/useInstructors'
 import './Owner.css'
 
 const OWNER_EMAILS = ['dayton1salsa@gmail.com', 'ahiciano@icanoki.com']
@@ -36,6 +37,7 @@ function formatDate(dateString) {
 export default function Owner() {
     const navigate = useNavigate()
     const { passTypes, loading: passLoading } = usePassTypes()
+    const { instructors, loading: instructorsLoading } = useInstructors()
     const [user, setUser] = useState(null)
     const [authLoading, setAuthLoading] = useState(true)
     const [email, setEmail] = useState('')
@@ -48,15 +50,22 @@ export default function Owner() {
     const [formError, setFormError] = useState('')
     const [saving, setSaving] = useState(false)
 
+    // Instructor editor state
+    const [newInstructorName, setNewInstructorName] = useState('')
+    const [instructorError, setInstructorError] = useState('')
+    const [addingInstructor, setAddingInstructor] = useState(false)
+    const [seededOnce, setSeededOnce] = useState(false)
+
     // Stats data
     const [members, setMembers] = useState([])
     const [shifts, setShifts] = useState([])
     const [checkInLog, setCheckInLog] = useState([])
+    const [instructorLog, setInstructorLog] = useState([])
 
     // Stats filters
     const [rangeStart, setRangeStart] = useState('')
     const [rangeEnd, setRangeEnd] = useState('')
-    const [staffViewMode, setStaffViewMode] = useState('byStaff') // 'byStaff' | 'byDate'
+    const [staffViewMode, setStaffViewMode] = useState('byStaff')
     const [expandedStaff, setExpandedStaff] = useState(null)
     const [expandedDate, setExpandedDate] = useState(null)
 
@@ -80,8 +89,21 @@ export default function Owner() {
         const unsubLog = onSnapshot(collection(db, 'checkInLog'), (snap) => {
             setCheckInLog(snap.docs.map(d => ({ id: d.id, ...d.data() })))
         })
-        return () => { unsubMembers(); unsubShifts(); unsubLog() }
+        const unsubInstructorLog = onSnapshot(collection(db, 'instructorLog'), (snap) => {
+            setInstructorLog(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+        })
+        return () => { unsubMembers(); unsubShifts(); unsubLog(); unsubInstructorLog() }
     }, [user])
+
+    // Auto-seed instructors if the list is empty (once)
+    useEffect(() => {
+        if (!user || !OWNER_EMAILS.includes(user.email)) return
+        if (instructorsLoading || seededOnce) return
+        if (instructors.length === 0) {
+            setSeededOnce(true)
+            seedInstructors().catch(e => console.error('Seed error:', e))
+        }
+    }, [user, instructors, instructorsLoading, seededOnce])
 
     async function handleLogin(e) {
         e.preventDefault()
@@ -196,6 +218,33 @@ export default function Owner() {
         setForm({ ...form, visibility: { ...form.visibility, days } })
     }
 
+    // ===== Instructor editor handlers =====
+    async function handleAddInstructor() {
+        const name = newInstructorName.trim()
+        if (!name) { setInstructorError('Name is required.'); return }
+        const dup = instructors.some(i => i.name.toLowerCase() === name.toLowerCase())
+        if (dup) { setInstructorError('That instructor already exists.'); return }
+        setAddingInstructor(true)
+        setInstructorError('')
+        try {
+            await createInstructor(name, instructors)
+            setNewInstructorName('')
+        } catch (e) {
+            setInstructorError('Error: ' + e.message)
+        }
+        setAddingInstructor(false)
+    }
+
+    async function handleToggleInstructor(inst) {
+        const verb = inst.active ? 'deactivate' : 'reactivate'
+        if (!window.confirm(`Are you sure you want to ${verb} "${inst.name}"?`)) return
+        try {
+            await setInstructorActive(inst.id, !inst.active)
+        } catch (e) {
+            alert('Error: ' + e.message)
+        }
+    }
+
     // ===== Stats computation =====
     function inRange(dateStr) {
         if (rangeStart && dateStr < rangeStart) return false
@@ -203,27 +252,23 @@ export default function Owner() {
         return true
     }
 
-    // Member is confirmed (paid) if not PENDING
     function isConfirmed(member) {
         return member.transactionId && member.transactionId !== 'PENDING'
     }
 
-    // Filter members by purchase date range
     const filteredMembers = members.filter(m => {
         const d = m.purchaseDate ? m.purchaseDate.slice(0, 10) : ''
         return inRange(d)
     })
 
-    // Filter check-ins by date range
     const filteredCheckIns = checkInLog.filter(l => inRange(l.date))
     const filteredShifts = shifts.filter(s => inRange(s.date))
+    const filteredInstructorLog = instructorLog.filter(l => inRange(l.date))
 
-    // Revenue (confirmed only)
     const totalRevenue = filteredMembers
         .filter(isConfirmed)
         .reduce((sum, m) => sum + (parseFloat(m.amount) || 0), 0)
 
-    // Attendance by day of week — counts unique check-in dates per weekday
     const attendanceByDow = DAY_NAMES_FULL.map((name, dow) => {
         const checkInsThisDow = filteredCheckIns.filter(l => {
             const d = new Date(l.date + 'T12:00:00')
@@ -236,7 +281,6 @@ export default function Owner() {
         return { name, dow, total, classCount, avg }
     }).filter(row => row.total > 0)
 
-    // Pass type breakdown — count + revenue per pass key
     const passBreakdown = passTypes.map(pass => {
         const matching = filteredMembers.filter(m => m.passType === pass.key)
         const confirmed = matching.filter(isConfirmed)
@@ -244,7 +288,6 @@ export default function Owner() {
         return { label: pass.label, key: pass.key, count: matching.length, confirmedCount: confirmed.length, revenue }
     }).filter(row => row.count > 0)
 
-    // Any members with a passType no longer in passTypes (deleted pass) — group as "Other"
     const knownKeys = passTypes.map(p => p.key)
     const orphanMembers = filteredMembers.filter(m => !knownKeys.includes(m.passType))
     if (orphanMembers.length > 0) {
@@ -258,18 +301,15 @@ export default function Owner() {
         })
     }
 
-    // Staff list (emails) appearing in filtered shifts or check-ins
     const staffEmails = [...new Set([
         ...filteredShifts.map(s => s.email),
         ...filteredCheckIns.map(l => l.adminEmail)
     ])]
 
-    // Per-staff: their check-ins
     function checkInsForStaff(emailAddr) {
         return filteredCheckIns.filter(l => l.adminEmail === emailAddr)
     }
 
-    // Dates that had activity (for by-date view)
     const activeDates = [...new Set([
         ...filteredShifts.map(s => s.date),
         ...filteredCheckIns.map(l => l.date)
@@ -285,6 +325,24 @@ export default function Owner() {
     function checkInsForStaffOnDate(emailAddr, date) {
         return filteredCheckIns.filter(l => l.adminEmail === emailAddr && l.date === date)
     }
+
+    // Who taught: count of days each instructor taught in range
+    const teachingByInstructor = (() => {
+        const counts = {}
+        filteredInstructorLog.forEach(l => {
+            counts[l.name] = (counts[l.name] || 0) + 1
+        })
+        return Object.entries(counts)
+            .map(([name, days]) => ({ name, days }))
+            .sort((a, b) => b.days - a.days)
+    })()
+
+    function instructorsOnDate(date) {
+        return filteredInstructorLog.filter(l => l.date === date).map(l => l.name)
+    }
+
+    // Dates that had teaching activity (for the "who taught" by-date rollup)
+    const teachingDates = [...new Set(filteredInstructorLog.map(l => l.date))].sort().reverse()
 
     function clearFilters() {
         setRangeStart('')
@@ -423,7 +481,6 @@ export default function Owner() {
                     <h3>Statistics</h3>
                 </div>
 
-                {/* Filter bar */}
                 <div className='owner-filter-bar'>
                     <div className='owner-filter-group'>
                         <label>From</label>
@@ -438,7 +495,6 @@ export default function Owner() {
                     )}
                 </div>
 
-                {/* Summary cards */}
                 <div className='owner-stat-cards'>
                     <div className='owner-stat-card'>
                         <p>Revenue</p>
@@ -458,7 +514,6 @@ export default function Owner() {
                     </div>
                 </div>
 
-                {/* Attendance by day of week */}
                 <div className='owner-stat-block'>
                     <h4 className='owner-stat-block-title'>Attendance by Day of Week</h4>
                     {attendanceByDow.length === 0 ? (
@@ -476,7 +531,6 @@ export default function Owner() {
                     )}
                 </div>
 
-                {/* Pass type breakdown */}
                 <div className='owner-stat-block'>
                     <h4 className='owner-stat-block-title'>Pass Type Breakdown</h4>
                     {passBreakdown.length === 0 ? (
@@ -494,7 +548,33 @@ export default function Owner() {
                     )}
                 </div>
 
-                {/* Staff detail with toggle */}
+                {/* Who Taught */}
+                <div className='owner-stat-block'>
+                    <h4 className='owner-stat-block-title'>Who Taught</h4>
+                    {teachingByInstructor.length === 0 ? (
+                        <p className='owner-hint'>No teaching recorded in this period.</p>
+                    ) : (
+                        <div className='owner-breakdown-list'>
+                            {teachingByInstructor.map(row => (
+                                <div key={row.name} className='owner-breakdown-row'>
+                                    <span className='owner-breakdown-label'>{row.name}</span>
+                                    <span className='owner-breakdown-count'>{row.days} {row.days === 1 ? 'day' : 'days'}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    {teachingDates.length > 0 && (
+                        <div className='owner-teach-dates'>
+                            {teachingDates.map(date => (
+                                <div key={date} className='owner-teach-date-row'>
+                                    <span className='owner-teach-date'>{formatDate(date + 'T12:00:00')}</span>
+                                    <span className='owner-teach-names'>{instructorsOnDate(date).join(', ')}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
                 <div className='owner-stat-block'>
                     <div className='owner-staff-header'>
                         <h4 className='owner-stat-block-title'>Staff Activity</h4>
@@ -558,6 +638,7 @@ export default function Owner() {
                                 {activeDates.map(date => {
                                     const isOpen = expandedDate === date
                                     const workers = staffOnDate(date)
+                                    const teachers = instructorsOnDate(date)
                                     return (
                                         <div key={date} className='owner-staff-item'>
                                             <div className='owner-staff-row' onClick={() => setExpandedDate(isOpen ? null : date)}>
@@ -567,6 +648,11 @@ export default function Owner() {
                                             </div>
                                             {isOpen && (
                                                 <div className='owner-staff-detail'>
+                                                    {teachers.length > 0 && (
+                                                        <div className='owner-date-staff-block'>
+                                                            <div className='owner-date-staff-name'>Taught: {teachers.join(', ')}</div>
+                                                        </div>
+                                                    )}
                                                     {workers.map(emailAddr => {
                                                         const theirs = checkInsForStaffOnDate(emailAddr, date)
                                                         return (
@@ -591,6 +677,52 @@ export default function Owner() {
                         )
                     )}
                 </div>
+            </div>
+
+            {/* ===== INSTRUCTORS ===== */}
+            <div className='owner-section'>
+                <div className='owner-section-header'>
+                    <h3>Instructors</h3>
+                </div>
+                <p className='owner-hint'>These names appear on the admin dashboard so staff can mark who taught each day.</p>
+
+                <div className='owner-add-instructor'>
+                    <input
+                        type='text'
+                        value={newInstructorName}
+                        onChange={e => { setNewInstructorName(e.target.value); setInstructorError('') }}
+                        placeholder='New instructor name'
+                        onKeyDown={e => { if (e.key === 'Enter') handleAddInstructor() }}
+                    />
+                    <button className='owner-btn' onClick={handleAddInstructor} disabled={addingInstructor}>
+                        {addingInstructor ? 'Adding...' : '+ Add'}
+                    </button>
+                </div>
+                {instructorError && <p className='owner-error'>{instructorError}</p>}
+
+                {instructorsLoading ? (
+                    <p>Loading...</p>
+                ) : instructors.length === 0 ? (
+                    <p className='owner-hint'>No instructors yet. Add one above.</p>
+                ) : (
+                    <div className='owner-pass-list'>
+                        {instructors.map(inst => (
+                            <div key={inst.id} className={`owner-pass-card ${!inst.active ? 'inactive' : ''}`}>
+                                <div className='owner-pass-info'>
+                                    <div className='owner-pass-top'>
+                                        <span className='owner-pass-label'>{inst.name}</span>
+                                        {!inst.active && <span className='owner-pass-inactive-badge'>Inactive</span>}
+                                    </div>
+                                </div>
+                                <div className='owner-pass-actions'>
+                                    <button className='owner-btn-small-outline' onClick={() => handleToggleInstructor(inst)}>
+                                        {inst.active ? 'Deactivate' : 'Reactivate'}
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* ===== PRICING EDITOR ===== */}

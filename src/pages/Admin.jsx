@@ -4,6 +4,7 @@ import { db, auth } from '../firebase'
 import { collection, doc, updateDoc, addDoc, orderBy, query, deleteDoc, onSnapshot, arrayUnion, arrayRemove, setDoc, getDoc, getDocs, where } from 'firebase/firestore'
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
 import { usePassTypes, getExpiryDate } from '../hooks/usePassTypes'
+import { useInstructors } from '../hooks/useInstructors'
 import './Admin.css'
 
 const STAFF_VIEW_EMAILS = ['dayton1salsa@gmail.com', 'ahiciano@icanoki.com']
@@ -25,10 +26,12 @@ function getStaffName(email) {
 export default function Admin() {
     const navigate = useNavigate()
     const { passTypes } = usePassTypes()
+    const { instructors } = useInstructors()
     const [user, setUser] = useState(null)
     const [members, setMembers] = useState([])
     const [shifts, setShifts] = useState([])
     const [checkInLog, setCheckInLog] = useState([])
+    const [instructorLog, setInstructorLog] = useState([])
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loginError, setLoginError] = useState('')
@@ -105,6 +108,14 @@ export default function Admin() {
             setCheckInLog(snapshot.docs.map(d => ({ id: d.id, ...d.data() })))
         })
         return () => { unsubShifts(); unsubLog() }
+    }, [user])
+
+    useEffect(() => {
+        if (!user) return
+        const unsubInstructorLog = onSnapshot(collection(db, 'instructorLog'), (snapshot) => {
+            setInstructorLog(snapshot.docs.map(d => ({ id: d.id, ...d.data() })))
+        })
+        return unsubInstructorLog
     }, [user])
 
     function isCheckedInToday(member) {
@@ -250,6 +261,31 @@ export default function Admin() {
         } catch (e) {
             console.error('Error removing check-in log:', e)
         }
+    }
+
+    async function handleToggleInstructor(instructorName, date) {
+        const safeId = `${instructorName.replace(/[^a-zA-Z0-9]/g, '_')}_${date}`
+        const ref = doc(db, 'instructorLog', safeId)
+        const alreadyTaught = instructorLog.some(l => l.id === safeId)
+        try {
+            if (alreadyTaught) {
+                await deleteDoc(ref)
+            } else {
+                await setDoc(ref, {
+                    name: instructorName,
+                    date,
+                    loggedBy: user?.email || 'unknown',
+                    loggedAt: new Date().toISOString()
+                })
+            }
+        } catch (e) {
+            console.error('Error toggling instructor:', e)
+        }
+    }
+
+    function taughtOnDate(instructorName, date) {
+        const safeId = `${instructorName.replace(/[^a-zA-Z0-9]/g, '_')}_${date}`
+        return instructorLog.some(l => l.id === safeId)
     }
 
     async function handleDelete(memberId) {
@@ -509,6 +545,29 @@ export default function Admin() {
                         </button>
                     )}
                 </div>
+            </div>
+
+            {/* Instructors — who taught */}
+            <div className='admin-instructors'>
+                <h3>Who Taught {isCheckInDateToday ? 'Today' : `on ${new Date(checkInDate + 'T12:00:00').toLocaleDateString()}`}</h3>
+                {instructors.filter(i => i.active).length === 0 ? (
+                    <p className='staff-empty'>No instructors set up yet. Add them in the Owner Portal.</p>
+                ) : (
+                    <div className='instructor-toggle-list'>
+                        {instructors.filter(i => i.active).map(inst => {
+                            const taught = taughtOnDate(inst.name, checkInDate)
+                            return (
+                                <button
+                                    key={inst.id}
+                                    className={`instructor-toggle-btn ${taught ? 'taught' : ''}`}
+                                    onClick={() => handleToggleInstructor(inst.name, checkInDate)}
+                                >
+                                    {taught ? '✓ ' : ''}{inst.name}
+                                </button>
+                            )
+                        })}
+                    </div>
+                )}
             </div>
 
             <div className='admin-controls'>

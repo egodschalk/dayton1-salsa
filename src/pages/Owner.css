@@ -564,6 +564,52 @@
     justify-content: flex-end;
 }
 
+/* ===== Instructors ===== */
+
+.owner-add-instructor {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.owner-add-instructor input {
+    flex: 1;
+    padding: 10px;
+    font-size: 12pt;
+    border: 1px solid var(--secondary);
+    border-radius: 4px;
+    font-family: "Urbanist", sans-serif;
+    background-color: transparent;
+    color: var(--primary);
+    box-sizing: border-box;
+}
+
+.owner-teach-dates {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.owner-teach-date-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 5px;
+    font-size: 10pt;
+}
+
+.owner-teach-date {
+    opacity: 0.7;
+}
+
+.owner-teach-names {
+    color: var(--secondary);
+    text-align: right;
+}
+
 /* ===== Mobile ===== */
 
 @media screen and (max-width: 768px) {
@@ -718,5 +764,18 @@
 
     .owner-form-buttons button {
         flex: 1;
+    }
+
+    .owner-add-instructor {
+        flex-direction: column;
+    }
+
+    .owner-teach-date-row {
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .owner-teach-names {
+        text-align: left;
     }
 }
