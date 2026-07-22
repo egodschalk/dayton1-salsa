@@ -1,39 +1,14 @@
 import './Classes.css'
-import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import classesPagePic from '../assets/tim-teaching.png'
 import level1 from '../assets/noel-1.png'
 import level2 from '../assets/group-2.png'
 import level3 from '../assets/rj-teaching.png'
 import PayPalButton from './PayPalButton'
-
-const today = new Date()
-const dayOfMonth = today.getDate()
-const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()
-const isFirstWeek = dayOfMonth <= 9 || dayOfMonth >= daysInMonth - 4
-
-function getExpiryDate(passType) {
-    const now = new Date()
-    if (passType === 'day') {
-        const expiry = new Date(now)
-        expiry.setMonth(expiry.getMonth() + 3)
-        return expiry.toLocaleDateString()
-    }
-    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1)
-    const diffDays = (nextMonth - now) / (1000 * 60 * 60 * 24)
-    if (diffDays < 5) {
-        return new Date(now.getFullYear(), now.getMonth() + 2, 1).toLocaleDateString()
-    }
-    return nextMonth.toLocaleDateString()
-}
-
-function getPassLabel(passType) {
-    if (passType === 'day') return 'Day Pass — $25'
-    if (passType === 'one_style') return 'Monthly 1 Style — $60'
-    if (passType === 'both_styles') return 'Monthly Both Styles — $80'
-}
+import { usePassTypes, isPassVisible, getExpiryDate } from '../hooks/usePassTypes'
 
 export default function Classes() {
+    const { passTypes } = usePassTypes()
     const [step, setStep] = useState(1)
     const [selectedPass, setSelectedPass] = useState(null)
     const [formData, setFormData] = useState({
@@ -44,6 +19,17 @@ export default function Classes() {
     })
     const [errors, setErrors] = useState({})
     const [paymentDetails, setPaymentDetails] = useState(null)
+
+    // Passes currently visible to the public
+    const visiblePasses = passTypes.filter(p => isPassVisible(p))
+
+    // Full pass object for the selected pass key
+    const selectedPassObj = passTypes.find(p => p.key === selectedPass)
+
+    function formatExpiry(pass) {
+        if (!pass) return ''
+        return new Date(getExpiryDate(pass)).toLocaleDateString()
+    }
 
     function handleChange(e) {
         setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -107,22 +93,19 @@ export default function Classes() {
                                     <p>Salsa (all levels)</p>
                                 </div>
                             </div>
-
-                             <div className='class-schedule'> 
-                            <h3>July 27th</h3>
-                             <div className='schedule'> 
-                             <div className='times'> 
-                            <p>Social 8:30 - 10:30 PM</p>
-                             </div> 
-                             </div> 
-                             </div> 
+                            <div className='class-schedule'>
+                                <h3>July 27th</h3>
+                                <div className='schedule'>
+                                    <div className='times'>
+                                        <p>Social 8:30 - 10:30 PM</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className='team-info'>
                         <h3>Tuesday Classes</h3>
-                        <p>From June 2 - July 7, we will be offering Bachata classes on Tuesdays. Find the information <a href="https://www.facebook.com/share/p/1cV5Dm15rN/" target='blank'>
-                            HERE
-                        </a></p>
+                        <p>From June 2 - July 7, we will be offering Bachata classes on Tuesdays. Find the information <a href="https://www.facebook.com/share/p/1cV5Dm15rN/" target='blank'>HERE</a></p>
                     </div>
                 </div>
             </div>
@@ -134,14 +117,14 @@ export default function Classes() {
                     <p>We offer classes in monthly cycles</p>
                     <div className='rates'>
                         <div className='rate-category'>
-                            <p>1 Style:</p>
-                            <p>Both Styles:</p>
-                            <p>Day Pass:</p>
+                            {passTypes.filter(p => p.active).map(pass => (
+                                <p key={pass.id}>{pass.label}:</p>
+                            ))}
                         </div>
                         <div className='rate-cost'>
-                            <p>$60</p>
-                            <p>$80</p>
-                            <p>$25</p>
+                            {passTypes.filter(p => p.active).map(pass => (
+                                <p key={pass.id}>${pass.amount}</p>
+                            ))}
                         </div>
                     </div>
 
@@ -208,35 +191,24 @@ export default function Classes() {
                                 <div className='form-group'>
                                     <label>Select Your Pass</label>
                                     <div className='pass-options'>
-                                        <div
-                                            className={`pass-option ${selectedPass === 'day' ? 'selected' : ''}`}
-                                            onClick={() => setSelectedPass('day')}
-                                        >
-                                            <p>Day Pass</p>
-                                            <p>$25</p>
-                                        </div>
-                                        {isFirstWeek ? (
-                                            <>
-                                                <div
-                                                    className={`pass-option ${selectedPass === 'one_style' ? 'selected' : ''}`}
-                                                    onClick={() => setSelectedPass('one_style')}
-                                                >
-                                                    <p>Monthly — 1 Style</p>
-                                                    <p>$60</p>
-                                                </div>
-                                                <div
-                                                    className={`pass-option ${selectedPass === 'both_styles' ? 'selected' : ''}`}
-                                                    onClick={() => setSelectedPass('both_styles')}
-                                                >
-                                                    <p>Monthly — Both Styles</p>
-                                                    <p>$80</p>
-                                                </div>
-                                            </>
-                                        ) : (
+                                        {visiblePasses.length === 0 ? (
                                             <p className='monthly-unavailable'>
-                                                Monthly passes are only available during
-                                                the first week of the month.
+                                                No passes are available right now. Please check back soon or see the front desk.
                                             </p>
+                                        ) : (
+                                            visiblePasses.map(pass => (
+                                                <div
+                                                    key={pass.id}
+                                                    className={`pass-option ${selectedPass === pass.key ? 'selected' : ''}`}
+                                                    onClick={() => {
+                                                        setSelectedPass(pass.key)
+                                                        setErrors({ ...errors, selectedPass: '' })
+                                                    }}
+                                                >
+                                                    <p>{pass.label}</p>
+                                                    <p>${pass.amount}</p>
+                                                </div>
+                                            ))
                                         )}
                                     </div>
                                     {errors.selectedPass && <span className='form-error'>{errors.selectedPass}</span>}
@@ -256,8 +228,8 @@ export default function Classes() {
                                     <p><strong>Name:</strong> {formData.firstName} {formData.lastName}</p>
                                     <p><strong>Phone:</strong> {formData.phone}</p>
                                     {formData.email && <p><strong>Email:</strong> {formData.email}</p>}
-                                    <p><strong>Pass:</strong> {getPassLabel(selectedPass)}</p>
-                                    <p><strong>Valid until:</strong> {getExpiryDate(selectedPass)}</p>
+                                    <p><strong>Pass:</strong> {selectedPassObj ? `${selectedPassObj.label} — $${selectedPassObj.amount}` : ''}</p>
+                                    <p><strong>Valid until:</strong> {formatExpiry(selectedPassObj)}</p>
                                 </div>
                                 <PayPalButton
                                     selectedPass={selectedPass}
@@ -279,8 +251,8 @@ export default function Classes() {
                                     <p><strong>Name:</strong> {formData.firstName} {formData.lastName}</p>
                                     <p><strong>Phone:</strong> {formData.phone}</p>
                                     {formData.email && <p><strong>Email:</strong> {formData.email}</p>}
-                                    <p><strong>Pass:</strong> {getPassLabel(selectedPass)}</p>
-                                    <p><strong>Valid until:</strong> {getExpiryDate(selectedPass)}</p>
+                                    <p><strong>Pass:</strong> {selectedPassObj ? `${selectedPassObj.label} — $${selectedPassObj.amount}` : ''}</p>
+                                    <p><strong>Valid until:</strong> {formatExpiry(selectedPassObj)}</p>
                                     {paymentDetails && (
                                         <p><strong>Transaction ID:</strong> {paymentDetails.id}</p>
                                     )}
@@ -299,7 +271,6 @@ export default function Classes() {
                                 </button>
                             </div>
                         )}
-
                     </div>
                 </div>
                 <div className='classes-picture'>
