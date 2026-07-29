@@ -91,7 +91,8 @@ export default function Classes() {
                     <div className='classes-schedule-section'>
                         <div className='days'>
                             <h3>Mondays</h3>
-                            <p>June 1, 8, 15, 22</p>
+                            <p>Aug 3, 10, 17, 24</p>
+                            <p>(No classes Aug 31)</p>
                         </div>
                         <div className='class-schedule'>
                             <h3>Class Schedule</h3>
@@ -119,10 +120,10 @@ export default function Classes() {
                         </div>
                     </div>
                     <div className='team-info'>
-                        <h3>Tuesday Classes</h3>
+                        {/* <h3>Tuesday Classes</h3>
                         <p>From June 2 - July 7, we will be offering Bachata classes on Tuesdays. Find the information <a href="https://www.facebook.com/share/p/1cV5Dm15rN/" target='blank'>
                             HERE
-                        </a></p>
+                        </a></p> */}
                     </div>
                 </div>
             </div>
@@ -130,7 +131,7 @@ export default function Classes() {
             <div className='classes-membership-section'>
                 <div className='classes-rates'>
                     <h3>Monthly Rates:</h3>
-                    <h4>June</h4>
+                    <h4>August</h4>
                     <p>We offer classes in monthly cycles</p>
                     <div className='rates'>
                         <div className='rate-category'>

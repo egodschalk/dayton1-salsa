@@ -9,22 +9,22 @@ const eventData = [
     {
         id: 1,
         imgUrl: event1,
-        title: "Silent Disco",
-        date: "July 12, 2026",
-        time: "5 -8 PM",
-        location: "4464 Indian Ripple Rd, Beavercreek, OH",
+        title: "Salsa at the Eso",
+        date: "Aug 2, 2026",
+        time: "4:30 - 8:30 PM",
+        location: "916 E McMillan St, Cincinnati, OH 45206",
         // info: "Presented by Saoco Sesion & DaytOn1",
-        eventUrl: 'https://www.facebook.com/events/1531822261679572'
+        eventUrl: 'https://www.facebook.com/events/1054192710342166/?acontext=%7B%22event_action_history%22%3A[%7B%22mechanism%22%3A%22your_upcoming_events_unit%22%2C%22surface%22%3A%22bookmark%22%7D]%2C%22ref_notif_type%22%3Anull%7D'
     },
     {
         id: 2,
         imgUrl: event2,
-        title: "Tuesday Bachata Classes",
-        date: "June 2 - July 7",
-        time: "6:00 PM",
-        location: "8967 Kingsridge Dr. Dayton. OH 45458",
+        title: "Latin Dance Block Party",
+        date: "Aug 1, 2026",
+        time: "5:30PM - 12AM",
+        location: "312 E Main St, Muncie, IN",
         // info: "Proceeds Benefit: Special Olympics of Greater DaytOn",
-        eventUrl: 'https://www.facebook.com/share/p/1cV5Dm15rN/'
+        eventUrl: 'https://harmonymovementstudio.redpodium.com/salsa-workshops-with-david-and-heather-sommer'
     },
     // {
     //     id: 3,
