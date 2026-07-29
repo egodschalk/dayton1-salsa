@@ -1,0 +1,498 @@
+.kiosk-page {
+    min-height: 100vh;
+    width: 100vw;
+    background-color: #000;
+    display: flex;
+    flex-direction: column;
+    font-family: "Urbanist", sans-serif;
+    color: var(--primary);
+    padding: 30px 20px;
+    box-sizing: border-box;
+}
+
+.kiosk-inner {
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.kiosk-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.kiosk-header h1 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 28pt;
+    margin: 0;
+}
+
+.kiosk-exit-btn {
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    font-family: "Urbanist", sans-serif;
+    font-size: 10pt;
+    cursor: pointer;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 1px;
+}
+
+.kiosk-exit-btn:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.kiosk-search-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.kiosk-search-section h2 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 22pt;
+    text-align: center;
+    margin: 0;
+}
+
+.kiosk-search-input {
+    width: 100%;
+    padding: 20px;
+    font-size: 20pt;
+    border: 2px solid var(--secondary);
+    border-radius: 8px;
+    font-family: "Urbanist", sans-serif;
+    background-color: transparent;
+    color: var(--primary);
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.kiosk-search-input:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+.kiosk-results {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.kiosk-result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    border: 1px solid var(--secondary);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.kiosk-result-item:hover {
+    background-color: var(--secondary);
+    color: var(--tertiary);
+}
+
+.kiosk-result-item:hover .kiosk-status-badge {
+    background-color: rgba(0,0,0,0.2);
+    color: white;
+}
+
+.kiosk-result-name {
+    font-size: 16pt;
+    letter-spacing: 1px;
+}
+
+.kiosk-no-results {
+    font-size: 14pt;
+    opacity: 0.6;
+    text-align: center;
+}
+
+.kiosk-register-btn {
+    margin-top: 10px;
+    padding: 12px 24px;
+    background: transparent;
+    border: 1px solid var(--secondary);
+    border-radius: 6px;
+    font-family: "Urbanist", sans-serif;
+    font-size: 12pt;
+    cursor: pointer;
+    color: var(--secondary);
+    letter-spacing: 1px;
+    transition: all 0.2s;
+}
+
+.kiosk-register-btn:hover {
+    background-color: var(--secondary);
+    color: var(--tertiary);
+}
+
+.kiosk-register-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex: 1;
+}
+
+.kiosk-register-card {
+    border: 2px solid var(--secondary);
+    border-radius: 16px;
+    padding: 35px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.kiosk-register-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.kiosk-register-header h2 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 24pt;
+    margin: 0 0 8px 0;
+}
+
+.kiosk-register-subtitle {
+    font-size: 11pt;
+    opacity: 0.7;
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+.kiosk-register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.kiosk-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.kiosk-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.kiosk-form-group label {
+    font-size: 10pt;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+.kiosk-optional {
+    text-transform: none;
+    font-style: italic;
+    opacity: 0.6;
+}
+
+.kiosk-form-group input,
+.kiosk-form-group select {
+    padding: 14px 16px;
+    font-size: 13pt;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    font-family: "Urbanist", sans-serif;
+    background-color: rgba(255,255,255,0.03);
+    color: var(--primary);
+    box-sizing: border-box;
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+.kiosk-form-group input:focus,
+.kiosk-form-group select:focus {
+    outline: none;
+    border-color: var(--secondary);
+    background-color: rgba(255,255,255,0.05);
+}
+
+.kiosk-form-group select option {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+.kiosk-form-error {
+    color: #ff5555;
+    font-size: 9pt;
+    margin-top: 4px;
+}
+
+.kiosk-pass-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.kiosk-pass-option {
+    padding: 14px 16px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    background-color: rgba(255,255,255,0.03);
+    color: var(--primary);
+    font-family: "Urbanist", sans-serif;
+    font-size: 12pt;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+}
+
+.kiosk-pass-option:hover {
+    border-color: var(--secondary);
+}
+
+.kiosk-pass-option.selected {
+    border-color: var(--secondary);
+    background-color: var(--secondary);
+    color: var(--tertiary);
+    font-weight: bold;
+}
+.kiosk-payment-options {
+    display: flex;
+    gap: 8px;
+}
+
+.kiosk-payment-option {
+    flex: 1;
+    padding: 14px 8px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    background-color: rgba(255,255,255,0.03);
+    color: var(--primary);
+    font-family: "Urbanist", sans-serif;
+    font-size: 12pt;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+}
+
+.kiosk-payment-option:hover {
+    border-color: var(--secondary);
+}
+
+.kiosk-payment-option.selected {
+    border-color: var(--secondary);
+    background-color: var(--secondary);
+    color: var(--tertiary);
+    font-weight: bold;
+}
+.kiosk-register-note {
+    text-align: center;
+    font-size: 11pt;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: rgba(255,165,0,0.08);
+    color: #cc8800;
+    letter-spacing: 0.5px;
+}
+
+.kiosk-register-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.kiosk-cancel-btn {
+    flex: 1;
+    padding: 14px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    font-family: "Urbanist", sans-serif;
+    font-size: 12pt;
+    cursor: pointer;
+    color: var(--primary);
+    letter-spacing: 1px;
+    transition: all 0.2s;
+}
+
+.kiosk-cancel-btn:hover {
+    border-color: var(--primary);
+}
+
+.kiosk-submit-btn {
+    flex: 2;
+    padding: 14px;
+    background-color: var(--secondary);
+    color: var(--tertiary);
+    border: none;
+    border-radius: 8px;
+    font-family: "Urbanist", sans-serif;
+    font-size: 12pt;
+    font-weight: bold;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: opacity 0.2s;
+}
+
+.kiosk-submit-btn:hover {
+    opacity: 0.9;
+}
+
+.kiosk-confirmation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+.kiosk-confirm-card {
+    border: 2px solid var(--secondary);
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    text-align: center;
+}
+
+.kiosk-confirm-card h2 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 28pt;
+    margin: 0 0 30px 0;
+}
+
+.kiosk-confirm-details {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.kiosk-confirm-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 14pt;
+}
+
+.kiosk-confirm-row span:first-child {
+    opacity: 0.6;
+    letter-spacing: 1px;
+}
+
+.kiosk-wait {
+    font-size: 14pt;
+    letter-spacing: 1px;
+    margin: 0 0 10px 0;
+}
+
+.kiosk-countdown {
+    font-size: 12pt;
+    opacity: 0.5;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.kiosk-status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 10pt;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.status-active {
+    background-color: rgba(0, 255, 0, 0.15);
+    color: #00cc00;
+}
+
+.status-expired {
+    background-color: rgba(255, 0, 0, 0.15);
+    color: #cc0000;
+}
+
+.status-used {
+    background-color: rgba(255, 165, 0, 0.15);
+    color: #cc8800;
+}
+
+.status-pending {
+    background-color: rgba(255, 165, 0, 0.15);
+    color: #cc8800;
+}
+
+@media screen and (max-width: 768px) {
+    .kiosk-page {
+        padding: 20px 15px;
+    }
+
+    .kiosk-header h1 {
+        font-size: 20pt;
+    }
+
+    .kiosk-header {
+        margin-bottom: 30px;
+    }
+
+    .kiosk-search-section h2 {
+        font-size: 16pt;
+    }
+
+    .kiosk-search-input {
+        font-size: 16pt;
+        padding: 15px;
+    }
+
+    .kiosk-result-name {
+        font-size: 13pt;
+    }
+
+    .kiosk-result-item {
+        padding: 14px 16px;
+    }
+
+    .kiosk-confirm-card {
+        padding: 25px 20px;
+    }
+
+    .kiosk-confirm-card h2 {
+        font-size: 20pt;
+    }
+
+    .kiosk-confirm-row {
+        font-size: 12pt;
+    }
+
+    .kiosk-wait {
+        font-size: 12pt;
+    }
+
+    .kiosk-register-card {
+        padding: 25px 20px;
+    }
+
+    .kiosk-register-header h2 {
+        font-size: 20pt;
+    }
+
+    .kiosk-form-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}

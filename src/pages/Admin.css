@@ -42,7 +42,8 @@
     letter-spacing: 1px;
 }
 
-.admin-form-group input {
+.admin-form-group input,
+.admin-form-group select {
     padding: 10px;
     font-size: 12pt;
     border: 1px solid var(--secondary);
@@ -51,6 +52,18 @@
     background-color: transparent;
     color: var(--primary);
     box-sizing: border-box;
+    width: 100%;
+}
+
+.admin-form-group select option {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+.form-error {
+    color: red;
+    font-size: 10pt;
+    margin-top: 4px;
 }
 
 .admin-error {
@@ -106,6 +119,12 @@
     margin: 0;
 }
 
+.admin-current-user {
+    font-size: 11pt;
+    color: var(--secondary);
+    letter-spacing: 1px;
+}
+
 .admin-stats {
     display: flex;
     gap: 20px;
@@ -135,10 +154,170 @@
     margin: 0;
 }
 
-.admin-controls {
+.admin-search {
+    margin-bottom: 15px;
+}
+
+.admin-search-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 14pt;
+    border: 1px solid var(--secondary);
+    border-radius: 6px;
+    font-family: "Urbanist", sans-serif;
+    background-color: transparent;
+    color: var(--primary);
+    box-sizing: border-box;
+}
+
+.admin-staff {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid var(--secondary);
+    border-radius: 8px;
+}
+
+.admin-staff h3 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 14pt;
+    margin: 0 0 10px 0;
+}
+
+.staff-lookup {
+    margin-bottom: 12px;
+}
+
+.staff-lookup input[type="date"] {
+    padding: 8px 12px;
+    font-size: 12pt;
+    border: 1px solid var(--secondary);
+    border-radius: 4px;
+    font-family: "Urbanist", sans-serif;
+    background-color: transparent;
+    color: var(--primary);
+}
+
+.staff-empty {
+    font-size: 11pt;
+    opacity: 0.5;
+    font-style: italic;
+    margin: 0;
+}
+
+.staff-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.staff-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 10px 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.staff-name {
+    font-size: 12pt;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    color: var(--secondary);
+}
+
+.staff-meta {
+    font-size: 10pt;
+    opacity: 0.7;
+    letter-spacing: 0.5px;
+}
+
+.staff-count {
+    font-size: 11pt;
+    letter-spacing: 0.5px;
+}
+
+.admin-attendance {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid var(--secondary);
+    border-radius: 8px;
+}
+
+.admin-attendance h3 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 14pt;
+    margin: 0 0 10px 0;
+}
+
+.attendance-lookup {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.attendance-lookup input[type="date"] {
+    padding: 8px 12px;
+    font-size: 12pt;
+    border: 1px solid var(--secondary);
+    border-radius: 4px;
+    font-family: "Urbanist", sans-serif;
+    background-color: transparent;
+    color: var(--primary);
+}
+
+.attendance-lookup p {
+    margin: 0;
+    font-size: 11pt;
+    letter-spacing: 1px;
+}
+
+.admin-checkin-date {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid var(--secondary);
+    border-radius: 8px;
+}
+
+.admin-checkin-date h3 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 14pt;
+    margin: 0 0 10px 0;
+}
+
+.checkin-date-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.checkin-date-row input[type="date"] {
+    padding: 8px 12px;
+    font-size: 12pt;
+    border: 1px solid var(--secondary);
+    border-radius: 4px;
+    font-family: "Urbanist", sans-serif;
+    background-color: transparent;
+    color: var(--primary);
+}
+
+.checkin-date-warning {
+    font-size: 11pt;
+    color: #cc8800;
+    letter-spacing: 1px;
+}
+
+.admin-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 20px;
     flex-wrap: wrap;
     gap: 10px;
@@ -148,6 +327,18 @@
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.admin-sort {
+    display: flex;
+    gap: 8px;
 }
 
 .admin-filter-btn {
@@ -169,6 +360,32 @@
     color: var(--tertiary);
 }
 
+.admin-manual-entry {
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid var(--secondary);
+    border-radius: 8px;
+}
+
+.admin-manual-entry h3 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 14pt;
+    margin: 0 0 15px 0;
+}
+
+.manual-entry-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    align-items: start;
+}
+
+.manual-entry-form .admin-btn {
+    grid-column: 1 / -1;
+    width: 100%;
+}
+
 .admin-table-wrapper {
     overflow-x: auto;
 }
@@ -187,6 +404,7 @@
     color: var(--secondary);
     letter-spacing: 1px;
     font-size: 11pt;
+    white-space: nowrap;
 }
 
 .admin-table td {
@@ -204,6 +422,7 @@
     border-radius: 20px;
     font-size: 10pt;
     letter-spacing: 1px;
+    white-space: nowrap;
 }
 
 .status-active {
@@ -231,6 +450,7 @@
     font-size: 10pt;
     cursor: pointer;
     letter-spacing: 1px;
+    white-space: nowrap;
 }
 
 .checkin-btn-undo {
@@ -250,6 +470,7 @@
     letter-spacing: 1px;
     color: #cc0000;
     transition: all 0.2s;
+    white-space: nowrap;
 }
 
 .delete-btn:hover {
@@ -264,18 +485,217 @@
     font-style: italic;
 }
 
+.admin-mobile-list {
+    display: none;
+}
+
 @media screen and (max-width: 768px) {
     .admin-page {
         padding: 10px;
     }
 
-    .admin-table th,
-    .admin-table td {
-        padding: 8px 10px;
-        font-size: 10pt;
+    .admin-header h2 {
+        font-size: 18pt;
+    }
+
+    .admin-current-user {
+        display: none;
+    }
+
+    .admin-btn,
+    .admin-btn-outline {
+        padding: 10px 14px;
+        font-size: 11pt;
     }
 
     .admin-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .admin-stat {
+        min-width: unset;
+        padding: 12px;
+    }
+
+    .admin-stat h3 {
+        font-size: 20pt;
+    }
+
+    .admin-search {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: var(--background, #000);
+        padding: 10px 0;
+        margin-bottom: 10px;
+    }
+
+    .admin-search-input {
+        font-size: 16px;
+        padding: 14px;
+    }
+
+    .staff-lookup input[type="date"] {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+
+    .staff-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .admin-attendance {
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+
+    .attendance-lookup {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .attendance-lookup input[type="date"] {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+
+    .checkin-date-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .checkin-date-row input[type="date"] {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+
+    .admin-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .admin-filters {
+        justify-content: center;
+    }
+
+    .admin-filter-btn {
+        padding: 6px 12px;
+        font-size: 10pt;
+    }
+
+    .admin-actions {
+        justify-content: center;
+    }
+
+    .admin-sort {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .manual-entry-form {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-form-group input,
+    .admin-form-group select {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .admin-manual-entry {
+        padding: 15px;
+    }
+
+    .admin-table-wrapper {
+        display: none;
+    }
+
+    .admin-mobile-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .admin-mobile-card {
+        border: 1px solid var(--secondary);
+        border-radius: 8px;
+        padding: 12px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .admin-mobile-card.expired-card {
+        opacity: 0.5;
+    }
+
+    .admin-mobile-top {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+    }
+
+    .admin-mobile-name {
+        font-size: 13pt;
+        font-family: "Julius Sans One", serif;
+        color: var(--secondary);
+    }
+
+    .admin-mobile-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2px 12px;
+        font-size: 10pt;
+        opacity: 0.8;
+    }
+
+    .admin-mobile-meta span {
+        letter-spacing: 0.5px;
+    }
+
+    .admin-mobile-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        align-items: stretch;
+    }
+
+    .admin-mobile-buttons .checkin-btn {
+        padding: 12px 16px;
+        font-size: 11pt;
+    }
+
+    .admin-mobile-buttons .delete-btn {
+        padding: 8px 16px;
+        font-size: 10pt;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .admin-login {
+        margin: 60px auto;
+        padding: 20px;
+    }
+
+    .admin-header h2 {
+        font-size: 14pt;
+    }
+
+    .admin-mobile-meta {
+        grid-template-columns: 1fr;
     }
 }

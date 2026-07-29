@@ -9,7 +9,8 @@ import Events from './pages/Events';
 import Instructors from './pages/Instructors';
 import FAQs from './pages/FAQs';
 import Admin from './pages/Admin';
-
+import Kiosk from './pages/Kiosk';
+import Owner from './pages/Owner';
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,14 @@ const router = createBrowserRouter([
         element: <Admin />,
       },
     ],
+  },
+  {
+    path: '/kiosk',
+    element: <Kiosk />,
+  },
+  {
+    path: '/owner',
+    element: <Owner />,
   },
 ]);
 
