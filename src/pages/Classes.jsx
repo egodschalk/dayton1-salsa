@@ -85,7 +85,7 @@ export default function Classes() {
                             <div className='schedule'>
                                 <div className='times'>
                                     <p>6:30</p>
-                                    <p>7:15</p>
+                                    <p>7:25</p>
                                     <p>7:45</p>
                                 </div>
                                 <div className='classes'>
@@ -95,7 +95,7 @@ export default function Classes() {
                                 </div>
                             </div>
                             <div className='class-schedule'>
-                                <h3>July 27th</h3>
+                                <h3>August 24th</h3>
                                 <div className='schedule'>
                                     <div className='times'>
                                         <p>Social 8:30 - 10:30 PM</p>
