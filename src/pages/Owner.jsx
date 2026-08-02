@@ -5,6 +5,7 @@ import { collection, onSnapshot, query, orderBy } from 'firebase/firestore'
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
 import { usePassTypes, createPassType, updatePassType } from '../hooks/usePassTypes'
 import { useInstructors, createInstructor, setInstructorActive, seedInstructors } from '../hooks/useInstructors'
+import { useSchedule, saveSchedule, defaultSchedule } from '../hooks/useSchedule'
 import './Owner.css'
 
 const OWNER_EMAILS = ['dayton1salsa@gmail.com', 'ahiciano@icanoki.com']
@@ -38,6 +39,7 @@ export default function Owner() {
     const navigate = useNavigate()
     const { passTypes, loading: passLoading } = usePassTypes()
     const { instructors, loading: instructorsLoading } = useInstructors()
+    const { schedule, loading: scheduleLoading } = useSchedule()
     const [user, setUser] = useState(null)
     const [authLoading, setAuthLoading] = useState(true)
     const [email, setEmail] = useState('')
@@ -55,6 +57,12 @@ export default function Owner() {
     const [instructorError, setInstructorError] = useState('')
     const [addingInstructor, setAddingInstructor] = useState(false)
     const [seededOnce, setSeededOnce] = useState(false)
+
+    // Schedule editor state
+    const [scheduleForm, setScheduleForm] = useState(null)
+    const [scheduleSaving, setScheduleSaving] = useState(false)
+    const [scheduleError, setScheduleError] = useState('')
+    const [scheduleSuccess, setScheduleSuccess] = useState(false)
 
     // Stats data
     const [members, setMembers] = useState([])
@@ -104,6 +112,15 @@ export default function Owner() {
             seedInstructors().catch(e => console.error('Seed error:', e))
         }
     }, [user, instructors, instructorsLoading, seededOnce])
+
+    // Populate schedule form when data loads
+    useEffect(() => {
+        if (schedule && !scheduleForm) {
+            setScheduleForm(schedule)
+        } else if (!schedule && !scheduleLoading && !scheduleForm) {
+            setScheduleForm(defaultSchedule)
+        }
+    }, [schedule, scheduleLoading])
 
     async function handleLogin(e) {
         e.preventDefault()
@@ -245,6 +262,43 @@ export default function Owner() {
         }
     }
 
+    // ===== Schedule editor handlers =====
+    function addSpecialEvent() {
+        const newEvent = { id: Date.now().toString(), title: '', description: '' }
+        setScheduleForm({ ...scheduleForm, specialEvents: [...(scheduleForm.specialEvents || []), newEvent] })
+    }
+
+    function updateSpecialEvent(id, field, value) {
+        setScheduleForm({
+            ...scheduleForm,
+            specialEvents: scheduleForm.specialEvents.map(e => e.id === id ? { ...e, [field]: value } : e)
+        })
+    }
+
+    function removeSpecialEvent(id) {
+        setScheduleForm({
+            ...scheduleForm,
+            specialEvents: scheduleForm.specialEvents.filter(e => e.id !== id)
+        })
+    }
+
+    async function handleSaveSchedule() {
+        if (!scheduleForm.month.trim()) { setScheduleError('Month is required.'); return }
+        if (!scheduleForm.dayName.trim()) { setScheduleError('Day name is required.'); return }
+        if (!scheduleForm.datesList.trim()) { setScheduleError('Dates are required.'); return }
+        setScheduleSaving(true)
+        setScheduleError('')
+        setScheduleSuccess(false)
+        try {
+            await saveSchedule(scheduleForm)
+            setScheduleSuccess(true)
+            setTimeout(() => setScheduleSuccess(false), 3000)
+        } catch (e) {
+            setScheduleError('Error saving: ' + e.message)
+        }
+        setScheduleSaving(false)
+    }
+
     // ===== Stats computation =====
     function inRange(dateStr) {
         if (rangeStart && dateStr < rangeStart) return false
@@ -326,7 +380,6 @@ export default function Owner() {
         return filteredCheckIns.filter(l => l.adminEmail === emailAddr && l.date === date)
     }
 
-    // Who taught: count of days each instructor taught in range
     const teachingByInstructor = (() => {
         const counts = {}
         filteredInstructorLog.forEach(l => {
@@ -341,7 +394,6 @@ export default function Owner() {
         return filteredInstructorLog.filter(l => l.date === date).map(l => l.name)
     }
 
-    // Dates that had teaching activity (for the "who taught" by-date rollup)
     const teachingDates = [...new Set(filteredInstructorLog.map(l => l.date))].sort().reverse()
 
     function clearFilters() {
@@ -548,7 +600,6 @@ export default function Owner() {
                     )}
                 </div>
 
-                {/* Who Taught */}
                 <div className='owner-stat-block'>
                     <h4 className='owner-stat-block-title'>Who Taught</h4>
                     {teachingByInstructor.length === 0 ? (
@@ -677,6 +728,102 @@ export default function Owner() {
                         )
                     )}
                 </div>
+            </div>
+
+            {/* ===== SCHEDULE ===== */}
+            <div className='owner-section'>
+                <div className='owner-section-header'>
+                    <h3>Class Schedule</h3>
+                </div>
+                <p className='owner-hint'>Updates the schedule on the public Classes page instantly.</p>
+
+                {scheduleLoading || !scheduleForm ? (
+                    <p>Loading...</p>
+                ) : (
+                    <>
+                        <div className='owner-schedule-grid'>
+                            <div className='owner-form-group'>
+                                <label>Month Label</label>
+                                <input
+                                    type='text'
+                                    value={scheduleForm.month}
+                                    onChange={e => setScheduleForm({ ...scheduleForm, month: e.target.value })}
+                                    placeholder='e.g. August'
+                                />
+                            </div>
+                            <div className='owner-form-group'>
+                                <label>Day Name</label>
+                                <input
+                                    type='text'
+                                    value={scheduleForm.dayName}
+                                    onChange={e => setScheduleForm({ ...scheduleForm, dayName: e.target.value })}
+                                    placeholder='e.g. Mondays'
+                                />
+                            </div>
+                            <div className='owner-form-group owner-schedule-full'>
+                                <label>Dates</label>
+                                <input
+                                    type='text'
+                                    value={scheduleForm.datesList}
+                                    onChange={e => setScheduleForm({ ...scheduleForm, datesList: e.target.value })}
+                                    placeholder='e.g. Aug 3, 10, 17, 24'
+                                />
+                            </div>
+                            <div className='owner-form-group owner-schedule-full'>
+                                <label>Cancellation Note <span style={{ opacity: 0.5, fontSize: '9pt' }}>(optional)</span></label>
+                                <input
+                                    type='text'
+                                    value={scheduleForm.cancellationNote || ''}
+                                    onChange={e => setScheduleForm({ ...scheduleForm, cancellationNote: e.target.value })}
+                                    placeholder='e.g. (No classes Aug 31)'
+                                />
+                            </div>
+                        </div>
+
+                        <div className='owner-special-events'>
+                            <div className='owner-special-events-header'>
+                                <label>Special Events</label>
+                                <button className='owner-btn-small' onClick={addSpecialEvent}>+ Add Event</button>
+                            </div>
+                            {(scheduleForm.specialEvents || []).length === 0 ? (
+                                <p className='owner-hint'>No special events. Click "+ Add Event" to add one.</p>
+                            ) : (
+                                scheduleForm.specialEvents.map(event => (
+                                    <div key={event.id} className='owner-special-event-row'>
+                                        <div className='owner-form-group'>
+                                            <input
+                                                type='text'
+                                                value={event.title}
+                                                onChange={e => updateSpecialEvent(event.id, 'title', e.target.value)}
+                                                placeholder='e.g. August 24th'
+                                            />
+                                        </div>
+                                        <div className='owner-form-group'>
+                                            <input
+                                                type='text'
+                                                value={event.description}
+                                                onChange={e => updateSpecialEvent(event.id, 'description', e.target.value)}
+                                                placeholder='e.g. Social 8:30 - 10:30 PM'
+                                            />
+                                        </div>
+                                        <button className='owner-btn-small-outline owner-remove-event' onClick={() => removeSpecialEvent(event.id)}>
+                                            Remove
+                                        </button>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+
+                        {scheduleError && <p className='owner-error'>{scheduleError}</p>}
+                        {scheduleSuccess && <p className='owner-schedule-success'>✓ Schedule saved — Classes page updated.</p>}
+
+                        <div className='owner-form-buttons'>
+                            <button className='owner-btn' onClick={handleSaveSchedule} disabled={scheduleSaving}>
+                                {scheduleSaving ? 'Saving...' : 'Save Schedule'}
+                            </button>
+                        </div>
+                    </>
+                )}
             </div>
 
             {/* ===== INSTRUCTORS ===== */}

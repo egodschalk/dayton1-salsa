@@ -6,9 +6,11 @@ import level2 from '../assets/group-2.png'
 import level3 from '../assets/rj-teaching.png'
 import PayPalButton from './PayPalButton'
 import { usePassTypes, isPassVisible, getExpiryDate } from '../hooks/usePassTypes'
+import { useSchedule } from '../hooks/useSchedule'
 
 export default function Classes() {
     const { passTypes } = usePassTypes()
+    const { schedule, loading: scheduleLoading } = useSchedule()
     const [step, setStep] = useState(1)
     const [selectedPass, setSelectedPass] = useState(null)
     const [formData, setFormData] = useState({
@@ -20,11 +22,15 @@ export default function Classes() {
     const [errors, setErrors] = useState({})
     const [paymentDetails, setPaymentDetails] = useState(null)
 
-    // Passes currently visible to the public
     const visiblePasses = passTypes.filter(p => isPassVisible(p))
-
-    // Full pass object for the selected pass key
     const selectedPassObj = passTypes.find(p => p.key === selectedPass)
+
+    // Fallback values while schedule loads or if doc doesn't exist yet
+    const month = schedule?.month || 'August'
+    const dayName = schedule?.dayName || 'Mondays'
+    const datesList = schedule?.datesList || 'Aug 3, 10, 17, 24'
+    const cancellationNote = schedule?.cancellationNote || ''
+    const specialEvents = schedule?.specialEvents || []
 
     function formatExpiry(pass) {
         if (!pass) return ''
@@ -76,9 +82,9 @@ export default function Classes() {
                 <div className='classes-schedules'>
                     <div className='classes-schedule-section'>
                         <div className='days'>
-                            <h3>Mondays</h3>
-                            <p>Aug 3, 10, 17, 24</p>
-                            <p>(No classes Aug 31)</p>
+                            <h3>{dayName}</h3>
+                            <p>{datesList}</p>
+                            {cancellationNote && <p>{cancellationNote}</p>}
                         </div>
                         <div className='class-schedule'>
                             <h3>Class Schedule</h3>
@@ -94,29 +100,26 @@ export default function Classes() {
                                     <p>Salsa (all levels)</p>
                                 </div>
                             </div>
-                            <div className='class-schedule'>
-                                <h3>August 24th</h3>
-                                <div className='schedule'>
-                                    <div className='times'>
-                                        <p>Social 8:30 - 10:30 PM</p>
+                            {specialEvents.map(event => (
+                                <div key={event.id} className='class-schedule'>
+                                    <h3>{event.title}</h3>
+                                    <div className='schedule'>
+                                        <div className='times'>
+                                            <p>{event.description}</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
-                    <div className='team-info'>
-                        {/* <h3>Tuesday Classes</h3>
-                        <p>From June 2 - July 7, we will be offering Bachata classes on Tuesdays. Find the information <a href="https://www.facebook.com/share/p/1cV5Dm15rN/" target='blank'>
-                            HERE
-                        </a></p> */}
-                    </div>
+                    <div className='team-info'></div>
                 </div>
             </div>
 
             <div className='classes-membership-section'>
                 <div className='classes-rates'>
                     <h3>Monthly Rates:</h3>
-                    <h4>August</h4>
+                    <h4>{month}</h4>
                     <p>We offer classes in monthly cycles</p>
                     <div className='rates'>
                         <div className='rate-category'>
@@ -131,38 +134,22 @@ export default function Classes() {
                         </div>
                     </div>
 
-                    {/* PAYMENT FORM */}
                     <div className='classes-paypal'>
-
-                        {/* STEP 1 - Initial Form */}
                         {step === 1 && (
                             <div className='checkout-form'>
                                 <h3>Register & Pay</h3>
-
                                 <div className='form-group'>
                                     <label>First Name</label>
-                                    <input
-                                        type='text'
-                                        name='firstName'
-                                        value={formData.firstName}
-                                        onChange={handleChange}
-                                        placeholder='First name'
-                                    />
+                                    <input type='text' name='firstName' value={formData.firstName}
+                                        onChange={handleChange} placeholder='First name' />
                                     {errors.firstName && <span className='form-error'>{errors.firstName}</span>}
                                 </div>
-
                                 <div className='form-group'>
                                     <label>Last Name</label>
-                                    <input
-                                        type='text'
-                                        name='lastName'
-                                        value={formData.lastName}
-                                        onChange={handleChange}
-                                        placeholder='Last name'
-                                    />
+                                    <input type='text' name='lastName' value={formData.lastName}
+                                        onChange={handleChange} placeholder='Last name' />
                                     {errors.lastName && <span className='form-error'>{errors.lastName}</span>}
                                 </div>
-
                                 <div className='form-group'>
                                     <label>Phone Number</label>
                                     <input
@@ -179,18 +166,11 @@ export default function Classes() {
                                     />
                                     {errors.phone && <span className='form-error'>{errors.phone}</span>}
                                 </div>
-
                                 <div className='form-group'>
                                     <label>Email (optional)</label>
-                                    <input
-                                        type='email'
-                                        name='email'
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        placeholder='Email address'
-                                    />
+                                    <input type='email' name='email' value={formData.email}
+                                        onChange={handleChange} placeholder='Email address' />
                                 </div>
-
                                 <div className='form-group'>
                                     <label>Select Your Pass</label>
                                     <div className='pass-options'>
@@ -216,14 +196,12 @@ export default function Classes() {
                                     </div>
                                     {errors.selectedPass && <span className='form-error'>{errors.selectedPass}</span>}
                                 </div>
-
                                 <button className='continue-btn' onClick={handleContinue}>
                                     Continue to Payment
                                 </button>
                             </div>
                         )}
 
-                        {/* STEP 2 - PayPal screen with values */}
                         {step === 2 && (
                             <div className='checkout-payment'>
                                 <h3>Complete Your Payment</h3>
@@ -239,13 +217,10 @@ export default function Classes() {
                                     formData={formData}
                                     onSuccess={handlePaymentSuccess}
                                 />
-                                <button className='back-btn' onClick={() => setStep(1)}>
-                                    Go Back
-                                </button>
+                                <button className='back-btn' onClick={() => setStep(1)}>Go Back</button>
                             </div>
                         )}
 
-                        {/* STEP 3 - Payment Confirmation */}
                         {step === 3 && (
                             <div className='checkout-confirmation'>
                                 <div className='confirmation-icon'>✓</div>

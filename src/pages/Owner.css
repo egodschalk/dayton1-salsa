@@ -610,6 +610,73 @@
     text-align: right;
 }
 
+/* ===== Schedule editor ===== */
+
+.owner-schedule-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.owner-schedule-full {
+    grid-column: 1 / -1;
+}
+
+.owner-special-events {
+    margin-bottom: 20px;
+}
+
+.owner-special-events-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.owner-special-events-header label {
+    font-size: 12pt;
+    letter-spacing: 1px;
+}
+
+.owner-special-event-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 10px;
+    align-items: end;
+    margin-bottom: 10px;
+}
+
+.owner-special-event-row input {
+    padding: 10px;
+    font-size: 12pt;
+    border: 1px solid var(--secondary);
+    border-radius: 4px;
+    font-family: "Urbanist", sans-serif;
+    background-color: transparent;
+    color: var(--primary);
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.owner-remove-event {
+    white-space: nowrap;
+    border-color: #cc4444;
+    color: #cc4444;
+}
+
+.owner-remove-event:hover {
+    background-color: #cc4444;
+    color: white;
+}
+
+.owner-schedule-success {
+    color: #00cc00;
+    font-size: 11pt;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
 /* ===== Mobile ===== */
 
 @media screen and (max-width: 768px) {
@@ -777,5 +844,21 @@
 
     .owner-teach-names {
         text-align: left;
+    }
+
+    .owner-schedule-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .owner-schedule-full {
+        grid-column: 1;
+    }
+
+    .owner-special-event-row {
+        grid-template-columns: 1fr;
+    }
+
+    .owner-remove-event {
+        width: 100%;
     }
 }
