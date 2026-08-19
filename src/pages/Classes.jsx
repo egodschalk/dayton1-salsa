@@ -134,7 +134,7 @@ export default function Classes() {
                         </div>
                     </div>
 
-                    <div className='classes-paypal'>
+                    <div className='classes-paypal' id='register'>
                         {step === 1 && (
                             <div className='checkout-form'>
                                 <h3>Register & Pay</h3>

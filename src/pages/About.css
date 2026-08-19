@@ -55,14 +55,7 @@
     width: 300px;
     padding: 0 2vw;
     opacity: .75;
-    /* background-color: white; */
 }
-
-/* .overlay {
-    background-color: white;
-    width: 300px;
-    height: 225px;
-} */
 
 .about-class-heading {
     font-size: 25pt;
@@ -76,10 +69,27 @@
     letter-spacing: 2px;
 }
 
+.about-class-buttons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-left: 60vw;
+}
+
 .about-classes-button {
     font-size: 18pt;
     width: fit-content;
-    margin-left: 60vw;
+}
+
+.about-enroll-button {
+    font-size: 18pt;
+    width: fit-content;
+    background-color: var(--secondary);
+    color: var(--tertiary);
+}
+
+.about-enroll-button:hover {
+    opacity: 0.85;
 }
 
 .about-event-section {
@@ -144,7 +154,7 @@
         position: relative;
         top: -60px;
     }
-    
+
     .event2 img {
         width: 400px;
         position: relative;
@@ -182,9 +192,7 @@
     }
 }
 
-
 @media screen and (max-width: 1020px) {
-
     .about-class-section {
         padding: 20px 0 50px 0;
     }
@@ -206,21 +214,19 @@
         margin-bottom: -70px;
     }
 
-    .about-classes-button {
+    .about-class-buttons {
         margin-left: auto;
+        justify-content: center;
     }
-    
 }
 
 @media screen and (max-width: 920px) {
     .about-text {
         font-size: 30pt;
     }
-
 }
 
 @media screen and (max-width: 650px) {
-
     .about-event-section {
         height: 900px;
         background-image: linear-gradient(45deg, var(--secondary), rgb(227, 200, 93));
@@ -255,11 +261,9 @@
     .event2 img {
         top: -20px;
     }
-
 }
 
 @media screen and (max-width: 420px) {
-    
     .about-text {
         font-size: 22pt;
         width: 92vw;
