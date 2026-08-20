@@ -1,280 +1,237 @@
 .about-page {
     color: var(--primary);
     font-family: "Urbanist", sans-serif;
-}
-
-.video-placeholder {
     width: 100vw;
 }
 
-.about-content {
+.about-top-img {
+    display: block;
     width: 100vw;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    height: 68vh;
+    object-fit: cover;
+    object-position: center 5%;
 }
 
-.video {
+.about-mission {
     width: 100vw;
+    box-sizing: border-box;
+    padding: 60px 10vw 40px;
+    text-align: center;
 }
 
-.about-text {
+.about-mission-text {
+    font-family: "Urbanist", sans-serif;
+    font-weight: normal;
+    font-size: 22pt;
+    letter-spacing: 1.5px;
+    line-height: 1.5;
     color: var(--primary);
-    width: 72vw;
-    padding: 50px 0 30px 0;
-    font-size: 32pt;
-    letter-spacing: 2px;
+    opacity: 0.9;
+    margin: 0;
 }
 
 .about-class-section {
+    width: 100vw;
+    box-sizing: border-box;
+    padding: 20px 5vw 60px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: 20px 0;
-    text-decoration: none;
-    margin-bottom: 150px;
+    align-items: center;
+    gap: 30px;
 }
 
 .about-class-section h2 {
     font-family: "Julius Sans One", serif;
-    font-size: 40pt;
+    font-size: 36pt;
     color: var(--secondary);
     text-align: center;
-    text-decoration: none;
+    margin: 0;
 }
 
 .about-classes {
     display: flex;
-    flex-direction: row;
+    gap: 24px;
     justify-content: center;
-    position: relative;
-    top: -50px;
+    flex-wrap: wrap;
+    width: 100%;
 }
 
-.about-class-offerings img {
+.about-class-card {
+    position: relative;
     width: 300px;
-    padding: 0 2vw;
-    opacity: .75;
+    height: 220px;
+    overflow: hidden;
+    border-radius: 8px;
+    flex-shrink: 0;
 }
 
-.about-class-heading {
-    font-size: 25pt;
+.about-class-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+    filter: brightness(0.7);
+}
+
+.about-class-card:hover img {
+    transform: scale(1.04);
+}
+
+.about-class-card-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px;
+    font-family: "Julius Sans One", serif;
+    font-size: 18pt;
     color: var(--secondary);
-    position: relative;
-    top: 170px;
-    text-shadow: 0 0 10px black, 0 0 20px black, 0 0 30px black, 0 0 40px black, 0 0 50px black, 0 0 60px black, 0 0 70px black, 0 0 80px black;
-    text-decoration-color: rgb(0, 0, 0, .01%);
-    z-index: 10;
-    text-decoration: none;
     letter-spacing: 2px;
+    text-shadow: 0 0 12px black, 0 0 24px black;
+    background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
 }
 
-.about-class-buttons {
+.about-class-btns {
     display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-left: 60vw;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
-.about-classes-button {
-    font-size: 18pt;
-    width: fit-content;
+.about-gold-btn {
+    font-family: "Urbanist", sans-serif;
+    font-size: 13pt;
+    padding: 12px 30px;
+    background-color: var(--secondary);
+    color: var(--tertiary);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: opacity 0.2s;
 }
 
-.about-enroll-button {
-    font-size: 18pt;
-    width: fit-content;
+.about-gold-btn:hover {
+    opacity: 0.85;
+}
+
+.about-outline-btn {
+    font-family: "Urbanist", sans-serif;
+    font-size: 13pt;
+    padding: 12px 30px;
+    background: transparent;
+    color: var(--secondary);
+    border: 2px solid var(--secondary);
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+}
+
+.about-outline-btn:hover {
     background-color: var(--secondary);
     color: var(--tertiary);
 }
 
-.about-enroll-button:hover {
-    opacity: 0.85;
-}
-
 .about-event-section {
-    margin-bottom: 100px;
     width: 100vw;
-    height: 600px;
-    background-image: linear-gradient(45deg, var(--secondary), var(--yellow-fade));
-    transform: skewY(10deg);
+    box-sizing: border-box;
+    padding: 60px 5vw;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: left;
+    gap: 30px;
+    background: linear-gradient(135deg, var(--secondary) 0%, #c9a227 100%);
 }
 
 .about-event-section h2 {
-    min-width: 600px;
     font-family: "Julius Sans One", serif;
-    font-size: 40pt;
-    color: black;
-    transform: skewY(-10deg) rotate(270deg);
-    position: relative;
-    left: -220px;
+    font-size: 36pt;
+    color: #000;
+    margin: 0;
+    text-align: center;
 }
 
-.about-event-content {
-    min-width: 80vw;
-    height: 100%;
+.about-event-grid {
     display: flex;
-    align-items: center;
-    justify-content: space-around;
-    transform: skewY(-10deg);
-    position: relative;
-    left: -400px;
+    gap: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 900px;
 }
 
-.event1 img {
-    width: 350px;
-    position: relative;
-    top: -50px;
+.about-event-grid img {
+    width: 380px;
+    max-width: 90vw;
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    object-fit: cover;
 }
 
-.event2 img {
-    width: 350px;
-    position: relative;
-    top: 50px;
+.about-outline-btn-dark {
+    color: #000;
+    border-color: #000;
 }
 
-.about-event-button {
-    background-color: var(--tertiary);
+.about-outline-btn-dark:hover {
+    background-color: #000;
     color: var(--secondary);
-    position: relative;
-    top: 300px;
-    font-size: 18pt;
 }
 
-.about-event-button:hover {
-    background-color: rgb(0, 0, 0,.8);
-}
-
-@media screen and (min-width: 1350px) {
-    .event1 img {
-        width: 400px;
-        position: relative;
-        top: -60px;
+@media screen and (max-width: 900px) {
+    .about-mission-text {
+        font-size: 17pt;
     }
 
-    .event2 img {
-        width: 400px;
-        position: relative;
-        top: 30px;
+    .about-class-card {
+        width: 260px;
+        height: 190px;
     }
 }
 
-@media screen and (max-width: 1100px) {
-    .about-event-section {
-        height: 700px;
-        background-image: linear-gradient(45deg, var(--secondary), rgb(227, 200, 93));
-        transform: skewY(10deg);
-        display: flex;
-        align-items: center;
+@media screen and (max-width: 600px) {
+    .about-top-img {
+        height: 40vh;
     }
 
-    .about-event-content {
-        min-width: 85vw;
-        justify-content: center;
-        flex-direction: column;
-        left: -450px;
+    .about-mission {
+        padding: 40px 6vw;
     }
 
-    .event1 img {
-        padding-bottom: 20px;
-        top: 0;
+    .about-mission-text {
+        font-size: 14pt;
     }
 
-    .event2 img {
-        top: 0;
-    }
-
-    .about-event-button {
-        top: 20px;
-    }
-}
-
-@media screen and (max-width: 1020px) {
-    .about-class-section {
-        padding: 20px 0 50px 0;
-    }
-
-    .about-classes {
-        flex-direction: column;
-        top: 0;
-    }
-
-    .about-class-heading {
-        position: relative;
-        top: 90px;
-        padding-bottom: 20px;
-    }
-
-    .about-class-offerings img {
-        position: relative;
-        top: -100px;
-        margin-bottom: -70px;
-    }
-
-    .about-class-buttons {
-        margin-left: auto;
-        justify-content: center;
-    }
-}
-
-@media screen and (max-width: 920px) {
-    .about-text {
-        font-size: 30pt;
-    }
-}
-
-@media screen and (max-width: 650px) {
-    .about-event-section {
-        height: 900px;
-        background-image: linear-gradient(45deg, var(--secondary), rgb(227, 200, 93));
-        transform: skewY(10deg);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-    }
-
+    .about-class-section h2,
     .about-event-section h2 {
-        min-width: 100vw;
-        font-size: 40pt;
-        color: black;
-        transform: skewY(-10deg) rotate(0deg);
-        left: 0px;
-        top: 20px;
-        text-wrap: wrap;
+        font-size: 26pt;
     }
 
-    .about-event-content {
-        min-width: 100vw;
-        left: 0px;
+    .about-class-card {
+        width: 100%;
+        max-width: 340px;
+        height: 200px;
     }
 
-    .event1 img {
-        padding-bottom: 20px;
-        top: -20px;
+    .about-event-section {
+        padding: 40px 6vw;
     }
 
-    .event2 img {
-        top: -20px;
-    }
-}
-
-@media screen and (max-width: 420px) {
-    .about-text {
-        font-size: 22pt;
-        width: 92vw;
+    .about-event-grid img {
+        width: 100%;
     }
 
-    .about-class-section {
-        padding: 0px 0;
-        margin-bottom: 100px;
+    .about-class-btns {
+        flex-direction: column;
+        align-items: center;
     }
 
-    .about-class-heading {
-        text-shadow: 0 0 5px black, 0 0 10px black, 0 0 15px black, 0 0 20px black;
+    .about-gold-btn,
+    .about-outline-btn {
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
     }
 }
