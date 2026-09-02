@@ -778,6 +778,15 @@ export default function Owner() {
                                     placeholder='e.g. (No classes Aug 31)'
                                 />
                             </div>
+                            <div className='owner-form-group owner-schedule-full'>
+                                <label>Announcement Banner <span style={{ opacity: 0.5, fontSize: '9pt' }}>(optional — shows at top of Classes page)</span></label>
+                                <input
+                                    type='text'
+                                    value={scheduleForm.announcement || ''}
+                                    onChange={e => setScheduleForm({ ...scheduleForm, announcement: e.target.value })}
+                                    placeholder='e.g. Classes start September 7th!'
+                                />
+                            </div>
                         </div>
 
                         <div className='owner-special-events'>

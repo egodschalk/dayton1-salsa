@@ -30,6 +30,7 @@ export default function Classes() {
     const dayName = schedule?.dayName || 'Mondays'
     const datesList = schedule?.datesList || 'Aug 3, 10, 17, 24'
     const cancellationNote = schedule?.cancellationNote || ''
+    const announcement = schedule?.announcement || ''
     const specialEvents = schedule?.specialEvents || []
 
     function formatExpiry(pass) {
@@ -85,6 +86,7 @@ export default function Classes() {
                             <h3>{dayName}</h3>
                             <p>{datesList}</p>
                             {cancellationNote && <p>{cancellationNote}</p>}
+                            {announcement && <p className='classes-announcement'>🔔 {announcement}</p>}
                         </div>
                         <div className='class-schedule'>
                             <h3>Class Schedule</h3>
