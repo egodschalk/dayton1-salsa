@@ -25,7 +25,7 @@ const eventData = [
         location: "312 E Main St, Muncie, IN",
         eventUrl: 'https://harmonymovementstudio.redpodium.com/salsa-workshops-with-david-and-heather-sommer'
     },*/
-    {
+    { 
         id: 3,
         imgUrl: silentdisco,
         title: "Silent Disco Latin Party",
