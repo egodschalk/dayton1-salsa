@@ -23,7 +23,11 @@ const CLASSES = [
     { img: socialDancingPic, label: 'Social Dancing' }
 ]
 
-const UPCOMING_EVENT_IMAGES = [silentdisco, festival, social]
+const UPCOMING_EVENTS = [
+    { img: silentdisco, url: '/Events' },
+    { img: festival, url: 'https://pacodayton.com/hispanic-heritage-festival/', external: true },
+    { img: social, url: '/Events' }
+]
 
 const AUTO_ROTATE_MS = 4000
 const RESUME_DELAY_MS = 6000
@@ -149,10 +153,27 @@ export default function About() {
             <div className='about-event-section'>
                 <h2>Upcoming Events</h2>
                 <div className='about-event-grid'>
-                    {UPCOMING_EVENT_IMAGES.map((img, i) => (
-                        <Link to="/Events" onClick={() => window.scroll(0, 0)} key={i} className='about-event-card'>
-                            <img src={img} alt="Upcoming event" />
-                        </Link>
+                    {UPCOMING_EVENTS.map((event, i) => (
+                        event.external ? (
+                            <a
+                                key={i}
+                                href={event.url}
+                                target='_blank'
+                                rel='noreferrer'
+                                className='about-event-card'
+                            >
+                                <img src={event.img} alt="Upcoming event" />
+                            </a>
+                        ) : (
+                            <Link
+                                key={i}
+                                to={event.url}
+                                onClick={() => window.scroll(0, 0)}
+                                className='about-event-card'
+                            >
+                                <img src={event.img} alt="Upcoming event" />
+                            </Link>
+                        )
                     ))}
                 </div>
                 <Link to="/Events" onClick={() => window.scroll(0, 0)}>
