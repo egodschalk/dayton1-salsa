@@ -1,216 +1,146 @@
 .events-page {
+    width: 100vw;
     color: var(--primary);
     font-family: "Urbanist", sans-serif;
-    margin-bottom: 100px;
-    width: 100vw;
+    box-sizing: border-box;
+}
+
+.events-content {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 60px 5vw 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .events-header {
+    font-family: "Julius Sans One", serif;
+    font-size: 40pt;
     color: var(--secondary);
-    font-family: "Julius Sans One", sans-serif;
-    padding: 20px 0;
-    font-size: 32pt;
+    text-align: center;
+    margin: 0 0 40px 0;
 }
 
-.events-event1 {
-    width: 100vw;
-    height: 500px;
-    background-image: linear-gradient(45deg, var(--secondary), var(--yellow-fade));
-    transform: skewY(10deg);
-    margin-top: 70px;
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.event-card {
     display: flex;
-    align-items: center;
-}
-
-.event1-content {
-    transform: skewY(-10deg);
-    width: 90vw;
-    padding: 0 5vw;
-    display: flex;
-    justify-content: space-around;
-    color: var(--tertiary);
-    position: relative;
-    top: 90px;
-    letter-spacing: 1px;
-}
-
-.event1-info {
-    position: relative;
-    top: -150px;
-}
-
-.event1-title {
-    font-size: 24pt;
-}
-
-.event1-details {
-    position: relative;
-    top: -30px;
-    font-size: 18pt;
-    width: 500px;
-}
-
-.event1-details button,
-.event3-details button {
-    background-color: var(--tertiary);
+    flex-direction: column;
+    text-decoration: none;
     color: var(--primary);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: rgba(255,255,255,0.02);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.event1-details button:hover,
-.event3-details button:hover {
-    background-color: rgb(0, 0, 0, .8);
+.event-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
 }
 
-.event1-details button,
-.event2-details button,
-.event3-details button {
-    margin-top: 20px;
+.event-card-no-link {
+    cursor: default;
 }
 
-.event1-details p,
-.event2-details p,
-.event3-details p {
-    margin: 10px 0;
+.event-card-no-link:hover {
+    transform: none;
+    box-shadow: none;
 }
 
-.event1-content img,
-.event2-content img,
-.event3-content img {
-    width: 400px;
-    height: 300px;
+.event-card-img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
 }
 
-.events-event2 {
-    height: 500px;
+.event-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
-.event2-content {
-    height: 400px;
+.event-card-info {
+    padding: 16px 18px 20px;
     display: flex;
-    flex-direction: row-reverse;
-    align-items: center;
-    justify-content: space-around;
-    width: 90vw;
-    padding: 0 5vw;
-    position: relative;
-    top: 80px;
-    letter-spacing: 1px;
+    flex-direction: column;
+    gap: 4px;
 }
 
-.event2-info {
-    position: relative;
-    top: -10px;
-    padding: 0 20px;
+.event-card-title {
+    font-family: "Julius Sans One", serif;
+    font-size: 14pt;
+    color: var(--secondary);
+    margin: 0 0 4px 0;
+    letter-spacing: 0.5px;
 }
 
-.event2-title {
-    font-size: 24pt;
-    line-height: .1;
+.event-card-date,
+.event-card-time,
+.event-card-location,
+.event-card-extra {
+    font-size: 10.5pt;
+    margin: 0;
+    letter-spacing: 0.3px;
+    opacity: 0.9;
 }
 
-.event2-details {
-    font-size: 18pt;
-    line-height: 1;
-    width: 460px;
+.event-card-extra {
+    opacity: 0.7;
+    font-style: italic;
+    margin-top: 4px;
 }
 
-.events-event3 {
-    width: 100vw;
-    height: 500px;
-    background-image: linear-gradient(45deg, var(--secondary), var(--yellow-fade));
-    transform: skewY(-10deg);
-    margin-top: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: left;
-}
-
-.event3-content {
-    transform: skewY(10deg);
-    width: 90vw;
-    padding: 0 5vw;
-    display: flex;
-    justify-content: space-around;
+.event-card-btn {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 18px;
+    background-color: var(--secondary);
     color: var(--tertiary);
-    position: relative;
-    top: -40px;
+    font-size: 10pt;
     letter-spacing: 1px;
+    border-radius: 4px;
+    text-align: center;
+    width: fit-content;
 }
 
-.event3-info {
-    position: relative;
-    top: 80px;
+@media screen and (max-width: 900px) {
+    .events-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .events-header {
+        font-size: 32pt;
+    }
 }
 
-.event3-title {
-    font-size: 24pt;
-}
-
-.event3-details {
-    position: relative;
-    top: -30px;
-    font-size: 18pt;
-    width: 500px;
-}
-
-@media screen and (max-width: 950px) {
-
-    .events-event1,
-    .events-event3 {
-        height: 650px;
+@media screen and (max-width: 600px) {
+    .events-content {
+        padding: 40px 6vw 60px;
     }
 
-    .events-event2 {
-        height: 600px;
+    .events-header {
+        font-size: 26pt;
+        margin-bottom: 28px;
     }
 
-    .event1-content,
-    .event2-content,
-    .event3-content {
-        flex-direction: column;
-        align-items: center;
+    .events-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        max-width: 420px;
     }
 
-    .event1-content,
-    .event3-content {
-        position: relative;
-        top: -30px;
-    }
-
-    .event1-info,
-    .event3-info {
-        position: relative;
-        top: 0px;
-    }
-
-    .event1-content img,
-    .event2-content img,
-    .event3-content img {
-        width: 300px;
-        height: 225px;
-    }
-
-    .event2-content {
-        margin-bottom: 20px;
-        position: relative;
-        top: 20px;
-    }
-
-    .event1-details,
-    .event2-details,
-    .event3-details {
-        font-size: 18pt;
-        line-height: 1;
-        width: 100vw;
-    }
-
-}
-
-@media screen and (max-width: 460px) {
-
-    .event2-details {
-        font-size: 18pt;
-        line-height: 1;
-        width: 100vw;
+    .event-card-title {
+        font-size: 13pt;
     }
 }
