@@ -2,11 +2,14 @@ import './About.css'
 import { Link } from 'react-router-dom'
 import React, { useRef, useState, useEffect } from 'react'
 import videoplaceholder from '../assets/dayton1-group.jpg'
-import event1 from '../assets/Event-1.jpeg'
-import event2 from '../assets/Event-2.jpeg'
+import event1 from '../assets/Event-1.jpg'
+import event2 from '../assets/Event-2.jpg'
+import silentdisco from '../assets/silentdisco.jpeg'
+import festival from '../assets/Festival.jpeg'
+import social from '../assets/social.jpeg'
 import salsa from '../assets/heather-dave.jpg'
 import bachata from '../assets/class-pic.jpg'
-import social from '../assets/sots-group.jpg'
+import socialDancingPic from '../assets/sots-group.jpg'
 
 function scrollToRegister() {
     window.scroll(0, 0)
@@ -19,8 +22,10 @@ function scrollToRegister() {
 const CLASSES = [
     { img: salsa, label: 'Salsa' },
     { img: bachata, label: 'Bachata' },
-    { img: social, label: 'Social Dancing' }
+    { img: socialDancingPic, label: 'Social Dancing' }
 ]
+
+const UPCOMING_EVENT_IMAGES = [silentdisco, festival, social]
 
 const AUTO_ROTATE_MS = 4000
 const RESUME_DELAY_MS = 6000
@@ -146,8 +151,11 @@ export default function About() {
             <div className='about-event-section'>
                 <h2>Upcoming Events</h2>
                 <div className='about-event-grid'>
-                    <img src={event1} alt="Upcoming event" />
-                    <img src={event2} alt="Upcoming event" />
+                    {UPCOMING_EVENT_IMAGES.map((img, i) => (
+                        <Link to="/Events" onClick={() => window.scroll(0, 0)} key={i} className='about-event-card'>
+                            <img src={img} alt="Upcoming event" />
+                        </Link>
+                    ))}
                 </div>
                 <Link to="/Events" onClick={() => window.scroll(0, 0)}>
                     <button className='about-outline-btn about-outline-btn-dark'>More Info</button>
