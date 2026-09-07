@@ -6,6 +6,7 @@ import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebas
 import { usePassTypes, createPassType, updatePassType } from '../hooks/usePassTypes'
 import { useInstructors, createInstructor, setInstructorActive, seedInstructors } from '../hooks/useInstructors'
 import { useSchedule, saveSchedule, defaultSchedule } from '../hooks/useSchedule'
+import { useInvoices, createInvoice } from '../hooks/useInvoices'
 import './Owner.css'
 
 const OWNER_EMAILS = ['dayton1salsa@gmail.com', 'ahiciano@icanoki.com']
@@ -25,6 +26,15 @@ const emptyForm = {
     visibility: { mode: 'always', windowStartDays: 9, windowEndDays: 5, startDate: '', endDate: '', days: [] }
 }
 
+const emptyInvoiceForm = {
+    companyName: '',
+    contactName: '',
+    contactEmail: '',
+    description: '',
+    amount: '',
+    eventDate: ''
+}
+
 function getStaffName(email) {
     if (!email) return 'Unknown'
     const namePart = email.split('@')[0]
@@ -40,6 +50,7 @@ export default function Owner() {
     const { passTypes, loading: passLoading } = usePassTypes()
     const { instructors, loading: instructorsLoading } = useInstructors()
     const { schedule, loading: scheduleLoading } = useSchedule()
+    const { invoices, loading: invoicesLoading } = useInvoices()
     const [user, setUser] = useState(null)
     const [authLoading, setAuthLoading] = useState(true)
     const [email, setEmail] = useState('')
@@ -63,6 +74,14 @@ export default function Owner() {
     const [scheduleSaving, setScheduleSaving] = useState(false)
     const [scheduleError, setScheduleError] = useState('')
     const [scheduleSuccess, setScheduleSuccess] = useState(false)
+
+    // Invoice editor state
+    const [showInvoiceForm, setShowInvoiceForm] = useState(false)
+    const [invoiceForm, setInvoiceForm] = useState(emptyInvoiceForm)
+    const [invoiceError, setInvoiceError] = useState('')
+    const [invoiceSaving, setInvoiceSaving] = useState(false)
+    const [newInvoiceLink, setNewInvoiceLink] = useState('')
+    const [linkCopied, setLinkCopied] = useState(false)
 
     // Stats data
     const [members, setMembers] = useState([])
@@ -297,6 +316,54 @@ export default function Owner() {
             setScheduleError('Error saving: ' + e.message)
         }
         setScheduleSaving(false)
+    }
+
+    // ===== Invoice handlers =====
+    function startNewInvoice() {
+        setShowInvoiceForm(true)
+        setInvoiceForm(emptyInvoiceForm)
+        setInvoiceError('')
+        setNewInvoiceLink('')
+        setLinkCopied(false)
+    }
+
+    function cancelInvoiceForm() {
+        setShowInvoiceForm(false)
+        setInvoiceForm(emptyInvoiceForm)
+        setInvoiceError('')
+        setNewInvoiceLink('')
+        setLinkCopied(false)
+    }
+
+    async function handleCreateInvoice() {
+        if (!invoiceForm.companyName.trim()) { setInvoiceError('Company name is required.'); return }
+        if (!invoiceForm.description.trim()) { setInvoiceError('Event description is required.'); return }
+        const amt = parseFloat(invoiceForm.amount)
+        if (isNaN(amt) || amt <= 0) { setInvoiceError('Amount must be greater than $0.'); return }
+
+        setInvoiceSaving(true)
+        setInvoiceError('')
+        try {
+            const invoiceId = await createInvoice({
+                companyName: invoiceForm.companyName.trim(),
+                contactName: invoiceForm.contactName.trim(),
+                contactEmail: invoiceForm.contactEmail.trim(),
+                description: invoiceForm.description.trim(),
+                amount: amt.toFixed(2),
+                eventDate: invoiceForm.eventDate
+            })
+            const link = `${window.location.origin}/invoice/${invoiceId}`
+            setNewInvoiceLink(link)
+        } catch (e) {
+            setInvoiceError('Error creating invoice: ' + e.message)
+        }
+        setInvoiceSaving(false)
+    }
+
+    function copyInvoiceLink() {
+        navigator.clipboard.writeText(newInvoiceLink)
+        setLinkCopied(true)
+        setTimeout(() => setLinkCopied(false), 2000)
     }
 
     // ===== Stats computation =====
@@ -728,6 +795,122 @@ export default function Owner() {
                         )
                     )}
                 </div>
+            </div>
+
+            {/* ===== INVOICES ===== */}
+            <div className='owner-section'>
+                <div className='owner-section-header'>
+                    <h3>Invoices</h3>
+                    {!showInvoiceForm && (
+                        <button className='owner-btn' onClick={startNewInvoice}>+ New Invoice</button>
+                    )}
+                </div>
+                <p className='owner-hint'>Bill a company or client for a private event. Share the link — it updates to "Paid" automatically once they pay.</p>
+
+                {showInvoiceForm && (
+                    <div className='owner-edit-form'>
+                        {!newInvoiceLink ? (
+                            <>
+                                <div className='owner-schedule-grid'>
+                                    <div className='owner-form-group'>
+                                        <label>Company Name</label>
+                                        <input type='text' value={invoiceForm.companyName}
+                                            onChange={e => setInvoiceForm({ ...invoiceForm, companyName: e.target.value })}
+                                            placeholder='e.g. Acme Corp' />
+                                    </div>
+                                    <div className='owner-form-group'>
+                                        <label>Event Date <span style={{ opacity: 0.5, fontSize: '9pt' }}>(optional)</span></label>
+                                        <input type='date' value={invoiceForm.eventDate}
+                                            onChange={e => setInvoiceForm({ ...invoiceForm, eventDate: e.target.value })} />
+                                    </div>
+                                    <div className='owner-form-group'>
+                                        <label>Contact Name <span style={{ opacity: 0.5, fontSize: '9pt' }}>(optional)</span></label>
+                                        <input type='text' value={invoiceForm.contactName}
+                                            onChange={e => setInvoiceForm({ ...invoiceForm, contactName: e.target.value })}
+                                            placeholder='e.g. Jane Smith' />
+                                    </div>
+                                    <div className='owner-form-group'>
+                                        <label>Contact Email <span style={{ opacity: 0.5, fontSize: '9pt' }}>(optional)</span></label>
+                                        <input type='email' value={invoiceForm.contactEmail}
+                                            onChange={e => setInvoiceForm({ ...invoiceForm, contactEmail: e.target.value })}
+                                            placeholder='e.g. jane@acme.com' />
+                                    </div>
+                                    <div className='owner-form-group owner-schedule-full'>
+                                        <label>Event Description</label>
+                                        <input type='text' value={invoiceForm.description}
+                                            onChange={e => setInvoiceForm({ ...invoiceForm, description: e.target.value })}
+                                            placeholder='e.g. Private salsa lesson for company event' />
+                                    </div>
+                                    <div className='owner-form-group'>
+                                        <label>Amount ($)</label>
+                                        <input type='number' step='0.01' min='0' value={invoiceForm.amount}
+                                            onChange={e => setInvoiceForm({ ...invoiceForm, amount: e.target.value })}
+                                            placeholder='500.00' />
+                                    </div>
+                                </div>
+
+                                {invoiceError && <p className='owner-error'>{invoiceError}</p>}
+
+                                <div className='owner-form-buttons'>
+                                    <button className='owner-btn-outline' onClick={cancelInvoiceForm} disabled={invoiceSaving}>Cancel</button>
+                                    <button className='owner-btn' onClick={handleCreateInvoice} disabled={invoiceSaving}>
+                                        {invoiceSaving ? 'Creating...' : 'Create Invoice'}
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <p className='owner-schedule-success'>✓ Invoice created — share this link with the company:</p>
+                                <div className='owner-invoice-link-row'>
+                                    <input type='text' readOnly value={newInvoiceLink} className='owner-invoice-link-input' />
+                                    <button className='owner-btn-small' onClick={copyInvoiceLink}>
+                                        {linkCopied ? 'Copied!' : 'Copy Link'}
+                                    </button>
+                                </div>
+                                <div className='owner-form-buttons'>
+                                    <button className='owner-btn-outline' onClick={cancelInvoiceForm}>Done</button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                )}
+
+                {invoicesLoading ? (
+                    <p>Loading...</p>
+                ) : invoices.length === 0 ? (
+                    <p className='owner-hint'>No invoices yet. Click "+ New Invoice" to create one.</p>
+                ) : (
+                    <div className='owner-pass-list'>
+                        {invoices.map(inv => (
+                            <div key={inv.id} className={`owner-pass-card ${inv.status === 'paid' ? '' : 'inactive'}`}>
+                                <div className='owner-pass-info'>
+                                    <div className='owner-pass-top'>
+                                        <span className='owner-pass-label'>{inv.companyName}</span>
+                                        <span className='owner-pass-amount'>${inv.amount}</span>
+                                        <span className={inv.status === 'paid' ? 'owner-invoice-paid-badge' : 'owner-pass-inactive-badge'}>
+                                            {inv.status === 'paid' ? 'Paid' : 'Unpaid'}
+                                        </span>
+                                    </div>
+                                    <div className='owner-pass-detail'>
+                                        <span>{inv.description}</span>
+                                        {inv.eventDate && <><span>·</span><span>{formatDate(inv.eventDate + 'T12:00:00')}</span></>}
+                                        {inv.status === 'paid' && inv.paidAt && <><span>·</span><span>Paid {formatDate(inv.paidAt)}</span></>}
+                                    </div>
+                                </div>
+                                <div className='owner-pass-actions'>
+                                    <button
+                                        className='owner-btn-small-outline'
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(`${window.location.origin}/invoice/${inv.id}`)
+                                        }}
+                                    >
+                                        Copy Link
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* ===== SCHEDULE ===== */}

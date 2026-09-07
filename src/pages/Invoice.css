@@ -1,0 +1,117 @@
+.invoice-page {
+    min-height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0a0a0a;
+    padding: 20px;
+    box-sizing: border-box;
+    font-family: "Urbanist", sans-serif;
+    color: var(--primary);
+}
+
+.invoice-card {
+    width: 100%;
+    max-width: 480px;
+    background-color: #141414;
+    border: 1px solid var(--secondary);
+    border-radius: 10px;
+    padding: 32px;
+    box-sizing: border-box;
+}
+
+.invoice-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.invoice-header h1 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 22pt;
+    margin: 0;
+}
+
+.invoice-subtitle {
+    font-size: 11pt;
+    opacity: 0.6;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 4px 0 0 0;
+}
+
+.invoice-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.invoice-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11pt;
+}
+
+.invoice-row span:first-child {
+    opacity: 0.6;
+}
+
+.invoice-amount-row {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.invoice-amount {
+    font-size: 16pt;
+    color: var(--secondary);
+    font-weight: bold;
+}
+
+.invoice-paid-block {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.invoice-paid-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--secondary);
+    color: var(--tertiary);
+    font-size: 24pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+.invoice-paid-block h3 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    margin: 0 0 8px 0;
+}
+
+.invoice-processing {
+    text-align: center;
+    opacity: 0.7;
+    font-size: 10pt;
+    margin-bottom: 10px;
+}
+
+.invoice-error {
+    color: #ff5c5c;
+    font-size: 10pt;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+@media screen and (max-width: 500px) {
+    .invoice-card {
+        padding: 24px 20px;
+    }
+}

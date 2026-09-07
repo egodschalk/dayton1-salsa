@@ -3,6 +3,7 @@ import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import App from './App.jsx';
+import Invoice from './pages/Invoice';
 import About from './pages/About';
 import Classes from './pages/Classes';
 import Events from './pages/Events';
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: '/admin',
         element: <Admin />,
+      },
+      {
+        path: '/invoice/:invoiceId',
+        element: <Invoice />,
       },
     ],
   },
