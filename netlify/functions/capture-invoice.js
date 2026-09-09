@@ -1,18 +1,21 @@
 import { getFirestore } from 'firebase-admin/firestore'
 import { initializeApp, getApps, cert } from 'firebase-admin/app'
 
-// Initialize Firebase Admin once (reused across function invocations)
-if (!getApps().length) {
-    initializeApp({
-        credential: cert({
-            projectId: process.env.FIREBASE_PROJECT_ID,
-            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-            privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
-        })
-    })
-}
+let initError = null
 
-const db = getFirestore()
+try {
+    if (!getApps().length) {
+        initializeApp({
+            credential: cert({
+                projectId: process.env.FIREBASE_PROJECT_ID,
+                clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+                privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+            })
+        })
+    }
+} catch (err) {
+    initError = err.message
+}
 
 const IS_SANDBOX = false
 const PP_CLIENT = process.env.PP_CLIENT
@@ -38,7 +41,30 @@ export const handler = async (event) => {
         return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) }
     }
 
+    // Surface init errors clearly instead of crashing
+    if (initError) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ success: false, error: 'Firebase Admin init failed: ' + initError })
+        }
+    }
+
+    // Confirm env vars are actually present (without leaking values)
+    const missingVars = []
+    if (!process.env.FIREBASE_PROJECT_ID) missingVars.push('FIREBASE_PROJECT_ID')
+    if (!process.env.FIREBASE_CLIENT_EMAIL) missingVars.push('FIREBASE_CLIENT_EMAIL')
+    if (!process.env.FIREBASE_PRIVATE_KEY) missingVars.push('FIREBASE_PRIVATE_KEY')
+    if (!process.env.PP_CLIENT) missingVars.push('PP_CLIENT')
+    if (!process.env.PP_SECRET) missingVars.push('PP_SECRET')
+    if (missingVars.length > 0) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ success: false, error: 'Missing environment variables: ' + missingVars.join(', ') })
+        }
+    }
+
     try {
+        const db = getFirestore()
         const { orderID, invoiceId } = JSON.parse(event.body)
 
         if (!orderID || !invoiceId) {
@@ -48,7 +74,6 @@ export const handler = async (event) => {
             }
         }
 
-        // Get the invoice first to confirm it exists and isn't already paid
         const invoiceRef = db.collection('invoices').doc(invoiceId)
         const invoiceSnap = await invoiceRef.get()
 
@@ -61,25 +86,21 @@ export const handler = async (event) => {
 
         const invoiceData = invoiceSnap.data()
         if (invoiceData.status === 'paid') {
-            // Already paid — return success idempotently rather than erroring
             return {
                 statusCode: 200,
                 body: JSON.stringify({ success: true, alreadyPaid: true })
             }
         }
 
-        // Get PayPal access token
         const tokenResult = await getAccessToken()
         if (tokenResult.status !== 200) {
-            console.error('PayPal auth failed:', tokenResult.data)
             return {
                 statusCode: 502,
-                body: JSON.stringify({ success: false, error: 'Payment authorization failed' })
+                body: JSON.stringify({ success: false, error: 'Payment authorization failed', detail: tokenResult.data })
             }
         }
         const accessToken = tokenResult.data.access_token
 
-        // Capture the order
         const captureRes = await fetch(`${PP_BASE}/v2/checkout/orders/${orderID}/capture`, {
             method: 'POST',
             headers: {
@@ -90,10 +111,9 @@ export const handler = async (event) => {
         const captureData = await captureRes.json()
 
         if (captureRes.status !== 200 && captureRes.status !== 201) {
-            console.error('Capture failed:', captureData)
             return {
                 statusCode: 502,
-                body: JSON.stringify({ success: false, error: 'Payment capture failed' })
+                body: JSON.stringify({ success: false, error: 'Payment capture failed', detail: captureData })
             }
         }
 
@@ -108,7 +128,6 @@ export const handler = async (event) => {
             }
         }
 
-        // Mark the invoice as paid in Firestore
         await invoiceRef.update({
             status: 'paid',
             transactionId,
@@ -120,10 +139,9 @@ export const handler = async (event) => {
             body: JSON.stringify({ success: true, transactionId })
         }
     } catch (err) {
-        console.error('capture-invoice error:', err)
         return {
             statusCode: 500,
-            body: JSON.stringify({ success: false, error: 'Internal server error' })
+            body: JSON.stringify({ success: false, error: err.message })
         }
     }
 }
