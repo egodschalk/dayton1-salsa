@@ -30,6 +30,7 @@ export async function getInvoice(invoiceId) {
 export async function createInvoice(data) {
     const docRef = await addDoc(collection(db, 'invoices'), {
         companyName: data.companyName,
+        companyAddress: data.companyAddress || '',
         contactName: data.contactName || '',
         contactEmail: data.contactEmail || '',
         description: data.description,

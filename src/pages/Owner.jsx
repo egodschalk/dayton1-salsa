@@ -28,6 +28,7 @@ const emptyForm = {
 
 const emptyInvoiceForm = {
     companyName: '',
+    companyAddress: '',
     contactName: '',
     contactEmail: '',
     description: '',
@@ -346,6 +347,7 @@ export default function Owner() {
         try {
             const invoiceId = await createInvoice({
                 companyName: invoiceForm.companyName.trim(),
+                companyAddress: invoiceForm.companyAddress.trim(),
                 contactName: invoiceForm.contactName.trim(),
                 contactEmail: invoiceForm.contactEmail.trim(),
                 description: invoiceForm.description.trim(),
@@ -822,6 +824,12 @@ export default function Owner() {
                                         <label>Event Date <span style={{ opacity: 0.5, fontSize: '9pt' }}>(optional)</span></label>
                                         <input type='date' value={invoiceForm.eventDate}
                                             onChange={e => setInvoiceForm({ ...invoiceForm, eventDate: e.target.value })} />
+                                    </div>
+                                    <div className='owner-form-group owner-schedule-full'>
+                                        <label>Company Address <span style={{ opacity: 0.5, fontSize: '9pt' }}>(optional)</span></label>
+                                        <input type='text' value={invoiceForm.companyAddress}
+                                            onChange={e => setInvoiceForm({ ...invoiceForm, companyAddress: e.target.value })}
+                                            placeholder='e.g. 123 Main St, Dayton, OH 45402' />
                                     </div>
                                     <div className='owner-form-group'>
                                         <label>Contact Name <span style={{ opacity: 0.5, fontSize: '9pt' }}>(optional)</span></label>

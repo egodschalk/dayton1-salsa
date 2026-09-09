@@ -142,6 +142,12 @@ export default function Invoice() {
                         <span>Billed To</span>
                         <span>{invoice.companyName}</span>
                     </div>
+                    {invoice.companyAddress && (
+                        <div className='invoice-row'>
+                            <span>Address</span>
+                            <span>{invoice.companyAddress}</span>
+                        </div>
+                    )}
                     {invoice.contactName && (
                         <div className='invoice-row'>
                             <span>Contact</span>
