@@ -48,10 +48,32 @@ export default function Invoice() {
             window.paypal.Buttons({
                 createOrder: (data, actions) => {
                     const inv = invoiceRef.current
+                    const amount = parseFloat(inv.amount).toFixed(2)
+
                     return actions.order.create({
                         purchase_units: [{
-                            amount: { value: inv.amount },
-                            description: `${inv.companyName} — ${inv.description}`
+                            reference_id: invoiceId,
+                            invoice_id: `INV-${invoiceId.slice(0, 8).toUpperCase()}`,
+                            description: `${inv.companyName} — ${inv.description}`.slice(0, 127),
+                            custom_id: inv.companyName?.slice(0, 127),
+                            soft_descriptor: 'DAYTON1 SALSA',
+                            amount: {
+                                value: amount,
+                                currency_code: 'USD',
+                                breakdown: {
+                                    item_total: { currency_code: 'USD', value: amount },
+                                    tax_total: { currency_code: 'USD', value: '0.00' }
+                                }
+                            },
+                            items: [
+                                {
+                                    name: (inv.description || 'Event Services').slice(0, 127),
+                                    description: `Private event booking for ${inv.companyName}`.slice(0, 127),
+                                    unit_amount: { currency_code: 'USD', value: amount },
+                                    quantity: '1',
+                                    category: 'DIGITAL_GOODS'
+                                }
+                            ]
                         }]
                     })
                 },
