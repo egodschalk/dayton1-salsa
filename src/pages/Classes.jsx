@@ -7,10 +7,13 @@ import level3 from '../assets/rj-teaching.png'
 import PayPalButton from './PayPalButton'
 import { usePassTypes, isPassVisible, getExpiryDate } from '../hooks/usePassTypes'
 import { useSchedule } from '../hooks/useSchedule'
+import { useProducts } from '../hooks/useProducts'
+import MerchCheckout from './MerchCheckout'
 
 export default function Classes() {
     const { passTypes } = usePassTypes()
     const { schedule, loading: scheduleLoading } = useSchedule()
+    const { products } = useProducts()
     const [step, setStep] = useState(1)
     const [selectedPass, setSelectedPass] = useState(null)
     const [formData, setFormData] = useState({
@@ -24,6 +27,7 @@ export default function Classes() {
 
     const visiblePasses = passTypes.filter(p => isPassVisible(p))
     const selectedPassObj = passTypes.find(p => p.key === selectedPass)
+    const activeProducts = products.filter(p => p.active)
 
     // Fallback values while schedule loads or if doc doesn't exist yet
     const month = schedule?.month || 'August'
@@ -104,7 +108,7 @@ export default function Classes() {
                             </div>
                             {specialEvents.map(event => (
                                 <div key={event.id} className='class-schedule'>
-                                    <h3>{event.title}</h3>
+                                    <h3>🔔 {event.title}</h3>
                                     <div className='schedule'>
                                         <div className='times'>
                                             <p>{event.description}</p>
@@ -140,18 +144,31 @@ export default function Classes() {
                         {step === 1 && (
                             <div className='checkout-form'>
                                 <h3>Register & Pay</h3>
+
                                 <div className='form-group'>
                                     <label>First Name</label>
-                                    <input type='text' name='firstName' value={formData.firstName}
-                                        onChange={handleChange} placeholder='First name' />
+                                    <input
+                                        type='text'
+                                        name='firstName'
+                                        value={formData.firstName}
+                                        onChange={handleChange}
+                                        placeholder='First name'
+                                    />
                                     {errors.firstName && <span className='form-error'>{errors.firstName}</span>}
                                 </div>
+
                                 <div className='form-group'>
                                     <label>Last Name</label>
-                                    <input type='text' name='lastName' value={formData.lastName}
-                                        onChange={handleChange} placeholder='Last name' />
+                                    <input
+                                        type='text'
+                                        name='lastName'
+                                        value={formData.lastName}
+                                        onChange={handleChange}
+                                        placeholder='Last name'
+                                    />
                                     {errors.lastName && <span className='form-error'>{errors.lastName}</span>}
                                 </div>
+
                                 <div className='form-group'>
                                     <label>Phone Number</label>
                                     <input
@@ -168,11 +185,18 @@ export default function Classes() {
                                     />
                                     {errors.phone && <span className='form-error'>{errors.phone}</span>}
                                 </div>
+
                                 <div className='form-group'>
                                     <label>Email (optional)</label>
-                                    <input type='email' name='email' value={formData.email}
-                                        onChange={handleChange} placeholder='Email address' />
+                                    <input
+                                        type='email'
+                                        name='email'
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        placeholder='Email address'
+                                    />
                                 </div>
+
                                 <div className='form-group'>
                                     <label>Select Your Pass</label>
                                     <div className='pass-options'>
@@ -198,6 +222,7 @@ export default function Classes() {
                                     </div>
                                     {errors.selectedPass && <span className='form-error'>{errors.selectedPass}</span>}
                                 </div>
+
                                 <button className='continue-btn' onClick={handleContinue}>
                                     Continue to Payment
                                 </button>
@@ -219,7 +244,9 @@ export default function Classes() {
                                     formData={formData}
                                     onSuccess={handlePaymentSuccess}
                                 />
-                                <button className='back-btn' onClick={() => setStep(1)}>Go Back</button>
+                                <button className='back-btn' onClick={() => setStep(1)}>
+                                    Go Back
+                                </button>
                             </div>
                         )}
 
@@ -284,6 +311,14 @@ export default function Classes() {
                     </div>
                 </div>
             </div>
+
+            {activeProducts.length > 0 && (
+                <div className='merch-section'>
+                    <h2>DaytOn1 Merch</h2>
+                    <p className='merch-subtitle'>Pickup only — pay online, grab it at class.</p>
+                    <MerchCheckout products={activeProducts} />
+                </div>
+            )}
         </div>
     )
 }

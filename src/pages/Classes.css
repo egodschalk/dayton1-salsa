@@ -582,3 +582,187 @@
     margin-top: 15px;
     color: var(--primary);
 }
+
+/* ===== Merch section ===== */
+
+.merch-section {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 60px 5vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+    background-color: #0a0a0a;
+}
+
+.merch-section h2 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 32pt;
+    margin: 0;
+}
+
+.merch-subtitle {
+    opacity: 0.7;
+    margin: 0 0 30px 0;
+}
+
+.merch-checkout {
+    width: 100%;
+    max-width: 500px;
+    text-align: left;
+}
+
+.merch-picker .form-group select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 12pt;
+    border: 1px solid var(--secondary);
+    border-radius: 4px;
+    font-family: "Urbanist", sans-serif;
+    background-color: #111;
+    color: var(--primary);
+}
+
+.merch-picker .form-group select option {
+    background-color: #111;
+    color: var(--primary);
+}
+
+.merch-size-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.merch-size-options.pass-option {
+    display: block;
+    flex: 0 0 auto;
+    width: 70px;
+    padding: 10px 8px;
+    text-align: center;
+    opacity: 1;
+}
+
+.merch-size-options .pass-option p {
+    font-size: 10pt;
+    margin: 2px 0;
+}
+
+.merch-size-options .pass-option p:first-child {
+    font-size: 13pt;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.merch-qty-group {
+    align-items: flex-start;
+}
+
+.merch-qty-stepper {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.merch-qty-stepper button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--secondary);
+    background: transparent;
+    color: var(--secondary);
+    font-size: 16pt;
+    cursor: pointer;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.merch-qty-stepper button:hover {
+    background-color: var(--secondary);
+    color: var(--tertiary);
+}
+
+.merch-qty-stepper span {
+    font-size: 14pt;
+    min-width: 20px;
+    text-align: center;
+}
+
+.merch-cart {
+    margin-top: 20px;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+}
+
+.merch-cart h4 {
+    margin: 0 0 10px 0;
+    color: var(--secondary);
+    font-family: "Julius Sans One", serif;
+    font-weight: normal;
+}
+
+.merch-cart-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 11pt;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.merch-cart-row:last-of-type {
+    border-bottom: none;
+}
+
+.merch-remove-btn {
+    background: transparent;
+    border: none;
+    color: #cc4444;
+    font-size: 9pt;
+    cursor: pointer;
+    text-decoration: underline;
+    white-space: nowrap;
+}
+
+.merch-cart-total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    font-weight: bold;
+    color: var(--secondary);
+}
+
+.merch-buyer-form {
+    margin-top: 20px;
+}
+
+.merch-checkout-confirmation {
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+@media screen and (max-width: 600px) {
+    .merch-section {
+        padding: 40px 6vw;
+    }
+
+    .merch-section h2 {
+        font-size: 24pt;
+    }
+
+    .merch-size-options .pass-option {
+        width: 60px;
+        padding: 8px 6px;
+    }
+}

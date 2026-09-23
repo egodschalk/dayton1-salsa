@@ -7,6 +7,8 @@ import { usePassTypes, createPassType, updatePassType } from '../hooks/usePassTy
 import { useInstructors, createInstructor, setInstructorActive, seedInstructors } from '../hooks/useInstructors'
 import { useSchedule, saveSchedule, defaultSchedule } from '../hooks/useSchedule'
 import { useInvoices, createInvoice } from '../hooks/useInvoices'
+import { useProducts, createProduct, updateProduct } from '../hooks/useProducts'
+import { useOrders, markOrderDelivered } from '../hooks/useOrders'
 import './Owner.css'
 
 const OWNER_EMAILS = ['dayton1salsa@gmail.com', 'ahiciano@icanoki.com']
@@ -18,6 +20,7 @@ const DURATION_OPTIONS = [
 
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const DAY_NAMES_FULL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+const SHIRT_SIZES = ['S', 'M', 'L', 'XL', 'XXL']
 
 const emptyForm = {
     label: '',
@@ -36,6 +39,12 @@ const emptyInvoiceForm = {
     eventDate: ''
 }
 
+const emptyProductForm = {
+    name: '',
+    price: '',
+    variants: SHIRT_SIZES.map(size => ({ size, stock: '0' }))
+}
+
 function getStaffName(email) {
     if (!email) return 'Unknown'
     const namePart = email.split('@')[0]
@@ -52,6 +61,8 @@ export default function Owner() {
     const { instructors, loading: instructorsLoading } = useInstructors()
     const { schedule, loading: scheduleLoading } = useSchedule()
     const { invoices, loading: invoicesLoading } = useInvoices()
+    const { products, loading: productsLoading } = useProducts()
+    const { orders, loading: ordersLoading } = useOrders()
     const [user, setUser] = useState(null)
     const [authLoading, setAuthLoading] = useState(true)
     const [email, setEmail] = useState('')
@@ -83,6 +94,12 @@ export default function Owner() {
     const [invoiceSaving, setInvoiceSaving] = useState(false)
     const [newInvoiceLink, setNewInvoiceLink] = useState('')
     const [linkCopied, setLinkCopied] = useState(false)
+
+    // Merch editor state
+    const [editingProductId, setEditingProductId] = useState(null)
+    const [productForm, setProductForm] = useState(emptyProductForm)
+    const [productError, setProductError] = useState('')
+    const [productSaving, setProductSaving] = useState(false)
 
     // Stats data
     const [members, setMembers] = useState([])
@@ -368,6 +385,92 @@ export default function Owner() {
         setTimeout(() => setLinkCopied(false), 2000)
     }
 
+    // ===== Merch editor handlers =====
+    function startNewProduct() {
+        setEditingProductId('new')
+        setProductForm(emptyProductForm)
+        setProductError('')
+    }
+
+    function startEditProduct(product) {
+        setEditingProductId(product.id)
+        setProductForm({
+            name: product.name,
+            price: product.price,
+            variants: SHIRT_SIZES.map(size => {
+                const existing = (product.variants || []).find(v => v.size === size)
+                return { size, stock: existing ? String(existing.stock) : '0' }
+            })
+        })
+        setProductError('')
+    }
+
+    function cancelProductEdit() {
+        setEditingProductId(null)
+        setProductForm(emptyProductForm)
+        setProductError('')
+    }
+
+    function updateVariantStock(size, value) {
+        setProductForm({
+            ...productForm,
+            variants: productForm.variants.map(v => v.size === size ? { ...v, stock: value } : v)
+        })
+    }
+
+    async function handleSaveProduct() {
+        if (!productForm.name.trim()) { setProductError('Product name is required.'); return }
+        const priceNum = parseFloat(productForm.price)
+        if (isNaN(priceNum) || priceNum <= 0) { setProductError('Price must be greater than $0.'); return }
+
+        const variants = productForm.variants.map(v => ({
+            size: v.size,
+            stock: Math.max(0, parseInt(v.stock, 10) || 0)
+        }))
+
+        setProductSaving(true)
+        setProductError('')
+        try {
+            const payload = {
+                name: productForm.name.trim(),
+                price: priceNum.toFixed(2),
+                variants
+            }
+            if (editingProductId === 'new') {
+                await createProduct(payload, products)
+            } else {
+                await updateProduct(editingProductId, payload)
+            }
+            cancelProductEdit()
+        } catch (e) {
+            setProductError('Error saving: ' + e.message)
+        }
+        setProductSaving(false)
+    }
+
+    async function toggleProductActive(product) {
+        const verb = product.active ? 'deactivate' : 'reactivate'
+        if (!window.confirm(`Are you sure you want to ${verb} "${product.name}"?`)) return
+        try {
+            await updateProduct(product.id, { active: !product.active })
+        } catch (e) {
+            alert('Error: ' + e.message)
+        }
+    }
+
+    function totalStock(product) {
+        return (product.variants || []).reduce((sum, v) => sum + (v.stock || 0), 0)
+    }
+
+    async function handleMarkDelivered(orderId) {
+        if (!window.confirm('Mark this order as delivered/picked up?')) return
+        try {
+            await markOrderDelivered(orderId)
+        } catch (e) {
+            alert('Error: ' + e.message)
+        }
+    }
+
     // ===== Stats computation =====
     function inRange(dateStr) {
         if (rangeStart && dateStr < rangeStart) return false
@@ -586,6 +689,48 @@ export default function Owner() {
         </div>
     )
 
+    const renderProductForm = () => (
+        <div className='owner-edit-form'>
+            <div className='owner-form-group'>
+                <label>Product Name</label>
+                <input type='text' value={productForm.name}
+                    onChange={e => setProductForm({ ...productForm, name: e.target.value })}
+                    placeholder='e.g. DaytOn1 Logo Tee' />
+            </div>
+            <div className='owner-form-group'>
+                <label>Price ($)</label>
+                <input type='number' step='0.01' min='0' value={productForm.price}
+                    onChange={e => setProductForm({ ...productForm, price: e.target.value })}
+                    placeholder='20.00' />
+            </div>
+            <div className='owner-form-group'>
+                <label>Stock by Size</label>
+                <div className='owner-variant-grid'>
+                    {productForm.variants.map(v => (
+                        <div key={v.size} className='owner-variant-field'>
+                            <span className='owner-variant-size'>{v.size}</span>
+                            <input
+                                type='number'
+                                min='0'
+                                value={v.stock}
+                                onChange={e => updateVariantStock(v.size, e.target.value)}
+                            />
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {productError && <p className='owner-error'>{productError}</p>}
+
+            <div className='owner-form-buttons'>
+                <button className='owner-btn-outline' onClick={cancelProductEdit} disabled={productSaving}>Cancel</button>
+                <button className='owner-btn' onClick={handleSaveProduct} disabled={productSaving}>
+                    {productSaving ? 'Saving...' : 'Save Product'}
+                </button>
+            </div>
+        </div>
+    )
+
     return (
         <div className='owner-page'>
             <div className='owner-header'>
@@ -797,6 +942,98 @@ export default function Owner() {
                         )
                     )}
                 </div>
+            </div>
+
+            {/* ===== MERCH ORDERS ===== */}
+            <div className='owner-section'>
+                <div className='owner-section-header'>
+                    <h3>Merch Orders</h3>
+                </div>
+                <p className='owner-hint'>Orders placed on the Classes page. Mark as delivered once picked up.</p>
+
+                {ordersLoading ? (
+                    <p>Loading...</p>
+                ) : orders.length === 0 ? (
+                    <p className='owner-hint'>No orders yet.</p>
+                ) : (
+                    <div className='owner-pass-list'>
+                        {orders.map(order => (
+                            <div key={order.id} className={`owner-pass-card ${order.status === 'delivered' ? '' : 'inactive'}`}>
+                                <div className='owner-pass-info'>
+                                    <div className='owner-pass-top'>
+                                        <span className='owner-pass-label'>{order.buyerName}</span>
+                                        <span className='owner-pass-amount'>${order.totalAmount}</span>
+                                        <span className={order.status === 'delivered' ? 'owner-invoice-paid-badge' : 'owner-pass-inactive-badge'}>
+                                            {order.status === 'delivered' ? 'Delivered' : 'Unfulfilled'}
+                                        </span>
+                                    </div>
+                                    <div className='owner-pass-detail'>
+                                        <span>{(order.items || []).map(i => `${i.quantity}x ${i.productName} (${i.size})`).join(', ')}</span>
+                                        <span>·</span>
+                                        <span>{order.buyerPhone}</span>
+                                    </div>
+                                </div>
+                                {order.status !== 'delivered' && (
+                                    <div className='owner-pass-actions'>
+                                        <button className='owner-btn-small' onClick={() => handleMarkDelivered(order.id)}>
+                                            Mark Delivered
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* ===== MERCH / T-SHIRTS ===== */}
+            <div className='owner-section'>
+                <div className='owner-section-header'>
+                    <h3>T-Shirts &amp; Merch</h3>
+                    {editingProductId === null && (
+                        <button className='owner-btn' onClick={startNewProduct}>+ Add Product</button>
+                    )}
+                </div>
+                <p className='owner-hint'>Appears in its own section on the Classes page. Pickup only for now.</p>
+
+                {editingProductId === 'new' && renderProductForm()}
+
+                {productsLoading ? (
+                    <p>Loading...</p>
+                ) : products.length === 0 ? (
+                    <p className='owner-hint'>No products yet. Click "Add Product" to create one.</p>
+                ) : (
+                    <div className='owner-pass-list'>
+                        {products.map(product => (
+                            <div key={product.id} className={`owner-pass-card ${!product.active ? 'inactive' : ''}`}>
+                                {editingProductId === product.id ? (
+                                    renderProductForm()
+                                ) : (
+                                    <>
+                                        <div className='owner-pass-info'>
+                                            <div className='owner-pass-top'>
+                                                <span className='owner-pass-label'>{product.name}</span>
+                                                <span className='owner-pass-amount'>${product.price}</span>
+                                                {!product.active && <span className='owner-pass-inactive-badge'>Inactive</span>}
+                                            </div>
+                                            <div className='owner-pass-detail'>
+                                                <span>{totalStock(product)} total in stock</span>
+                                                <span>·</span>
+                                                <span>{(product.variants || []).map(v => `${v.size}: ${v.stock}`).join(', ')}</span>
+                                            </div>
+                                        </div>
+                                        <div className='owner-pass-actions'>
+                                            <button className='owner-btn-small' onClick={() => startEditProduct(product)}>Edit</button>
+                                            <button className='owner-btn-small-outline' onClick={() => toggleProductActive(product)}>
+                                                {product.active ? 'Deactivate' : 'Reactivate'}
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* ===== INVOICES ===== */}
