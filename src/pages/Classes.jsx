@@ -128,16 +128,12 @@ export default function Classes() {
                     <h4>{month}</h4>
                     <p>We offer classes in monthly cycles</p>
                     <div className='rates'>
-                        <div className='rate-category'>
-                            {passTypes.filter(p => p.active).map(pass => (
-                                <p key={pass.id}>{pass.label}:</p>
-                            ))}
-                        </div>
-                        <div className='rate-cost'>
-                            {passTypes.filter(p => p.active).map(pass => (
-                                <p key={pass.id}>${pass.amount}</p>
-                            ))}
-                        </div>
+                        {passTypes.filter(p => p.active).map(pass => (
+                            <div className='rate-row' key={pass.id}>
+                                <span className='rate-label'>{pass.label}:</span>
+                                <span className='rate-price'>${pass.amount}</span>
+                            </div>
+                        ))}
                     </div>
 
                     <div className='classes-paypal' id='register'>
