@@ -761,8 +761,29 @@
         font-size: 24pt;
     }
 
+    .merch-checkout {
+        padding: 0 4vw;
+        box-sizing: border-box;
+    }
+
+    .merch-size-options {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+
     .merch-size-options .pass-option {
-        width: 60px;
-        padding: 8px 6px;
+        width: 100%;
+        padding: 10px 4px;
+        box-sizing: border-box;
+    }
+
+    .merch-size-options .pass-option p:first-child {
+        font-size: 14pt;
+    }
+
+    .merch-size-options .pass-option p:last-child {
+        font-size: 9pt;
+        white-space: nowrap;
     }
 }
