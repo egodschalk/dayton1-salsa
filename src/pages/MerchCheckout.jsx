@@ -88,7 +88,7 @@ export default function MerchCheckout({ products }) {
             return
         }
         const script = document.createElement('script')
-        script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=USD`
+        script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=USD&enable-funding=venmo`
         script.async = true
         script.onload = onReady
         script.onerror = () => setPayError('Could not load payment system. Please refresh and try again.')
