@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { db, auth } from '../firebase'
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore'
+import { collection, getDocs, query, orderBy, where } from 'firebase/firestore'
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
 import { usePassTypes, createPassType, updatePassType } from '../hooks/usePassTypes'
 import { useInstructors, createInstructor, setInstructorActive, seedInstructors } from '../hooks/useInstructors'
@@ -21,6 +21,30 @@ const DURATION_OPTIONS = [
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const DAY_NAMES_FULL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 const SHIRT_SIZES = ['S', 'M', 'L', 'XL', 'XXL']
+
+// Which sections start open. The owner's choices are remembered in this browser.
+const DEFAULT_OPEN = {
+    stats: true,
+    statDow: true,
+    statPass: true,
+    statTaught: true,
+    statStaff: true,
+    orders: true,
+    merch: false,
+    invoices: false,
+    schedule: false,
+    instructors: false,
+    pricing: true
+}
+const OPEN_STORAGE_KEY = 'ownerOpenSections'
+
+function loadOpenState() {
+    try {
+        const saved = localStorage.getItem(OPEN_STORAGE_KEY)
+        if (saved) return { ...DEFAULT_OPEN, ...JSON.parse(saved) }
+    } catch (e) { /* ignore */ }
+    return DEFAULT_OPEN
+}
 
 const emptyForm = {
     label: '',
@@ -42,6 +66,8 @@ const emptyInvoiceForm = {
 const emptyProductForm = {
     name: '',
     price: '',
+    description: '',
+    imageUrl: '',
     variants: SHIRT_SIZES.map(size => ({ size, stock: '0' }))
 }
 
@@ -53,6 +79,60 @@ function getStaffName(email) {
 
 function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString()
+}
+
+// First day of the current month as YYYY-MM-DD
+function monthStart() {
+    const d = new Date()
+    const m = String(d.getMonth() + 1).padStart(2, '0')
+    return `${d.getFullYear()}-${m}-01`
+}
+
+function isConfirmed(member) {
+    return member.transactionId && member.transactionId !== 'PENDING'
+}
+
+// Only reads documents inside the chosen date range (saves Firestore reads)
+function rangeQuery(colName, field, start, end, newestFirst = false) {
+    const parts = []
+    if (start) parts.push(where(field, '>=', start))
+    if (end) parts.push(where(field, '<=', end + '\uf8ff'))
+    parts.push(orderBy(field, newestFirst ? 'desc' : 'asc'))
+    return query(collection(db, colName), ...parts)
+}
+
+// Collapsible big section
+function Section({ title, badge, open, onToggle, actions, children }) {
+    return (
+        <div className='owner-section'>
+            <div className='owner-section-header owner-collapsible' onClick={onToggle}>
+                <h3>
+                    <span className='owner-expand-icon'>{open ? '▾' : '▸'}</span>
+                    {title}
+                    {badge ? <span className='owner-section-badge'>{badge}</span> : null}
+                </h3>
+                {open && actions && (
+                    <div onClick={e => e.stopPropagation()}>{actions}</div>
+                )}
+            </div>
+            {open && children}
+        </div>
+    )
+}
+
+// Collapsible block inside Statistics
+function StatBlock({ title, open, onToggle, right, children }) {
+    return (
+        <div className='owner-stat-block'>
+            <div className='owner-staff-header owner-collapsible' onClick={onToggle}>
+                <h4 className='owner-stat-block-title'>
+                    <span className='owner-expand-icon'>{open ? '▾' : '▸'}</span> {title}
+                </h4>
+                {open && right && <div onClick={e => e.stopPropagation()}>{right}</div>}
+            </div>
+            {open && children}
+        </div>
+    )
 }
 
 export default function Owner() {
@@ -68,6 +148,30 @@ export default function Owner() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loginError, setLoginError] = useState('')
+
+    const isOwner = !!user && OWNER_EMAILS.includes(user.email)
+
+    // Collapsed / expanded sections
+    const [openSections, setOpenSections] = useState(loadOpenState)
+
+    function isOpen(id) {
+        return openSections[id] !== false
+    }
+
+    function toggleSection(id) {
+        setOpenSections(prev => {
+            const next = { ...prev, [id]: !(prev[id] !== false) }
+            try { localStorage.setItem(OPEN_STORAGE_KEY, JSON.stringify(next)) } catch (e) { /* ignore */ }
+            return next
+        })
+    }
+
+    function setAllSections(value) {
+        const next = {}
+        Object.keys(DEFAULT_OPEN).forEach(k => { next[k] = value })
+        setOpenSections(next)
+        try { localStorage.setItem(OPEN_STORAGE_KEY, JSON.stringify(next)) } catch (e) { /* ignore */ }
+    }
 
     // Pricing editor state
     const [editingId, setEditingId] = useState(null)
@@ -106,9 +210,12 @@ export default function Owner() {
     const [shifts, setShifts] = useState([])
     const [checkInLog, setCheckInLog] = useState([])
     const [instructorLog, setInstructorLog] = useState([])
+    const [statsLoading, setStatsLoading] = useState(false)
+    const [statsError, setStatsError] = useState('')
+    const [statsRefresh, setStatsRefresh] = useState(0)
 
-    // Stats filters
-    const [rangeStart, setRangeStart] = useState('')
+    // Stats filters (defaults to this month to keep reads low)
+    const [rangeStart, setRangeStart] = useState(monthStart())
     const [rangeEnd, setRangeEnd] = useState('')
     const [staffViewMode, setStaffViewMode] = useState('byStaff')
     const [expandedStaff, setExpandedStaff] = useState(null)
@@ -122,33 +229,42 @@ export default function Owner() {
         return unsubscribe
     }, [])
 
-    // Load stats collections once authed as owner
+    // Load stats for the chosen date range only
     useEffect(() => {
-        if (!user || !OWNER_EMAILS.includes(user.email)) return
-        const unsubMembers = onSnapshot(query(collection(db, 'members'), orderBy('purchaseDate', 'desc')), (snap) => {
-            setMembers(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+        if (!isOwner) return
+        let cancelled = false
+        setStatsLoading(true)
+        setStatsError('')
+        Promise.all([
+            getDocs(rangeQuery('members', 'purchaseDate', rangeStart, rangeEnd, true)),
+            getDocs(rangeQuery('shifts', 'date', rangeStart, rangeEnd)),
+            getDocs(rangeQuery('checkInLog', 'date', rangeStart, rangeEnd)),
+            getDocs(rangeQuery('instructorLog', 'date', rangeStart, rangeEnd))
+        ]).then(([mSnap, sSnap, cSnap, iSnap]) => {
+            if (cancelled) return
+            setMembers(mSnap.docs.map(d => ({ id: d.id, ...d.data() })))
+            setShifts(sSnap.docs.map(d => ({ id: d.id, ...d.data() })))
+            setCheckInLog(cSnap.docs.map(d => ({ id: d.id, ...d.data() })))
+            setInstructorLog(iSnap.docs.map(d => ({ id: d.id, ...d.data() })))
+            setStatsLoading(false)
+        }).catch(err => {
+            if (cancelled) return
+            console.error('Stats load error:', err)
+            setStatsError('Could not load stats: ' + err.message)
+            setStatsLoading(false)
         })
-        const unsubShifts = onSnapshot(collection(db, 'shifts'), (snap) => {
-            setShifts(snap.docs.map(d => ({ id: d.id, ...d.data() })))
-        })
-        const unsubLog = onSnapshot(collection(db, 'checkInLog'), (snap) => {
-            setCheckInLog(snap.docs.map(d => ({ id: d.id, ...d.data() })))
-        })
-        const unsubInstructorLog = onSnapshot(collection(db, 'instructorLog'), (snap) => {
-            setInstructorLog(snap.docs.map(d => ({ id: d.id, ...d.data() })))
-        })
-        return () => { unsubMembers(); unsubShifts(); unsubLog(); unsubInstructorLog() }
-    }, [user])
+        return () => { cancelled = true }
+    }, [isOwner, rangeStart, rangeEnd, statsRefresh])
 
     // Auto-seed instructors if the list is empty (once)
     useEffect(() => {
-        if (!user || !OWNER_EMAILS.includes(user.email)) return
+        if (!isOwner) return
         if (instructorsLoading || seededOnce) return
         if (instructors.length === 0) {
             setSeededOnce(true)
             seedInstructors().catch(e => console.error('Seed error:', e))
         }
-    }, [user, instructors, instructorsLoading, seededOnce])
+    }, [isOwner, instructors, instructorsLoading, seededOnce])
 
     // Populate schedule form when data loads
     useEffect(() => {
@@ -158,6 +274,95 @@ export default function Owner() {
             setScheduleForm(defaultSchedule)
         }
     }, [schedule, scheduleLoading])
+
+    // ===== Stats computation (only recalculates when data changes) =====
+    const stats = useMemo(() => {
+        const totalRevenue = members
+            .filter(isConfirmed)
+            .reduce((sum, m) => sum + (parseFloat(m.amount) || 0), 0)
+
+        const attendanceByDow = DAY_NAMES_FULL.map((name, dow) => {
+            const rows = checkInLog.filter(l => new Date(l.date + 'T12:00:00').getDay() === dow)
+            const classCount = new Set(rows.map(l => l.date)).size
+            const total = rows.length
+            const avg = classCount > 0 ? total / classCount : 0
+            return { name, dow, total, classCount, avg }
+        }).filter(row => row.total > 0)
+
+        const passBreakdown = passTypes.map(pass => {
+            const matching = members.filter(m => m.passType === pass.key)
+            const confirmed = matching.filter(isConfirmed)
+            const revenue = confirmed.reduce((sum, m) => sum + (parseFloat(m.amount) || 0), 0)
+            return { label: pass.label, key: pass.key, count: matching.length, confirmedCount: confirmed.length, revenue }
+        }).filter(row => row.count > 0)
+
+        const knownKeys = passTypes.map(p => p.key)
+        const orphanMembers = members.filter(m => !knownKeys.includes(m.passType))
+        if (orphanMembers.length > 0) {
+            const confirmed = orphanMembers.filter(isConfirmed)
+            passBreakdown.push({
+                label: 'Other / Removed passes',
+                key: '_orphan',
+                count: orphanMembers.length,
+                confirmedCount: confirmed.length,
+                revenue: confirmed.reduce((sum, m) => sum + (parseFloat(m.amount) || 0), 0)
+            })
+        }
+
+        const staffEmails = [...new Set([
+            ...shifts.map(s => s.email),
+            ...checkInLog.map(l => l.adminEmail)
+        ])]
+
+        const activeDates = [...new Set([
+            ...shifts.map(s => s.date),
+            ...checkInLog.map(l => l.date)
+        ])].sort().reverse()
+
+        const counts = {}
+        instructorLog.forEach(l => { counts[l.name] = (counts[l.name] || 0) + 1 })
+        const teachingByInstructor = Object.entries(counts)
+            .map(([name, days]) => ({ name, days }))
+            .sort((a, b) => b.days - a.days)
+
+        const teachingDates = [...new Set(instructorLog.map(l => l.date))].sort().reverse()
+
+        return { totalRevenue, attendanceByDow, passBreakdown, staffEmails, activeDates, teachingByInstructor, teachingDates }
+    }, [members, shifts, checkInLog, instructorLog, passTypes])
+
+    const {
+        totalRevenue, attendanceByDow, passBreakdown, staffEmails,
+        activeDates, teachingByInstructor, teachingDates
+    } = stats
+
+    function checkInsForStaff(emailAddr) {
+        return checkInLog.filter(l => l.adminEmail === emailAddr)
+    }
+
+    function staffOnDate(date) {
+        return [...new Set([
+            ...shifts.filter(s => s.date === date).map(s => s.email),
+            ...checkInLog.filter(l => l.date === date).map(l => l.adminEmail)
+        ])]
+    }
+
+    function checkInsForStaffOnDate(emailAddr, date) {
+        return checkInLog.filter(l => l.adminEmail === emailAddr && l.date === date)
+    }
+
+    function instructorsOnDate(date) {
+        return instructorLog.filter(l => l.date === date).map(l => l.name)
+    }
+
+    function showThisMonth() {
+        setRangeStart(monthStart())
+        setRangeEnd('')
+    }
+
+    function showAllTime() {
+        setRangeStart('')
+        setRangeEnd('')
+    }
 
     async function handleLogin(e) {
         e.preventDefault()
@@ -397,6 +602,8 @@ export default function Owner() {
         setProductForm({
             name: product.name,
             price: product.price,
+            description: product.description || '',
+            imageUrl: product.imageUrl || '',
             variants: SHIRT_SIZES.map(size => {
                 const existing = (product.variants || []).find(v => v.size === size)
                 return { size, stock: existing ? String(existing.stock) : '0' }
@@ -434,6 +641,8 @@ export default function Owner() {
             const payload = {
                 name: productForm.name.trim(),
                 price: priceNum.toFixed(2),
+                description: productForm.description.trim(),
+                imageUrl: productForm.imageUrl.trim(),
                 variants
             }
             if (editingProductId === 'new') {
@@ -471,108 +680,6 @@ export default function Owner() {
         }
     }
 
-    // ===== Stats computation =====
-    function inRange(dateStr) {
-        if (rangeStart && dateStr < rangeStart) return false
-        if (rangeEnd && dateStr > rangeEnd) return false
-        return true
-    }
-
-    function isConfirmed(member) {
-        return member.transactionId && member.transactionId !== 'PENDING'
-    }
-
-    const filteredMembers = members.filter(m => {
-        const d = m.purchaseDate ? m.purchaseDate.slice(0, 10) : ''
-        return inRange(d)
-    })
-
-    const filteredCheckIns = checkInLog.filter(l => inRange(l.date))
-    const filteredShifts = shifts.filter(s => inRange(s.date))
-    const filteredInstructorLog = instructorLog.filter(l => inRange(l.date))
-
-    const totalRevenue = filteredMembers
-        .filter(isConfirmed)
-        .reduce((sum, m) => sum + (parseFloat(m.amount) || 0), 0)
-
-    const attendanceByDow = DAY_NAMES_FULL.map((name, dow) => {
-        const checkInsThisDow = filteredCheckIns.filter(l => {
-            const d = new Date(l.date + 'T12:00:00')
-            return d.getDay() === dow
-        })
-        const uniqueDates = [...new Set(checkInsThisDow.map(l => l.date))]
-        const total = checkInsThisDow.length
-        const classCount = uniqueDates.length
-        const avg = classCount > 0 ? (total / classCount) : 0
-        return { name, dow, total, classCount, avg }
-    }).filter(row => row.total > 0)
-
-    const passBreakdown = passTypes.map(pass => {
-        const matching = filteredMembers.filter(m => m.passType === pass.key)
-        const confirmed = matching.filter(isConfirmed)
-        const revenue = confirmed.reduce((sum, m) => sum + (parseFloat(m.amount) || 0), 0)
-        return { label: pass.label, key: pass.key, count: matching.length, confirmedCount: confirmed.length, revenue }
-    }).filter(row => row.count > 0)
-
-    const knownKeys = passTypes.map(p => p.key)
-    const orphanMembers = filteredMembers.filter(m => !knownKeys.includes(m.passType))
-    if (orphanMembers.length > 0) {
-        const confirmed = orphanMembers.filter(isConfirmed)
-        passBreakdown.push({
-            label: 'Other / Removed passes',
-            key: '_orphan',
-            count: orphanMembers.length,
-            confirmedCount: confirmed.length,
-            revenue: confirmed.reduce((sum, m) => sum + (parseFloat(m.amount) || 0), 0)
-        })
-    }
-
-    const staffEmails = [...new Set([
-        ...filteredShifts.map(s => s.email),
-        ...filteredCheckIns.map(l => l.adminEmail)
-    ])]
-
-    function checkInsForStaff(emailAddr) {
-        return filteredCheckIns.filter(l => l.adminEmail === emailAddr)
-    }
-
-    const activeDates = [...new Set([
-        ...filteredShifts.map(s => s.date),
-        ...filteredCheckIns.map(l => l.date)
-    ])].sort().reverse()
-
-    function staffOnDate(date) {
-        return [...new Set([
-            ...filteredShifts.filter(s => s.date === date).map(s => s.email),
-            ...filteredCheckIns.filter(l => l.date === date).map(l => l.adminEmail)
-        ])]
-    }
-
-    function checkInsForStaffOnDate(emailAddr, date) {
-        return filteredCheckIns.filter(l => l.adminEmail === emailAddr && l.date === date)
-    }
-
-    const teachingByInstructor = (() => {
-        const counts = {}
-        filteredInstructorLog.forEach(l => {
-            counts[l.name] = (counts[l.name] || 0) + 1
-        })
-        return Object.entries(counts)
-            .map(([name, days]) => ({ name, days }))
-            .sort((a, b) => b.days - a.days)
-    })()
-
-    function instructorsOnDate(date) {
-        return filteredInstructorLog.filter(l => l.date === date).map(l => l.name)
-    }
-
-    const teachingDates = [...new Set(filteredInstructorLog.map(l => l.date))].sort().reverse()
-
-    function clearFilters() {
-        setRangeStart('')
-        setRangeEnd('')
-    }
-
     // ===== Render =====
     if (authLoading) return <div className='owner-loading'>Loading...</div>
 
@@ -594,13 +701,15 @@ export default function Owner() {
         </div>
     )
 
-    if (!OWNER_EMAILS.includes(user.email)) return (
+    if (!isOwner) return (
         <div className='owner-blocked'>
             <h2>Access Denied</h2>
             <p>This area is restricted to owners only.</p>
             <button className='owner-btn-outline' onClick={() => signOut(auth)}>Log Out</button>
         </div>
     )
+
+    const unfulfilledCount = orders.filter(o => o.status !== 'delivered').length
 
     const renderForm = () => (
         <div className='owner-edit-form'>
@@ -704,6 +813,18 @@ export default function Owner() {
                     placeholder='20.00' />
             </div>
             <div className='owner-form-group'>
+                <label>Photo Path <span style={{ opacity: 0.5, fontSize: '9pt' }}>(optional, e.g. /merch/black-tee.jpg)</span></label>
+                <input type='text' value={productForm.imageUrl}
+                    onChange={e => setProductForm({ ...productForm, imageUrl: e.target.value })}
+                    placeholder='/merch/black-tee.jpg' />
+            </div>
+            <div className='owner-form-group'>
+                <label>Description <span style={{ opacity: 0.5, fontSize: '9pt' }}>(optional)</span></label>
+                <input type='text' value={productForm.description}
+                    onChange={e => setProductForm({ ...productForm, description: e.target.value })}
+                    placeholder='Soft cotton tee with the DaytOn1 logo' />
+            </div>
+            <div className='owner-form-group'>
                 <label>Stock by Size</label>
                 <div className='owner-variant-grid'>
                     {productForm.variants.map(v => (
@@ -741,12 +862,17 @@ export default function Owner() {
                 </div>
             </div>
 
-            {/* ===== STATS ===== */}
-            <div className='owner-section'>
-                <div className='owner-section-header'>
-                    <h3>Statistics</h3>
-                </div>
+            <div className='owner-collapse-bar'>
+                <button className='owner-btn-small-outline' onClick={() => setAllSections(true)}>Expand All</button>
+                <button className='owner-btn-small-outline' onClick={() => setAllSections(false)}>Collapse All</button>
+            </div>
 
+            {/* ===== STATS ===== */}
+            <Section
+                title='Statistics'
+                open={isOpen('stats')}
+                onToggle={() => toggleSection('stats')}
+            >
                 <div className='owner-filter-bar'>
                     <div className='owner-filter-group'>
                         <label>From</label>
@@ -756,10 +882,17 @@ export default function Owner() {
                         <label>To</label>
                         <input type='date' value={rangeEnd} onChange={e => setRangeEnd(e.target.value)} />
                     </div>
-                    {(rangeStart || rangeEnd) && (
-                        <button className='owner-btn-small-outline' onClick={clearFilters}>Clear (All Time)</button>
-                    )}
+                    <button className='owner-btn-small-outline' onClick={showThisMonth}>This Month</button>
+                    <button className='owner-btn-small-outline' onClick={showAllTime}>All Time</button>
+                    <button className='owner-btn-small-outline' onClick={() => setStatsRefresh(n => n + 1)} disabled={statsLoading}>
+                        {statsLoading ? 'Loading...' : 'Refresh'}
+                    </button>
                 </div>
+
+                {statsError && <p className='owner-error'>{statsError}</p>}
+                {!rangeStart && !rangeEnd && (
+                    <p className='owner-hint'>Showing all time. This reads every record, so use a date range for day-to-day checks.</p>
+                )}
 
                 <div className='owner-stat-cards'>
                     <div className='owner-stat-card'>
@@ -768,11 +901,11 @@ export default function Owner() {
                     </div>
                     <div className='owner-stat-card'>
                         <p>Members</p>
-                        <h4>{filteredMembers.length}</h4>
+                        <h4>{members.length}</h4>
                     </div>
                     <div className='owner-stat-card'>
                         <p>Check-Ins</p>
-                        <h4>{filteredCheckIns.length}</h4>
+                        <h4>{checkInLog.length}</h4>
                     </div>
                     <div className='owner-stat-card'>
                         <p>Active Passes</p>
@@ -780,8 +913,7 @@ export default function Owner() {
                     </div>
                 </div>
 
-                <div className='owner-stat-block'>
-                    <h4 className='owner-stat-block-title'>Attendance by Day of Week</h4>
+                <StatBlock title='Attendance by Day of Week' open={isOpen('statDow')} onToggle={() => toggleSection('statDow')}>
                     {attendanceByDow.length === 0 ? (
                         <p className='owner-hint'>No check-ins in this period.</p>
                     ) : (
@@ -795,10 +927,9 @@ export default function Owner() {
                             ))}
                         </div>
                     )}
-                </div>
+                </StatBlock>
 
-                <div className='owner-stat-block'>
-                    <h4 className='owner-stat-block-title'>Pass Type Breakdown</h4>
+                <StatBlock title='Pass Type Breakdown' open={isOpen('statPass')} onToggle={() => toggleSection('statPass')}>
                     {passBreakdown.length === 0 ? (
                         <p className='owner-hint'>No passes sold in this period.</p>
                     ) : (
@@ -812,10 +943,9 @@ export default function Owner() {
                             ))}
                         </div>
                     )}
-                </div>
+                </StatBlock>
 
-                <div className='owner-stat-block'>
-                    <h4 className='owner-stat-block-title'>Who Taught</h4>
+                <StatBlock title='Who Taught' open={isOpen('statTaught')} onToggle={() => toggleSection('statTaught')}>
                     {teachingByInstructor.length === 0 ? (
                         <p className='owner-hint'>No teaching recorded in this period.</p>
                     ) : (
@@ -838,11 +968,13 @@ export default function Owner() {
                             ))}
                         </div>
                     )}
-                </div>
+                </StatBlock>
 
-                <div className='owner-stat-block'>
-                    <div className='owner-staff-header'>
-                        <h4 className='owner-stat-block-title'>Staff Activity</h4>
+                <StatBlock
+                    title='Staff Activity'
+                    open={isOpen('statStaff')}
+                    onToggle={() => toggleSection('statStaff')}
+                    right={
                         <div className='owner-toggle'>
                             <button
                                 className={`owner-toggle-btn ${staffViewMode === 'byStaff' ? 'active' : ''}`}
@@ -857,8 +989,8 @@ export default function Owner() {
                                 By Date
                             </button>
                         </div>
-                    </div>
-
+                    }
+                >
                     {staffViewMode === 'byStaff' ? (
                         staffEmails.length === 0 ? (
                             <p className='owner-hint'>No staff activity in this period.</p>
@@ -866,20 +998,20 @@ export default function Owner() {
                             <div className='owner-staff-list'>
                                 {staffEmails.map(emailAddr => {
                                     const theirCheckIns = checkInsForStaff(emailAddr)
-                                    const isOpen = expandedStaff === emailAddr
+                                    const open = expandedStaff === emailAddr
                                     return (
                                         <div key={emailAddr} className='owner-staff-item'>
-                                            <div className='owner-staff-row' onClick={() => setExpandedStaff(isOpen ? null : emailAddr)}>
+                                            <div className='owner-staff-row' onClick={() => setExpandedStaff(open ? null : emailAddr)}>
                                                 <span className='owner-staff-name'>{getStaffName(emailAddr)}</span>
                                                 <span className='owner-staff-count'>{theirCheckIns.length} check-ins</span>
-                                                <span className='owner-expand-icon'>{isOpen ? '▾' : '▸'}</span>
+                                                <span className='owner-expand-icon'>{open ? '▾' : '▸'}</span>
                                             </div>
-                                            {isOpen && (
+                                            {open && (
                                                 <div className='owner-staff-detail'>
                                                     {theirCheckIns.length === 0 ? (
                                                         <p className='owner-hint'>No check-ins.</p>
                                                     ) : (
-                                                        theirCheckIns
+                                                        [...theirCheckIns]
                                                             .sort((a, b) => b.date.localeCompare(a.date))
                                                             .map(l => (
                                                                 <div key={l.id} className='owner-detail-row'>
@@ -901,17 +1033,17 @@ export default function Owner() {
                         ) : (
                             <div className='owner-staff-list'>
                                 {activeDates.map(date => {
-                                    const isOpen = expandedDate === date
+                                    const open = expandedDate === date
                                     const workers = staffOnDate(date)
                                     const teachers = instructorsOnDate(date)
                                     return (
                                         <div key={date} className='owner-staff-item'>
-                                            <div className='owner-staff-row' onClick={() => setExpandedDate(isOpen ? null : date)}>
+                                            <div className='owner-staff-row' onClick={() => setExpandedDate(open ? null : date)}>
                                                 <span className='owner-staff-name'>{formatDate(date + 'T12:00:00')}</span>
                                                 <span className='owner-staff-count'>{workers.length} {workers.length === 1 ? 'person' : 'people'}</span>
-                                                <span className='owner-expand-icon'>{isOpen ? '▾' : '▸'}</span>
+                                                <span className='owner-expand-icon'>{open ? '▾' : '▸'}</span>
                                             </div>
-                                            {isOpen && (
+                                            {open && (
                                                 <div className='owner-staff-detail'>
                                                     {teachers.length > 0 && (
                                                         <div className='owner-date-staff-block'>
@@ -941,15 +1073,17 @@ export default function Owner() {
                             </div>
                         )
                     )}
-                </div>
-            </div>
+                </StatBlock>
+            </Section>
 
             {/* ===== MERCH ORDERS ===== */}
-            <div className='owner-section'>
-                <div className='owner-section-header'>
-                    <h3>Merch Orders</h3>
-                </div>
-                <p className='owner-hint'>Orders placed on the Classes page. Mark as delivered once picked up.</p>
+            <Section
+                title='Merch Orders'
+                badge={unfulfilledCount > 0 ? `${unfulfilledCount} unfulfilled` : ''}
+                open={isOpen('orders')}
+                onToggle={() => toggleSection('orders')}
+            >
+                <p className='owner-hint'>Orders placed on the Classes and Shop pages. Mark as delivered once picked up.</p>
 
                 {ordersLoading ? (
                     <p>Loading...</p>
@@ -984,17 +1118,19 @@ export default function Owner() {
                         ))}
                     </div>
                 )}
-            </div>
+            </Section>
 
             {/* ===== MERCH / T-SHIRTS ===== */}
-            <div className='owner-section'>
-                <div className='owner-section-header'>
-                    <h3>T-Shirts &amp; Merch</h3>
-                    {editingProductId === null && (
-                        <button className='owner-btn' onClick={startNewProduct}>+ Add Product</button>
-                    )}
-                </div>
-                <p className='owner-hint'>Appears in its own section on the Classes page. Pickup only for now.</p>
+            <Section
+                title='T-Shirts & Merch'
+                badge={products.length > 0 ? `${products.length} products` : ''}
+                open={isOpen('merch')}
+                onToggle={() => toggleSection('merch')}
+                actions={editingProductId === null && (
+                    <button className='owner-btn' onClick={startNewProduct}>+ Add Product</button>
+                )}
+            >
+                <p className='owner-hint'>Appears on the Shop page and in the Classes page merch section. Pickup only for now.</p>
 
                 {editingProductId === 'new' && renderProductForm()}
 
@@ -1021,6 +1157,13 @@ export default function Owner() {
                                                 <span>·</span>
                                                 <span>{(product.variants || []).map(v => `${v.size}: ${v.stock}`).join(', ')}</span>
                                             </div>
+                                            {(product.imageUrl || product.description) && (
+                                                <div className='owner-pass-detail'>
+                                                    {product.imageUrl && <span>Photo: {product.imageUrl}</span>}
+                                                    {product.imageUrl && product.description && <span>·</span>}
+                                                    {product.description && <span>{product.description}</span>}
+                                                </div>
+                                            )}
                                         </div>
                                         <div className='owner-pass-actions'>
                                             <button className='owner-btn-small' onClick={() => startEditProduct(product)}>Edit</button>
@@ -1034,16 +1177,18 @@ export default function Owner() {
                         ))}
                     </div>
                 )}
-            </div>
+            </Section>
 
             {/* ===== INVOICES ===== */}
-            <div className='owner-section'>
-                <div className='owner-section-header'>
-                    <h3>Invoices</h3>
-                    {!showInvoiceForm && (
-                        <button className='owner-btn' onClick={startNewInvoice}>+ New Invoice</button>
-                    )}
-                </div>
+            <Section
+                title='Invoices'
+                badge={invoices.filter(i => i.status !== 'paid').length > 0 ? `${invoices.filter(i => i.status !== 'paid').length} unpaid` : ''}
+                open={isOpen('invoices')}
+                onToggle={() => toggleSection('invoices')}
+                actions={!showInvoiceForm && (
+                    <button className='owner-btn' onClick={startNewInvoice}>+ New Invoice</button>
+                )}
+            >
                 <p className='owner-hint'>Bill a company or client for a private event. Share the link — it updates to "Paid" automatically once they pay.</p>
 
                 {showInvoiceForm && (
@@ -1156,13 +1301,14 @@ export default function Owner() {
                         ))}
                     </div>
                 )}
-            </div>
+            </Section>
 
             {/* ===== SCHEDULE ===== */}
-            <div className='owner-section'>
-                <div className='owner-section-header'>
-                    <h3>Class Schedule</h3>
-                </div>
+            <Section
+                title='Class Schedule'
+                open={isOpen('schedule')}
+                onToggle={() => toggleSection('schedule')}
+            >
                 <p className='owner-hint'>Updates the schedule on the public Classes page instantly.</p>
 
                 {scheduleLoading || !scheduleForm ? (
@@ -1261,13 +1407,15 @@ export default function Owner() {
                         </div>
                     </>
                 )}
-            </div>
+            </Section>
 
             {/* ===== INSTRUCTORS ===== */}
-            <div className='owner-section'>
-                <div className='owner-section-header'>
-                    <h3>Instructors</h3>
-                </div>
+            <Section
+                title='Instructors'
+                badge={instructors.length > 0 ? `${instructors.filter(i => i.active).length} active` : ''}
+                open={isOpen('instructors')}
+                onToggle={() => toggleSection('instructors')}
+            >
                 <p className='owner-hint'>These names appear on the admin dashboard so staff can mark who taught each day.</p>
 
                 <div className='owner-add-instructor'>
@@ -1307,17 +1455,18 @@ export default function Owner() {
                         ))}
                     </div>
                 )}
-            </div>
+            </Section>
 
             {/* ===== PRICING EDITOR ===== */}
-            <div className='owner-section'>
-                <div className='owner-section-header'>
-                    <h3>Pass Types &amp; Pricing</h3>
-                    {editingId === null && (
-                        <button className='owner-btn' onClick={startNew}>+ Add New Pass</button>
-                    )}
-                </div>
-
+            <Section
+                title='Pass Types & Pricing'
+                badge={passTypes.length > 0 ? `${passTypes.filter(p => p.active).length} active` : ''}
+                open={isOpen('pricing')}
+                onToggle={() => toggleSection('pricing')}
+                actions={editingId === null && (
+                    <button className='owner-btn' onClick={startNew}>+ Add New Pass</button>
+                )}
+            >
                 {editingId === 'new' && renderForm()}
 
                 {passLoading ? (
@@ -1356,7 +1505,7 @@ export default function Owner() {
                         ))}
                     </div>
                 )}
-            </div>
+            </Section>
         </div>
     )
 }

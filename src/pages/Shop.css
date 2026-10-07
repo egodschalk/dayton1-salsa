@@ -1,0 +1,132 @@
+.shop-page {
+    color: var(--primary);
+    font-family: "Urbanist", sans-serif;
+    width: 100%;
+}
+
+.shop-header {
+    text-align: center;
+    padding: 50px 5vw 20px;
+}
+
+.shop-header h2 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 32pt;
+    margin: 0 0 8px;
+}
+
+.shop-header p {
+    opacity: 0.7;
+    margin: 0;
+}
+
+.shop-empty {
+    text-align: center;
+    padding: 40px 5vw;
+    opacity: 0.7;
+}
+
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 5vw 50px;
+    box-sizing: border-box;
+}
+
+.shop-card {
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #0a0a0a;
+    display: flex;
+    flex-direction: column;
+}
+
+.shop-card-img {
+    aspect-ratio: 1 / 1;
+    background-color: #111;
+}
+
+.shop-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.shop-card-placeholder {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.4;
+    font-size: 11pt;
+}
+
+.shop-card-info {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.shop-card-info h3 {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 15pt;
+    margin: 0;
+}
+
+.shop-card-price {
+    font-size: 14pt;
+    font-weight: bold;
+    margin: 0;
+}
+
+.shop-card-desc {
+    font-size: 11pt;
+    opacity: 0.75;
+    margin: 0;
+}
+
+.shop-card-sizes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.shop-card-sizes span {
+    font-size: 10pt;
+    padding: 2px 8px;
+    border: 1px solid var(--secondary);
+    border-radius: 12px;
+}
+
+.shop-card-sizes span.soldout {
+    opacity: 0.35;
+    text-decoration: line-through;
+}
+
+.shop-card .continue-btn {
+    margin-top: auto;
+}
+
+.shop-card .continue-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+@media screen and (max-width: 900px) {
+    .shop-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media screen and (max-width: 560px) {
+    .shop-grid { grid-template-columns: 1fr; }
+    .shop-header h2 { font-size: 24pt; }
+}

@@ -1,9 +1,8 @@
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
-import App from './App.jsx';
 import Invoice from './pages/Invoice';
+import App from './App.jsx';
 import About from './pages/About';
 import Classes from './pages/Classes';
 import Events from './pages/Events';
@@ -12,7 +11,7 @@ import FAQs from './pages/FAQs';
 import Admin from './pages/Admin';
 import Kiosk from './pages/Kiosk';
 import Owner from './pages/Owner';
-
+import Shop from './pages/Shop'
 const router = createBrowserRouter([
   {
     path: '/',
@@ -46,6 +45,9 @@ const router = createBrowserRouter([
         path: '/invoice/:invoiceId',
         element: <Invoice />,
       },
+      
+      { path: 'Shop',
+        element: <Shop /> },
     ],
   },
   {

@@ -25,9 +25,11 @@ export async function createProduct(data, existingProducts) {
     await addDoc(collection(db, 'products'), {
         name: data.name,
         price: data.price,
+        description: data.description || '',
+        imageUrl: data.imageUrl || '',
         active: true,
         order: maxOrder + 1,
-        variants: data.variants // [{ size: 'S', stock: 4 }, ...]
+        variants: data.variants
     })
 }
 
