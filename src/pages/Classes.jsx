@@ -10,23 +10,20 @@ import { useSchedule } from '../hooks/useSchedule'
 import { useProducts } from '../hooks/useProducts'
 import MerchCheckout from './MerchCheckout'
 
+const emptyPerson = { firstName: '', lastName: '', phone: '', email: '' }
+
 export default function Classes() {
     const { passTypes } = usePassTypes()
     const { schedule, loading: scheduleLoading } = useSchedule()
     const { products } = useProducts()
     const [step, setStep] = useState(1)
     const [selectedPass, setSelectedPass] = useState(null)
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        phone: '',
-        email: ''
-    })
+    const [formData, setFormData] = useState(emptyPerson)
+    const [cart, setCart] = useState([]) // [{ id, firstName, lastName, phone, email, passKey }]
     const [errors, setErrors] = useState({})
     const [paymentDetails, setPaymentDetails] = useState(null)
 
     const visiblePasses = passTypes.filter(p => isPassVisible(p))
-    const selectedPassObj = passTypes.find(p => p.key === selectedPass)
     const activeProducts = products.filter(p => p.active)
 
     // Fallback values while schedule loads or if doc doesn't exist yet
@@ -36,6 +33,12 @@ export default function Classes() {
     const cancellationNote = schedule?.cancellationNote || ''
     const announcement = schedule?.announcement || ''
     const specialEvents = schedule?.specialEvents || []
+
+    function passFor(key) {
+        return passTypes.find(p => p.key === key)
+    }
+
+    const cartTotal = cart.reduce((sum, item) => sum + (parseFloat(passFor(item.passKey)?.amount) || 0), 0)
 
     function formatExpiry(pass) {
         if (!pass) return ''
@@ -52,15 +55,64 @@ export default function Classes() {
         if (!formData.firstName.trim()) newErrors.firstName = 'First name is required'
         if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required'
         if (!formData.phone.trim()) newErrors.phone = 'Phone number is required'
-        if (formData.phone.length < 10) newErrors.phone = 'Please enter a valid 10 digit phone number'
+        else if (formData.phone.length < 10) newErrors.phone = 'Please enter a valid 10 digit phone number'
         if (!selectedPass) newErrors.selectedPass = 'Please select a pass'
         return newErrors
     }
 
-    function handleContinue() {
+    function formIsBlank() {
+        return !formData.firstName.trim() && !formData.lastName.trim() &&
+            !formData.phone.trim() && !formData.email.trim() && !selectedPass
+    }
+
+    function buildCartItem() {
+        return {
+            id: Date.now().toString() + Math.random().toString(36).slice(2, 7),
+            firstName: formData.firstName.trim(),
+            lastName: formData.lastName.trim(),
+            phone: formData.phone,
+            email: formData.email.trim(),
+            passKey: selectedPass
+        }
+    }
+
+    function resetForm() {
+        setFormData(emptyPerson)
+        setSelectedPass(null)
+        setErrors({})
+    }
+
+    function handleAddToOrder() {
         const newErrors = validate()
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors)
+            return
+        }
+        setCart([...cart, buildCartItem()])
+        resetForm()
+    }
+
+    function removeFromCart(id) {
+        setCart(cart.filter(item => item.id !== id))
+    }
+
+    function handleContinue() {
+        let nextCart = cart
+
+        // If a person is filled in but not added yet, add them automatically
+        if (!formIsBlank()) {
+            const newErrors = validate()
+            if (Object.keys(newErrors).length > 0) {
+                setErrors(newErrors)
+                return
+            }
+            nextCart = [...cart, buildCartItem()]
+            setCart(nextCart)
+            resetForm()
+        }
+
+        if (nextCart.length === 0) {
+            setErrors(validate())
             return
         }
         setStep(2)
@@ -73,6 +125,31 @@ export default function Classes() {
         }
         setPaymentDetails(details)
         setStep(3)
+    }
+
+    function renderCartList(showRemove) {
+        return (
+            <div className='cart-list'>
+                {cart.map(item => {
+                    const pass = passFor(item.passKey)
+                    return (
+                        <div key={item.id} className='cart-item'>
+                            <div className='cart-item-info'>
+                                <p className='cart-item-name'>{item.firstName} {item.lastName}</p>
+                                <p className='cart-item-detail'>
+                                    {pass ? `${pass.label} — $${pass.amount}` : 'Pass unavailable'}
+                                </p>
+                                <p className='cart-item-detail'>{item.phone}{item.email ? ` · ${item.email}` : ''}</p>
+                                {pass && <p className='cart-item-detail'>Valid until {formatExpiry(pass)}</p>}
+                            </div>
+                            {showRemove && (
+                                <button className='cart-remove' onClick={() => removeFromCart(item.id)}>Remove</button>
+                            )}
+                        </div>
+                    )
+                })}
+            </div>
+        )
     }
 
     return (
@@ -141,6 +218,18 @@ export default function Classes() {
                             <div className='checkout-form'>
                                 <h3>Register & Pay</h3>
 
+                                {cart.length > 0 && (
+                                    <div className='cart-section'>
+                                        <h4 className='cart-title'>Your Order ({cart.length})</h4>
+                                        {renderCartList(true)}
+                                        <p className='cart-total'>Total: ${cartTotal.toFixed(2)}</p>
+                                    </div>
+                                )}
+
+                                <h4 className='cart-title'>
+                                    {cart.length === 0 ? 'Who is this pass for?' : 'Add another person'}
+                                </h4>
+
                                 <div className='form-group'>
                                     <label>First Name</label>
                                     <input
@@ -194,7 +283,7 @@ export default function Classes() {
                                 </div>
 
                                 <div className='form-group'>
-                                    <label>Select Your Pass</label>
+                                    <label>Select Pass</label>
                                     <div className='pass-options'>
                                         {visiblePasses.length === 0 ? (
                                             <p className='monthly-unavailable'>
@@ -219,6 +308,10 @@ export default function Classes() {
                                     {errors.selectedPass && <span className='form-error'>{errors.selectedPass}</span>}
                                 </div>
 
+                                <button className='add-btn' onClick={handleAddToOrder}>
+                                    + Add to Order
+                                </button>
+
                                 <button className='continue-btn' onClick={handleContinue}>
                                     Continue to Payment
                                 </button>
@@ -229,15 +322,11 @@ export default function Classes() {
                             <div className='checkout-payment'>
                                 <h3>Complete Your Payment</h3>
                                 <div className='checkout-summary'>
-                                    <p><strong>Name:</strong> {formData.firstName} {formData.lastName}</p>
-                                    <p><strong>Phone:</strong> {formData.phone}</p>
-                                    {formData.email && <p><strong>Email:</strong> {formData.email}</p>}
-                                    <p><strong>Pass:</strong> {selectedPassObj ? `${selectedPassObj.label} — $${selectedPassObj.amount}` : ''}</p>
-                                    <p><strong>Valid until:</strong> {formatExpiry(selectedPassObj)}</p>
+                                    {renderCartList(false)}
+                                    <p className='cart-total'><strong>Total:</strong> ${cartTotal.toFixed(2)}</p>
                                 </div>
                                 <PayPalButton
-                                    selectedPass={selectedPass}
-                                    formData={formData}
+                                    cart={cart}
                                     onSuccess={handlePaymentSuccess}
                                 />
                                 <button className='back-btn' onClick={() => setStep(1)}>
@@ -251,11 +340,8 @@ export default function Classes() {
                                 <div className='confirmation-icon'>✓</div>
                                 <h3>Payment Successful!</h3>
                                 <div className='checkout-summary'>
-                                    <p><strong>Name:</strong> {formData.firstName} {formData.lastName}</p>
-                                    <p><strong>Phone:</strong> {formData.phone}</p>
-                                    {formData.email && <p><strong>Email:</strong> {formData.email}</p>}
-                                    <p><strong>Pass:</strong> {selectedPassObj ? `${selectedPassObj.label} — $${selectedPassObj.amount}` : ''}</p>
-                                    <p><strong>Valid until:</strong> {formatExpiry(selectedPassObj)}</p>
+                                    {renderCartList(false)}
+                                    <p className='cart-total'><strong>Total paid:</strong> ${cartTotal.toFixed(2)}</p>
                                     {paymentDetails && (
                                         <p><strong>Transaction ID:</strong> {paymentDetails.id}</p>
                                     )}
@@ -266,11 +352,11 @@ export default function Classes() {
                                 </p>
                                 <button className='continue-btn' onClick={() => {
                                     setStep(1)
-                                    setSelectedPass(null)
-                                    setFormData({ firstName: '', lastName: '', phone: '', email: '' })
+                                    setCart([])
+                                    resetForm()
                                     setPaymentDetails(null)
                                 }}>
-                                    Register Another Person
+                                    Register More People
                                 </button>
                             </div>
                         )}
