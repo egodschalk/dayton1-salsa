@@ -94,9 +94,17 @@ export default function PayPalButton({ cart, onSuccess }) {
                         const res = await fetch('/.netlify/functions/capture-order', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ orderID: data.orderID })
+                            body: JSON.stringify({
+                                orderID: data.orderID,
+                                passKeys: cartRef.current.map(p => p.passKey)
+                            })
                         })
                         const details = await res.json()
+
+                        if (!res.ok) {
+                            alert(details?.error || 'Payment could not be completed. Please try again.')
+                            return
+                        }
 
                         const transactionId = details?.purchase_units?.[0]?.payments?.captures?.[0]?.id || details?.id
 
