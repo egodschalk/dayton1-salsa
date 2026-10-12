@@ -9,16 +9,15 @@ const CLIENT_ID = IS_SANDBOX
     ? 'ATa2uW4F2oDvrxNJ4TxL6hkZ4Zd8nF-K0KTzjZxFQbVhl9CUe1pNznPexU6cgfoLOLxcKWaIBpe2AuDt'
     : 'AVI4LpJe46rQQcObnfSR6qyf9dzp3ypfM9HI4pqp61LZLE5cynC16Z5ASlu73y5ggpX7tQTbE-exYM1l'
 
-// Returns true if saved, false if it failed
-async function saveMember(person, pass, transactionId) {
+async function saveMember(formData, pass, transactionId) {
     const now = new Date()
     const expiryDate = getExpiryDate(pass)
     try {
         await addDoc(collection(db, 'members'), {
-            firstName: person.firstName,
-            lastName: person.lastName,
-            phone: person.phone,
-            email: person.email || '',
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            phone: formData.phone,
+            email: formData.email || '',
             passType: pass.key,
             passLabel: pass.label,
             amount: pass.amount,
@@ -30,24 +29,24 @@ async function saveMember(person, pass, transactionId) {
             checkIns: [],
             createdAt: now
         })
-        return true
+        console.log('Member saved to Firebase!')
     } catch (error) {
         console.error('Error saving member:', error)
-        return false
     }
 }
 
-// cart = [{ id, firstName, lastName, phone, email, passKey }]
-export default function PayPalButton({ cart, onSuccess }) {
+export default function PayPalButton({ selectedPass, formData, onSuccess }) {
     const containerRef = useRef(null)
     const { passTypes } = usePassTypes()
 
-    const cartRef = useRef(cart)
+    const formDataRef = useRef(formData)
     const onSuccessRef = useRef(onSuccess)
+    const selectedPassRef = useRef(selectedPass)
     const passTypesRef = useRef(passTypes)
 
-    useEffect(() => { cartRef.current = cart }, [cart])
+    useEffect(() => { formDataRef.current = formData }, [formData])
     useEffect(() => { onSuccessRef.current = onSuccess }, [onSuccess])
+    useEffect(() => { selectedPassRef.current = selectedPass }, [selectedPass])
     useEffect(() => { passTypesRef.current = passTypes }, [passTypes])
 
     useEffect(() => {
@@ -55,8 +54,8 @@ export default function PayPalButton({ cart, onSuccess }) {
             containerRef.current.innerHTML = ''
         }
 
-        function findPass(key) {
-            return passTypesRef.current.find(p => p.key === key)
+        function findPass() {
+            return passTypesRef.current.find(p => p.key === selectedPassRef.current)
         }
 
         function renderButtons() {
@@ -64,28 +63,15 @@ export default function PayPalButton({ cart, onSuccess }) {
 
             window.paypal.Buttons({
                 createOrder: (data, actions) => {
-                    const lines = cartRef.current.map(person => ({ person, pass: findPass(person.passKey) }))
-                    if (lines.length === 0 || lines.some(l => !l.pass)) {
-                        alert('One of the selected passes is no longer available. Please refresh.')
+                    const pass = findPass()
+                    if (!pass) {
+                        alert('Selected pass is no longer available. Please refresh.')
                         return
                     }
-                    const total = lines.reduce((sum, l) => sum + parseFloat(l.pass.amount), 0).toFixed(2)
                     return actions.order.create({
                         purchase_units: [{
-                            description: 'DaytOn1 Salsa Passes',
-                            amount: {
-                                value: total,
-                                currency_code: 'USD',
-                                breakdown: {
-                                    item_total: { currency_code: 'USD', value: total }
-                                }
-                            },
-                            items: lines.map(l => ({
-                                name: `${l.pass.label} - ${l.person.firstName} ${l.person.lastName}`.slice(0, 127),
-                                unit_amount: { currency_code: 'USD', value: parseFloat(l.pass.amount).toFixed(2) },
-                                quantity: '1',
-                                category: 'DIGITAL_GOODS'
-                            }))
+                            amount: { value: pass.amount },
+                            description: pass.label
                         }]
                     })
                 },
@@ -105,20 +91,13 @@ export default function PayPalButton({ cart, onSuccess }) {
                             return
                         }
 
-                        const lines = cartRef.current.map(person => ({ person, pass: findPass(person.passKey) }))
-                        if (lines.some(l => !l.pass)) {
-                            alert(`Pass data missing. Please contact the front desk with transaction ID ${transactionId}.`)
+                        const pass = findPass()
+                        if (!pass) {
+                            alert('Pass data missing. Please contact the front desk.')
                             return
                         }
 
-                        const results = await Promise.all(
-                            lines.map(l => saveMember(l.person, l.pass, transactionId))
-                        )
-
-                        if (results.some(ok => !ok)) {
-                            alert(`Your payment went through, but we had trouble saving a registration. Please show the front desk this transaction ID: ${transactionId}`)
-                        }
-
+                        await saveMember(formDataRef.current, pass, transactionId)
                         onSuccessRef.current(details)
                     } catch (err) {
                         console.error('Capture failed:', err)
