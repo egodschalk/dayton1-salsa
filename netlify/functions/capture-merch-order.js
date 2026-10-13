@@ -169,6 +169,7 @@ export const handler = async (event) => {
                 statusCode: 200,
                 body: JSON.stringify({
                     success: true,
+                    transactionId,
                     warning: 'Payment succeeded but stock ran out for part of the order: ' + stockErr.message
                 })
             }

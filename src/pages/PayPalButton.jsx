@@ -9,15 +9,16 @@ const CLIENT_ID = IS_SANDBOX
     ? 'ATa2uW4F2oDvrxNJ4TxL6hkZ4Zd8nF-K0KTzjZxFQbVhl9CUe1pNznPexU6cgfoLOLxcKWaIBpe2AuDt'
     : 'AVI4LpJe46rQQcObnfSR6qyf9dzp3ypfM9HI4pqp61LZLE5cynC16Z5ASlu73y5ggpX7tQTbE-exYM1l'
 
-async function saveMember(formData, pass, transactionId) {
+// Returns true if saved, false if it failed
+async function saveMember(person, pass, transactionId) {
     const now = new Date()
     const expiryDate = getExpiryDate(pass)
     try {
         await addDoc(collection(db, 'members'), {
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            phone: formData.phone,
-            email: formData.email || '',
+            firstName: person.firstName,
+            lastName: person.lastName,
+            phone: person.phone,
+            email: person.email || '',
             passType: pass.key,
             passLabel: pass.label,
             amount: pass.amount,
@@ -29,24 +30,30 @@ async function saveMember(formData, pass, transactionId) {
             checkIns: [],
             createdAt: now
         })
-        console.log('Member saved to Firebase!')
+        return true
     } catch (error) {
         console.error('Error saving member:', error)
+        return false
     }
 }
 
-export default function PayPalButton({ selectedPass, formData, onSuccess }) {
+// cart       = [{ id, firstName, lastName, phone, email, passKey }]
+// merchItems = [{ productId, productName, size, quantity, unitPrice }]
+// buyer      = { name, phone, email }  (pickup contact for merch)
+export default function PayPalButton({ cart, merchItems = [], buyer, onSuccess }) {
     const containerRef = useRef(null)
     const { passTypes } = usePassTypes()
 
-    const formDataRef = useRef(formData)
+    const cartRef = useRef(cart)
+    const merchRef = useRef(merchItems)
+    const buyerRef = useRef(buyer)
     const onSuccessRef = useRef(onSuccess)
-    const selectedPassRef = useRef(selectedPass)
     const passTypesRef = useRef(passTypes)
 
-    useEffect(() => { formDataRef.current = formData }, [formData])
+    useEffect(() => { cartRef.current = cart }, [cart])
+    useEffect(() => { merchRef.current = merchItems }, [merchItems])
+    useEffect(() => { buyerRef.current = buyer }, [buyer])
     useEffect(() => { onSuccessRef.current = onSuccess }, [onSuccess])
-    useEffect(() => { selectedPassRef.current = selectedPass }, [selectedPass])
     useEffect(() => { passTypesRef.current = passTypes }, [passTypes])
 
     useEffect(() => {
@@ -54,8 +61,8 @@ export default function PayPalButton({ selectedPass, formData, onSuccess }) {
             containerRef.current.innerHTML = ''
         }
 
-        function findPass() {
-            return passTypesRef.current.find(p => p.key === selectedPassRef.current)
+        function findPass(key) {
+            return passTypesRef.current.find(p => p.key === key)
         }
 
         function renderButtons() {
@@ -63,50 +70,124 @@ export default function PayPalButton({ selectedPass, formData, onSuccess }) {
 
             window.paypal.Buttons({
                 createOrder: (data, actions) => {
-                    const pass = findPass()
-                    if (!pass) {
-                        alert('Selected pass is no longer available. Please refresh.')
+                    const passLines = cartRef.current.map(person => ({ person, pass: findPass(person.passKey) }))
+                    const merch = merchRef.current
+
+                    if (passLines.some(l => !l.pass)) {
+                        alert('One of the selected passes is no longer available. Please refresh.')
                         return
                     }
+                    if (passLines.length === 0 && merch.length === 0) {
+                        alert('Your order is empty.')
+                        return
+                    }
+
+                    const passItems = passLines.map(l => ({
+                        name: `${l.pass.label} - ${l.person.firstName} ${l.person.lastName}`.slice(0, 127),
+                        unit_amount: { currency_code: 'USD', value: parseFloat(l.pass.amount).toFixed(2) },
+                        quantity: '1',
+                        category: 'DIGITAL_GOODS'
+                    }))
+
+                    const merchLines = merch.map(item => ({
+                        name: `${item.productName} (${item.size})`.slice(0, 127),
+                        unit_amount: { currency_code: 'USD', value: parseFloat(item.unitPrice).toFixed(2) },
+                        quantity: String(item.quantity),
+                        category: 'PHYSICAL_GOODS'
+                    }))
+
+                    const allItems = [...passItems, ...merchLines]
+                    const totalCents = allItems.reduce(
+                        (sum, i) => sum + Math.round(parseFloat(i.unit_amount.value) * 100) * parseInt(i.quantity, 10),
+                        0
+                    )
+                    const total = (totalCents / 100).toFixed(2)
+
                     return actions.order.create({
                         purchase_units: [{
-                            amount: { value: pass.amount },
-                            description: pass.label
+                            description: 'DaytOn1 Salsa Order',
+                            amount: {
+                                value: total,
+                                currency_code: 'USD',
+                                breakdown: {
+                                    item_total: { currency_code: 'USD', value: total }
+                                }
+                            },
+                            items: allItems
                         }]
                     })
                 },
                 onApprove: async (data) => {
                     try {
-                        const res = await fetch('/.netlify/functions/capture-order', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ orderID: data.orderID })
-                        })
-                        const details = await res.json()
+                        const people = cartRef.current
+                        const merch = merchRef.current
+                        let transactionId = null
+                        let warning = ''
+                        let details = null
 
-                        const transactionId = details?.purchase_units?.[0]?.payments?.captures?.[0]?.id || details?.id
+                        if (merch.length > 0) {
+                            // Orders with merch: this function takes the payment, reduces stock, saves the order
+                            const res = await fetch('/.netlify/functions/capture-merch-order', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    orderID: data.orderID,
+                                    items: merch,
+                                    buyer: buyerRef.current
+                                })
+                            })
+                            const result = await res.json()
+                            if (!res.ok || !result.success) {
+                                throw new Error(result.error || 'Payment could not be verified.')
+                            }
+                            transactionId = result.transactionId || data.orderID
+                            warning = result.warning || ''
+                            details = { id: transactionId }
+                        } else {
+                            // Passes only
+                            const res = await fetch('/.netlify/functions/capture-order', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ orderID: data.orderID })
+                            })
+                            details = await res.json()
+                            transactionId = details?.purchase_units?.[0]?.payments?.captures?.[0]?.id || details?.id
+                        }
 
                         if (!transactionId) {
                             alert('Payment could not be verified. Please try again.')
                             return
                         }
 
-                        const pass = findPass()
-                        if (!pass) {
-                            alert('Pass data missing. Please contact the front desk.')
-                            return
+                        if (people.length > 0) {
+                            const lines = people.map(person => ({ person, pass: findPass(person.passKey) }))
+                            if (lines.some(l => !l.pass)) {
+                                alert(`Pass data missing. Please contact the front desk with transaction ID ${transactionId}.`)
+                                return
+                            }
+
+                            const results = await Promise.all(
+                                lines.map(l => saveMember(l.person, l.pass, transactionId))
+                            )
+
+                            if (results.some(ok => !ok)) {
+                                alert(`Your payment went through, but we had trouble saving a registration. Please show the front desk this transaction ID: ${transactionId}`)
+                            }
                         }
 
-                        await saveMember(formDataRef.current, pass, transactionId)
+                        if (warning) {
+                            alert(`Your payment went through, but: ${warning} We will contact you about that part of your order. Transaction ID: ${transactionId}`)
+                        }
+
                         onSuccessRef.current(details)
                     } catch (err) {
                         console.error('Capture failed:', err)
-                        alert('Payment was not completed. Please try again.')
+                        alert('Payment was not completed: ' + (err?.message || String(err)))
                     }
                 },
                 onError: (err) => {
                     console.error('PayPal error:', err)
-                    alert('Something went wrong with your payment. Please try again.')
+                    alert('Payment error: ' + (err?.message || String(err)))
                 },
                 onCancel: () => {
                     alert('Payment cancelled. You can try again when ready.')
