@@ -5,6 +5,10 @@ import { usePassTypes, getExpiryDate } from '../hooks/usePassTypes'
 
 const IS_SANDBOX = false
 
+// Watch mode: asks the server to double-check the price and report back.
+// It never blocks or changes a payment. Set to false to switch it off.
+const WATCH_PRICES = true
+
 const CLIENT_ID = IS_SANDBOX
     ? 'ATa2uW4F2oDvrxNJ4TxL6hkZ4Zd8nF-K0KTzjZxFQbVhl9CUe1pNznPexU6cgfoLOLxcKWaIBpe2AuDt'
     : 'AVI4LpJe46rQQcObnfSR6qyf9dzp3ypfM9HI4pqp61LZLE5cynC16Z5ASlu73y5ggpX7tQTbE-exYM1l'
@@ -121,6 +125,22 @@ export default function PayPalButton({ cart, merchItems = [], buyer, onSuccess }
                     try {
                         const people = cartRef.current
                         const merch = merchRef.current
+
+                        // Price check (watch only). Not awaited, errors ignored.
+                        if (WATCH_PRICES) {
+                            fetch('/.netlify/functions/price-watch', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    orderID: data.orderID,
+                                    passKeys: people.map(p => p.passKey),
+                                    merchItems: merch.map(m => ({ productId: m.productId, quantity: m.quantity }))
+                                })
+                            })
+                                .then(r => r.json())
+                                .then(r => console.log('Price watch:', r))
+                                .catch(e => console.log('Price watch unavailable:', e))
+                        }
                         let transactionId = null
                         let warning = ''
                         let details = null
