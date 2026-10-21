@@ -699,3 +699,409 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ===== Check-in screen (ci-) ===== */
+
+.ci-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 4px;
+    border-radius: 999px;
+    background: rgba(128, 128, 128, 0.18);
+    margin-bottom: 20px;
+}
+
+.ci-tab {
+    flex: 1;
+    padding: 12px 10px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--primary);
+    font-family: "Urbanist", sans-serif;
+    font-size: 12pt;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.ci-tab.active {
+    background-color: var(--secondary);
+    color: var(--tertiary);
+    font-weight: bold;
+}
+
+.ci-screen {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+/* Date bar */
+.ci-datebar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    font-size: 11pt;
+    letter-spacing: 0.5px;
+}
+
+.ci-datebar-warn {
+    border-color: #cc8800;
+    background: rgba(204, 136, 0, 0.12);
+    color: #cc8800;
+}
+
+.ci-datebar-text {
+    flex: 1;
+    min-width: 140px;
+}
+
+.ci-count-chip {
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(0, 255, 0, 0.15);
+    color: #00cc00;
+    font-size: 10pt;
+    white-space: nowrap;
+}
+
+.ci-datebar-actions {
+    display: flex;
+    gap: 14px;
+}
+
+.ci-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--secondary);
+    font-family: "Urbanist", sans-serif;
+    font-size: 11pt;
+    letter-spacing: 0.5px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.ci-link-center {
+    display: block;
+    margin: 14px auto 0;
+}
+
+.ci-datepicker {
+    margin-bottom: 12px;
+}
+
+.ci-datepicker input {
+    padding: 10px 12px;
+    font-size: 12pt;
+    border: 1px solid var(--secondary);
+    border-radius: 6px;
+    font-family: "Urbanist", sans-serif;
+    background-color: transparent;
+    color: var(--primary);
+}
+
+/* Big search box */
+.ci-search {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.ci-search-input {
+    padding: 16px 48px 16px 16px;
+    font-size: 16pt;
+    min-height: 60px;
+}
+
+.ci-clear {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--primary);
+    font-size: 16pt;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+/* Result cards */
+.ci-results,
+.ci-recent-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ci-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid var(--secondary);
+    border-radius: 10px;
+}
+
+.ci-card-done {
+    border-color: #00cc00;
+    background: rgba(0, 255, 0, 0.07);
+}
+
+.ci-card-blocked {
+    border-color: rgba(255, 0, 0, 0.5);
+    background: rgba(255, 0, 0, 0.06);
+}
+
+.ci-card-info {
+    min-width: 0;
+}
+
+.ci-card-name {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 16pt;
+    margin-bottom: 4px;
+    overflow-wrap: anywhere;
+}
+
+.ci-card-sub {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    font-size: 11pt;
+    opacity: 0.85;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+.ci-warn {
+    color: #cc8800;
+    font-weight: bold;
+    opacity: 1;
+}
+
+.ci-card-action {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.ci-btn {
+    min-height: 52px;
+    min-width: 130px;
+    padding: 12px 20px;
+    background-color: var(--secondary);
+    color: var(--tertiary);
+    border: none;
+    border-radius: 8px;
+    font-family: "Urbanist", sans-serif;
+    font-size: 13pt;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+.ci-btn:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.ci-btn-renew {
+    background: transparent;
+    color: var(--primary);
+    border: 2px solid var(--secondary);
+    font-size: 11pt;
+}
+
+.ci-done {
+    color: #00cc00;
+    font-size: 12pt;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.ci-noresults {
+    text-align: center;
+    padding: 24px 10px;
+}
+
+.ci-noresults p {
+    margin: 0 0 14px 0;
+    font-size: 13pt;
+    opacity: 0.8;
+}
+
+/* Checked-in list */
+.ci-section-title {
+    font-family: "Julius Sans One", serif;
+    color: var(--secondary);
+    font-size: 14pt;
+    margin: 6px 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ci-count {
+    padding: 2px 12px;
+    border-radius: 999px;
+    background: rgba(0, 255, 0, 0.15);
+    color: #00cc00;
+    font-size: 11pt;
+    font-family: "Urbanist", sans-serif;
+}
+
+.ci-recent-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.ci-recent-name {
+    display: block;
+    font-size: 12pt;
+    letter-spacing: 0.5px;
+}
+
+.ci-recent-meta {
+    display: block;
+    font-size: 10pt;
+    opacity: 0.65;
+    letter-spacing: 0.5px;
+}
+
+/* Who taught */
+.ci-details {
+    margin-top: 22px;
+    padding: 12px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+}
+
+.ci-details summary {
+    cursor: pointer;
+    font-size: 11pt;
+    letter-spacing: 0.5px;
+}
+
+.ci-details summary strong {
+    color: var(--secondary);
+}
+
+.ci-details .instructor-toggle-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.ci-details .instructor-toggle-btn {
+    padding: 10px 16px;
+    background: transparent;
+    border: 1px solid var(--secondary);
+    border-radius: 20px;
+    color: var(--primary);
+    font-family: "Urbanist", sans-serif;
+    font-size: 11pt;
+    cursor: pointer;
+}
+
+.ci-details .instructor-toggle-btn.taught {
+    background-color: var(--secondary);
+    color: var(--tertiary);
+}
+
+/* Confirmation banner */
+.ci-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    max-width: calc(100vw - 32px);
+    padding: 14px 18px;
+    border-radius: 10px;
+    background: #0b6b2e;
+    color: #fff;
+    font-size: 12pt;
+    letter-spacing: 0.5px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+}
+
+.ci-toast button {
+    padding: 8px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+    background: transparent;
+    color: #fff;
+    font-family: "Urbanist", sans-serif;
+    font-size: 11pt;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+    .ci-tab {
+        padding: 12px 6px;
+        font-size: 11pt;
+        letter-spacing: 0.5px;
+    }
+
+    .ci-search-input {
+        font-size: 16px;
+        min-height: 56px;
+    }
+
+    .ci-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ci-card-action {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .ci-card-action .ci-btn {
+        flex: 1;
+        min-height: 56px;
+    }
+
+    .ci-card-name {
+        font-size: 15pt;
+    }
+
+    .ci-toast {
+        bottom: 14px;
+        width: calc(100vw - 32px);
+        justify-content: space-between;
+    }
+}
+
+
+/* Kiosk registrations waiting for payment */
+.status-pending {
+    background-color: rgba(255, 165, 0, 0.15);
+    color: #cc8800;
+}

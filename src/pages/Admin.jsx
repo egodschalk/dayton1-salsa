@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { db, auth } from '../firebase'
 import { collection, doc, updateDoc, addDoc, orderBy, query, deleteDoc, onSnapshot, arrayUnion, arrayRemove, setDoc, getDoc, getDocs, where } from 'firebase/firestore'
@@ -8,6 +8,7 @@ import { useInstructors } from '../hooks/useInstructors'
 import './Admin.css'
 
 const STAFF_VIEW_EMAILS = ['dayton1salsa@gmail.com', 'ahiciano@icanoki.com']
+const MAX_RESULTS = 15
 
 function getTodayString() {
     const now = new Date()
@@ -23,6 +24,28 @@ function getStaffName(email) {
     return namePart.charAt(0).toUpperCase() + namePart.slice(1)
 }
 
+function formatPhone(phone) {
+    const digits = (phone || '').replace(/\D/g, '')
+    if (digits.length === 10) return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
+    return phone || ''
+}
+
+// Matches a member against what staff typed. Digits search the phone number;
+// anything else searches first name, last name and email (every word must match).
+function matchesQuery(member, text) {
+    const q = (text || '').trim().toLowerCase()
+    if (!q) return true
+    const looksLikePhone = /^[\d\s\-().+]+$/.test(q)
+    if (looksLikePhone) {
+        const digits = q.replace(/\D/g, '')
+        if (digits.length === 0) return true
+        const phoneDigits = (member.phone || '').replace(/\D/g, '')
+        return phoneDigits.includes(digits)
+    }
+    const hay = `${member.firstName || ''} ${member.lastName || ''} ${member.email || ''}`.toLowerCase()
+    return q.split(/\s+/).every(word => hay.includes(word))
+}
+
 export default function Admin() {
     const navigate = useNavigate()
     const { passTypes } = usePassTypes()
@@ -36,13 +59,19 @@ export default function Admin() {
     const [password, setPassword] = useState('')
     const [loginError, setLoginError] = useState('')
     const [loading, setLoading] = useState(true)
+    const [tab, setTab] = useState('members')
     const [filter, setFilter] = useState('all')
     const [sortBy, setSortBy] = useState('alpha')
     const [search, setSearch] = useState('')
+    const [memberSearch, setMemberSearch] = useState('')
     const [showManualEntry, setShowManualEntry] = useState(false)
+    const [fromCheckIn, setFromCheckIn] = useState(false)
     const [attendanceDate, setAttendanceDate] = useState(getTodayString())
     const [checkInDate, setCheckInDate] = useState(getTodayString())
+    const [showDatePicker, setShowDatePicker] = useState(false)
     const [staffDate, setStaffDate] = useState(getTodayString())
+    const [busyId, setBusyId] = useState(null)
+    const [toast, setToast] = useState(null)
     const [manualForm, setManualForm] = useState({
         firstName: '',
         lastName: '',
@@ -53,6 +82,9 @@ export default function Admin() {
     })
     const [manualErrors, setManualErrors] = useState({})
 
+    const searchRef = useRef(null)
+    const toastTimer = useRef(null)
+
     // All active passes, for the manual-entry dropdown
     const activePasses = passTypes.filter(p => p.active)
 
@@ -62,6 +94,10 @@ export default function Admin() {
             setManualForm(f => ({ ...f, passType: activePasses[0].key }))
         }
     }, [activePasses, manualForm.passType])
+
+    useEffect(() => {
+        return () => clearTimeout(toastTimer.current)
+    }, [])
 
     // Auth + shift logging
     useEffect(() => {
@@ -163,26 +199,40 @@ export default function Admin() {
         if (manualForm.paymentMethod === 'venmo') transactionId = 'VENMO'
         if (manualForm.paymentMethod === 'paypal') transactionId = 'PAYPAL'
 
-        await addDoc(collection(db, 'members'), {
-            firstName: manualForm.firstName,
-            lastName: manualForm.lastName,
-            phone: manualForm.phone,
-            email: manualForm.email || '',
-            passType: pass.key,
-            passLabel: pass.label,
-            amount: pass.amount,
-            purchaseDate: now.toISOString(),
-            expiryDate,
-            originalExpiryDate: expiryDate,
-            transactionId,
-            isActive: true,
-            checkIns: [],
-            createdAt: now
-        })
+        try {
+            await addDoc(collection(db, 'members'), {
+                firstName: manualForm.firstName,
+                lastName: manualForm.lastName,
+                phone: manualForm.phone,
+                email: manualForm.email || '',
+                passType: pass.key,
+                passLabel: pass.label,
+                amount: pass.amount,
+                purchaseDate: now.toISOString(),
+                expiryDate,
+                originalExpiryDate: expiryDate,
+                transactionId,
+                isActive: true,
+                checkIns: [],
+                createdAt: now
+            })
+        } catch (err) {
+            console.error('Error adding member:', err)
+            alert('Could not add this member. Please check your connection and try again.')
+            return
+        }
 
+        const addedPhone = manualForm.phone
         setManualForm({ firstName: '', lastName: '', phone: '', email: '', passType: activePasses[0]?.key || '', paymentMethod: 'cash' })
         setManualErrors({})
         setShowManualEntry(false)
+
+        // If staff started this from the check-in screen, go straight back so they can tap Check in
+        if (fromCheckIn) {
+            setFromCheckIn(false)
+            setSearch(addedPhone)
+            setTab('checkin')
+        }
     }
 
     async function handleLogin(e) {
@@ -263,6 +313,97 @@ export default function Admin() {
         }
     }
 
+    // ---- Check-in screen helpers ----
+
+    function clearToast() {
+        clearTimeout(toastTimer.current)
+        setToast(null)
+    }
+
+    function showToast(member) {
+        clearTimeout(toastTimer.current)
+        setToast({ memberId: member.id, name: `${member.firstName} ${member.lastName}`, date: checkInDate })
+        toastTimer.current = setTimeout(() => setToast(null), 7000)
+    }
+
+    // One tap: check in, confirm with a banner, clear the search for the next person.
+    // It doesn't wait for the server, so a slow connection never freezes the screen.
+    function runCheckIn(member) {
+        if (busyId === member.id) return
+        setBusyId(member.id)
+        setTimeout(() => setBusyId(null), 800)
+
+        handleCheckIn(member.id, member.passType, checkInDate).catch(err => {
+            console.error('Check-in failed:', err)
+            alert(`Check-in for ${member.firstName} ${member.lastName} may not have saved. Please check the connection and try again.`)
+        })
+
+        showToast(member)
+        setSearch('')
+        if (searchRef.current) searchRef.current.focus()
+    }
+
+    function runUndo(member, date) {
+        handleUndoCheckIn(member.id, member.passType, member, date).catch(err => {
+            console.error('Undo failed:', err)
+            alert('Could not undo that check-in. Please try again.')
+        })
+    }
+
+    function undoFromToast() {
+        if (!toast) return
+        const member = members.find(m => m.id === toast.memberId)
+        if (member) runUndo(member, toast.date)
+        clearToast()
+    }
+
+    // Kiosk registrations arrive as "PENDING". Staff mark them paid when money is collected.
+    function markPaid(member) {
+        const method = (member.paymentMethod || 'cash').toUpperCase()
+        return updateDoc(doc(db, 'members', member.id), {
+            transactionId: method,
+            paidAt: new Date().toISOString(),
+            markedPaidBy: user?.email || 'unknown'
+        }).catch(err => {
+            console.error('Mark paid failed:', err)
+            alert('Could not mark this member as paid. Please try again.')
+        })
+    }
+
+    function runPaidCheckIn(member) {
+        markPaid(member)
+        runCheckIn(member)
+    }
+
+    function startAddMember(prefill = {}, fromCheckInScreen = false) {
+        setManualForm({
+            firstName: prefill.firstName || '',
+            lastName: prefill.lastName || '',
+            phone: (prefill.phone || '').replace(/\D/g, '').slice(0, 10),
+            email: prefill.email || '',
+            passType: activePasses[0]?.key || '',
+            paymentMethod: 'cash'
+        })
+        setManualErrors({})
+        setShowManualEntry(true)
+        setFromCheckIn(fromCheckInScreen)
+        setTab('members')
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    function addFromSearch() {
+        const text = search.trim()
+        const prefill = {}
+        if (/^[\d\s\-().+]+$/.test(text)) {
+            prefill.phone = text
+        } else {
+            const words = text.split(/\s+/)
+            prefill.firstName = words[0] || ''
+            prefill.lastName = words.slice(1).join(' ')
+        }
+        startAddMember(prefill, true)
+    }
+
     async function handleToggleInstructor(instructorName, date) {
         const safeId = `${instructorName.replace(/[^a-zA-Z0-9]/g, '_')}_${date}`
         const ref = doc(db, 'instructorLog', safeId)
@@ -302,13 +443,19 @@ export default function Admin() {
         return new Date(member.expiryDate) >= new Date()
     }
 
+    function isPending(member) {
+        return member.transactionId === 'PENDING'
+    }
+
     function getStatusLabel(member) {
+        if (isPending(member)) return 'Pending payment'
         if (member.passType === 'day' && (member.checkIns || []).length > 0) return 'Used'
         if (!isActive(member)) return 'Expired'
         return 'Active'
     }
 
     function getStatusClass(member) {
+        if (isPending(member)) return 'status-pending'
         if (member.passType === 'day' && (member.checkIns || []).length > 0) return 'status-used'
         if (!isActive(member)) return 'status-expired'
         return 'status-active'
@@ -322,6 +469,27 @@ export default function Admin() {
         return new Date(dateString).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
     }
 
+    function getDaysLeft(member) {
+        const exp = new Date(member.expiryDate)
+        if (isNaN(exp)) return null
+        return Math.ceil((exp - new Date()) / (1000 * 60 * 60 * 24))
+    }
+
+    function isExpiringSoon(member) {
+        if (!isActive(member)) return false
+        const days = getDaysLeft(member)
+        return days !== null && days <= 5
+    }
+
+    function getExpiryNote(member) {
+        if (member.passType === 'day' && (member.checkIns || []).length > 0) return 'Pass already used'
+        const days = getDaysLeft(member)
+        if (days === null) return ''
+        if (!isActive(member)) return `Expired ${formatDate(member.expiryDate)}`
+        if (days <= 5) return `Expires in ${Math.max(days, 0)} day${days === 1 ? '' : 's'}`
+        return `Expires ${formatDate(member.expiryDate)}`
+    }
+
     function getPaymentLabel(member) {
         if (member.transactionId === 'CASH') return 'Cash'
         if (member.transactionId === 'VENMO') return 'Venmo'
@@ -331,6 +499,11 @@ export default function Admin() {
             return `Pending (${labels[member.paymentMethod] || '?'})`
         }
         return 'PayPal'
+    }
+
+    function getOwedNote(member) {
+        const labels = { cash: 'Cash', venmo: 'Venmo', paypal: 'PayPal' }
+        return `Owes $${member.amount} (${labels[member.paymentMethod] || 'method not chosen'})`
     }
 
     function getCheckInCountForAdmin(adminEmail, date) {
@@ -366,11 +539,11 @@ export default function Admin() {
         URL.revokeObjectURL(url)
     }
 
+    // ---- Derived data ----
+
     const filteredMembers = members
         .filter(m => {
-            const matchesSearch = search === '' ||
-                `${m.firstName} ${m.lastName}`.toLowerCase().includes(search.toLowerCase())
-            if (!matchesSearch) return false
+            if (!matchesQuery(m, memberSearch)) return false
             if (filter === 'active') return isActive(m)
             if (filter === 'expired') return !isActive(m)
             if (filter === 'day') return m.passType === 'day'
@@ -393,6 +566,7 @@ export default function Admin() {
     const todayCount = members.filter(m => isCheckedInToday(m)).length
     const attendanceDateCount = members.filter(m => isCheckedInOnDate(m, attendanceDate)).length
     const isCheckInDateToday = checkInDate === getTodayString()
+    const checkInDateLabel = new Date(checkInDate + 'T12:00:00').toLocaleDateString()
     const canViewStaff = user && STAFF_VIEW_EMAILS.includes(user.email)
 
     const staffOnDate = shifts.filter(s => s.date === staffDate)
@@ -401,6 +575,86 @@ export default function Admin() {
         ...staffOnDate.map(s => s.email),
         ...checkInsOnStaffDate.map(l => l.adminEmail)
     ])]
+
+    // Check-in screen data
+    const searchText = search.trim()
+    const allMatches = searchText === ''
+        ? []
+        : members
+            .filter(m => matchesQuery(m, searchText))
+            .sort((a, b) => {
+                const aActive = isActive(a) ? 0 : 1
+                const bActive = isActive(b) ? 0 : 1
+                if (aActive !== bActive) return aActive - bActive
+                return `${a.firstName} ${a.lastName}`.toLowerCase().localeCompare(`${b.firstName} ${b.lastName}`.toLowerCase())
+            })
+    const searchResults = allMatches.slice(0, MAX_RESULTS)
+
+    const loggedTimes = {}
+    checkInLog.forEach(l => {
+        if (l.date === checkInDate && l.memberId) loggedTimes[l.memberId] = l.loggedAt || ''
+    })
+    const checkedInList = members
+        .filter(m => isCheckedInOnDate(m, checkInDate))
+        .sort((a, b) => (loggedTimes[b.id] || '').localeCompare(loggedTimes[a.id] || ''))
+
+    const activeInstructors = instructors.filter(i => i.active)
+    const taughtNames = activeInstructors.filter(i => taughtOnDate(i.name, checkInDate)).map(i => i.name)
+
+    function renderCheckInCard(member) {
+        const checkedIn = isCheckedInOnDate(member, checkInDate)
+        const blocked = !isActive(member) && isCheckInDateToday && !checkedIn
+        const soon = isExpiringSoon(member)
+        const pending = isPending(member) && !checkedIn
+
+        return (
+            <div
+                key={member.id}
+                className={`ci-card ${checkedIn ? 'ci-card-done' : ''} ${blocked ? 'ci-card-blocked' : ''}`}
+            >
+                <div className='ci-card-info'>
+                    <div className='ci-card-name'>{member.firstName} {member.lastName}</div>
+                    <div className='ci-card-sub'>{member.passLabel} · {formatPhone(member.phone)}</div>
+                    <div className='ci-card-sub'>
+                        <span className={`status-badge ${getStatusClass(member)}`}>{getStatusLabel(member)}</span>
+                        <span className={soon ? 'ci-warn' : ''}>{getExpiryNote(member)}</span>
+                        <span>{getAttendanceCount(member)} visit{getAttendanceCount(member) === 1 ? '' : 's'}</span>
+                    </div>
+                    {pending && <div className='ci-card-sub ci-warn'>{getOwedNote(member)}</div>}
+                </div>
+                <div className='ci-card-action'>
+                    {checkedIn ? (
+                        <>
+                            <span className='ci-done'>✓ Checked in</span>
+                            <button className='checkin-btn checkin-btn-undo' onClick={() => runUndo(member, checkInDate)}>
+                                Undo
+                            </button>
+                        </>
+                    ) : blocked ? (
+                        <button className='ci-btn ci-btn-renew' onClick={() => startAddMember(member, true)}>
+                            Renew / new pass
+                        </button>
+                    ) : pending ? (
+                        <button
+                            className='ci-btn'
+                            onClick={() => runPaidCheckIn(member)}
+                            disabled={busyId === member.id}
+                        >
+                            Paid · check in
+                        </button>
+                    ) : (
+                        <button
+                            className='ci-btn'
+                            onClick={() => runCheckIn(member)}
+                            disabled={busyId === member.id}
+                        >
+                            Check in
+                        </button>
+                    )}
+                </div>
+            </div>
+        )
+    }
 
     if (loading) return <div className='admin-loading'>Loading...</div>
 
@@ -449,374 +703,519 @@ export default function Admin() {
                 </div>
             </div>
 
-            <div className='admin-stats'>
-                <div className='admin-stat'>
-                    <p>Total Members</p>
-                    <h3>{members.length}</h3>
-                </div>
-                <div className='admin-stat'>
-                    <p>Active</p>
-                    <h3>{members.filter(m => isActive(m)).length}</h3>
-                </div>
-                <div className='admin-stat'>
-                    <p>Expired</p>
-                    <h3>{members.filter(m => !isActive(m)).length}</h3>
-                </div>
-                <div className='admin-stat'>
-                    <p>Checked In Today</p>
-                    <h3>{todayCount}</h3>
-                </div>
+            <div className='ci-tabs'>
+                <button
+                    type='button'
+                    className={`ci-tab ${tab === 'members' ? 'active' : ''}`}
+                    onClick={() => setTab('members')}
+                >
+                    Members
+                </button>
+                <button
+                    type='button'
+                    className={`ci-tab ${tab === 'checkin' ? 'active' : ''}`}
+                    onClick={() => setTab('checkin')}
+                >
+                    Check In
+                </button>
+                <button
+                    type='button'
+                    className={`ci-tab ${tab === 'activity' ? 'active' : ''}`}
+                    onClick={() => setTab('activity')}
+                >
+                    Activity
+                </button>
             </div>
 
-            {/* Search bar */}
-            <div className='admin-search'>
-                <input
-                    type='text'
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
-                    placeholder='Search by name...'
-                    className='admin-search-input'
-                />
-            </div>
+            {/* ============ CHECK IN ============ */}
+            {tab === 'checkin' && (
+                <div className='ci-screen'>
+                    <div className={`ci-datebar ${!isCheckInDateToday ? 'ci-datebar-warn' : ''}`}>
+                        <span className='ci-datebar-text'>
+                            {isCheckInDateToday ? 'Checking in for today' : `Checking in for ${checkInDateLabel}`}
+                        </span>
+                        <span className='ci-count-chip'>{checkedInList.length} checked in</span>
+                        <div className='ci-datebar-actions'>
+                            {!isCheckInDateToday && (
+                                <button
+                                    type='button'
+                                    className='ci-link'
+                                    onClick={() => { setCheckInDate(getTodayString()); setShowDatePicker(false) }}
+                                >
+                                    Back to today
+                                </button>
+                            )}
+                            <button type='button' className='ci-link' onClick={() => setShowDatePicker(v => !v)}>
+                                {showDatePicker ? 'Done' : 'Change date'}
+                            </button>
+                        </div>
+                    </div>
+                    {showDatePicker && (
+                        <div className='ci-datepicker'>
+                            <input
+                                type='date'
+                                value={checkInDate}
+                                max={getTodayString()}
+                                onChange={e => setCheckInDate(e.target.value || getTodayString())}
+                            />
+                        </div>
+                    )}
 
-            {/* Staff Activity — only visible to authorized emails */}
-            {canViewStaff && (
-                <div className='admin-staff'>
-                    <h3>Staff Activity</h3>
-                    <div className='staff-lookup'>
+                    <div className='admin-search ci-search'>
                         <input
-                            type='date'
-                            value={staffDate}
-                            max={getTodayString()}
-                            onChange={e => setStaffDate(e.target.value)}
+                            ref={searchRef}
+                            type='text'
+                            inputMode='search'
+                            autoFocus
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                            placeholder='Search name or phone number'
+                            className='admin-search-input ci-search-input'
+                        />
+                        {search && (
+                            <button type='button' className='ci-clear' onClick={() => { setSearch(''); if (searchRef.current) searchRef.current.focus() }}>
+                                ✕
+                            </button>
+                        )}
+                    </div>
+
+                    {searchText !== '' ? (
+                        <div className='ci-results'>
+                            {searchResults.length === 0 ? (
+                                <div className='ci-noresults'>
+                                    <p>No member found for "{searchText}".</p>
+                                    <button type='button' className='ci-btn' onClick={addFromSearch}>
+                                        + Add as new member
+                                    </button>
+                                </div>
+                            ) : (
+                                <>
+                                    {searchResults.map(renderCheckInCard)}
+                                    {allMatches.length > MAX_RESULTS && (
+                                        <p className='staff-empty'>
+                                            Showing the first {MAX_RESULTS} of {allMatches.length}. Keep typing to narrow it down.
+                                        </p>
+                                    )}
+                                    <button type='button' className='ci-link ci-link-center' onClick={addFromSearch}>
+                                        Not listed? Add a new member
+                                    </button>
+                                </>
+                            )}
+                        </div>
+                    ) : (
+                        <div className='ci-recent'>
+                            <h3 className='ci-section-title'>
+                                Checked in {isCheckInDateToday ? 'today' : `on ${checkInDateLabel}`}
+                                <span className='ci-count'>{checkedInList.length}</span>
+                            </h3>
+                            {checkedInList.length === 0 ? (
+                                <p className='staff-empty'>No one yet. Search above to check someone in.</p>
+                            ) : (
+                                <div className='ci-recent-list'>
+                                    {checkedInList.map(member => (
+                                        <div key={member.id} className='ci-recent-row'>
+                                            <div>
+                                                <span className='ci-recent-name'>{member.firstName} {member.lastName}</span>
+                                                <span className='ci-recent-meta'>
+                                                    {member.passLabel}{loggedTimes[member.id] ? ` · ${formatTime(loggedTimes[member.id])}` : ''}
+                                                </span>
+                                            </div>
+                                            <button
+                                                className='checkin-btn checkin-btn-undo'
+                                                onClick={() => runUndo(member, checkInDate)}
+                                            >
+                                                Undo
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    <details className='ci-details'>
+                        <summary>
+                            Who taught {isCheckInDateToday ? 'today' : `on ${checkInDateLabel}`}:{' '}
+                            <strong>{taughtNames.length > 0 ? taughtNames.join(', ') : 'not set'}</strong>
+                        </summary>
+                        {activeInstructors.length === 0 ? (
+                            <p className='staff-empty'>No instructors set up yet. Add them in the Owner Portal.</p>
+                        ) : (
+                            <div className='instructor-toggle-list'>
+                                {activeInstructors.map(inst => {
+                                    const taught = taughtOnDate(inst.name, checkInDate)
+                                    return (
+                                        <button
+                                            key={inst.id}
+                                            className={`instructor-toggle-btn ${taught ? 'taught' : ''}`}
+                                            onClick={() => handleToggleInstructor(inst.name, checkInDate)}
+                                        >
+                                            {taught ? '✓ ' : ''}{inst.name}
+                                        </button>
+                                    )
+                                })}
+                            </div>
+                        )}
+                    </details>
+                </div>
+            )}
+
+            {/* ============ MEMBERS ============ */}
+            {tab === 'members' && (
+                <div className='ci-members'>
+                    <div className='admin-stats'>
+                        <div className='admin-stat'>
+                            <p>Total Members</p>
+                            <h3>{members.length}</h3>
+                        </div>
+                        <div className='admin-stat'>
+                            <p>Active</p>
+                            <h3>{members.filter(m => isActive(m)).length}</h3>
+                        </div>
+                        <div className='admin-stat'>
+                            <p>Expired</p>
+                            <h3>{members.filter(m => !isActive(m)).length}</h3>
+                        </div>
+                        <div className='admin-stat'>
+                            <p>Checked In Today</p>
+                            <h3>{todayCount}</h3>
+                        </div>
+                    </div>
+
+                    <div className='admin-search'>
+                        <input
+                            type='text'
+                            value={memberSearch}
+                            onChange={e => setMemberSearch(e.target.value)}
+                            placeholder='Search members by name, phone or email...'
+                            className='admin-search-input'
                         />
                     </div>
-                    {staffEmailsOnDate.length === 0 ? (
-                        <p className='staff-empty'>No staff activity on {new Date(staffDate + 'T12:00:00').toLocaleDateString()}</p>
-                    ) : (
-                        <div className='staff-list'>
-                            {staffEmailsOnDate.map(emailAddr => {
-                                const shift = staffOnDate.find(s => s.email === emailAddr)
-                                return (
-                                    <div key={emailAddr} className='staff-row'>
-                                        <span className='staff-name'>{getStaffName(emailAddr)}</span>
-                                        <span className='staff-meta'>
-                                            {shift ? `Signed in ${formatTime(shift.signInTime)}` : 'No sign-in record'}
-                                        </span>
-                                        <span className='staff-count'>{getCheckInCountForAdmin(emailAddr, staffDate)} check-ins</span>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    )}
-                </div>
-            )}
 
-            <div className='admin-attendance'>
-                <h3>Attendance Lookup</h3>
-                <div className='attendance-lookup'>
-                    <input
-                        type='date'
-                        value={attendanceDate}
-                        onChange={e => setAttendanceDate(e.target.value)}
-                    />
-                    <p>{attendanceDateCount} member{attendanceDateCount !== 1 ? 's' : ''} checked in on {new Date(attendanceDate + 'T12:00:00').toLocaleDateString()}</p>
-                </div>
-            </div>
-
-            {/* Check-in date selector */}
-            <div className='admin-checkin-date'>
-                <h3>Check-In Date</h3>
-                <div className='checkin-date-row'>
-                    <input
-                        type='date'
-                        value={checkInDate}
-                        max={getTodayString()}
-                        onChange={e => setCheckInDate(e.target.value)}
-                    />
-                    {!isCheckInDateToday && (
-                        <span className='checkin-date-warning'>
-                            Checking in for {new Date(checkInDate + 'T12:00:00').toLocaleDateString()}
-                        </span>
-                    )}
-                    {!isCheckInDateToday && (
-                        <button className='admin-btn-outline' onClick={() => setCheckInDate(getTodayString())}>
-                            Reset to Today
-                        </button>
-                    )}
-                </div>
-            </div>
-
-            {/* Instructors — who taught */}
-            <div className='admin-instructors'>
-                <h3>Who Taught {isCheckInDateToday ? 'Today' : `on ${new Date(checkInDate + 'T12:00:00').toLocaleDateString()}`}</h3>
-                {instructors.filter(i => i.active).length === 0 ? (
-                    <p className='staff-empty'>No instructors set up yet. Add them in the Owner Portal.</p>
-                ) : (
-                    <div className='instructor-toggle-list'>
-                        {instructors.filter(i => i.active).map(inst => {
-                            const taught = taughtOnDate(inst.name, checkInDate)
-                            return (
+                    <div className='admin-controls'>
+                        <div className='admin-filters'>
+                            {['all', 'active', 'expired', 'today', 'day', 'monthly'].map(f => (
                                 <button
-                                    key={inst.id}
-                                    className={`instructor-toggle-btn ${taught ? 'taught' : ''}`}
-                                    onClick={() => handleToggleInstructor(inst.name, checkInDate)}
+                                    key={f}
+                                    className={`admin-filter-btn ${filter === f ? 'active' : ''}`}
+                                    onClick={() => setFilter(f)}
                                 >
-                                    {taught ? '✓ ' : ''}{inst.name}
+                                    {f === 'today' ? 'Checked In Today' : f.charAt(0).toUpperCase() + f.slice(1)}
                                 </button>
-                            )
-                        })}
-                    </div>
-                )}
-            </div>
-
-            <div className='admin-controls'>
-                <div className='admin-filters'>
-                    {['all', 'active', 'expired', 'today', 'day', 'monthly'].map(f => (
-                        <button
-                            key={f}
-                            className={`admin-filter-btn ${filter === f ? 'active' : ''}`}
-                            onClick={() => setFilter(f)}
-                        >
-                            {f === 'today' ? 'Checked In Today' : f.charAt(0).toUpperCase() + f.slice(1)}
-                        </button>
-                    ))}
-                </div>
-                <div className='admin-actions'>
-                    <div className='admin-sort'>
-                        <button
-                            className={`admin-filter-btn ${sortBy === 'alpha' ? 'active' : ''}`}
-                            onClick={() => setSortBy('alpha')}
-                        >
-                            A–Z
-                        </button>
-                        <button
-                            className={`admin-filter-btn ${sortBy === 'date' ? 'active' : ''}`}
-                            onClick={() => setSortBy('date')}
-                        >
-                            By Date
-                        </button>
-                    </div>
-                    <button className='admin-btn' onClick={() => setShowManualEntry(!showManualEntry)}>
-                        {showManualEntry ? 'Cancel' : '+ Add Member'}
-                    </button>
-                    <button className='admin-btn' onClick={exportToCSV}>
-                        Export CSV
-                    </button>
-                </div>
-            </div>
-
-            {showManualEntry && (
-                <div className='admin-manual-entry'>
-                    <h3>Add Member</h3>
-                    <div className='manual-entry-form'>
-                        <div className='admin-form-group'>
-                            <label>First Name</label>
-                            <input
-                                type='text'
-                                value={manualForm.firstName}
-                                onChange={e => {
-                                    setManualForm({ ...manualForm, firstName: e.target.value })
-                                    setManualErrors({ ...manualErrors, firstName: '' })
-                                }}
-                                placeholder='First name'
-                            />
-                            {manualErrors.firstName && <span className='form-error'>{manualErrors.firstName}</span>}
+                            ))}
                         </div>
-                        <div className='admin-form-group'>
-                            <label>Last Name</label>
-                            <input
-                                type='text'
-                                value={manualForm.lastName}
-                                onChange={e => {
-                                    setManualForm({ ...manualForm, lastName: e.target.value })
-                                    setManualErrors({ ...manualErrors, lastName: '' })
-                                }}
-                                placeholder='Last name'
-                            />
-                            {manualErrors.lastName && <span className='form-error'>{manualErrors.lastName}</span>}
-                        </div>
-                        <div className='admin-form-group'>
-                            <label>Phone</label>
-                            <input
-                                type='tel'
-                                value={manualForm.phone}
-                                onChange={e => {
-                                    const value = e.target.value.replace(/[^0-9]/g, '')
-                                    setManualForm({ ...manualForm, phone: value })
-                                    setManualErrors({ ...manualErrors, phone: '' })
-                                }}
-                                placeholder='Phone number'
-                                maxLength={10}
-                            />
-                            {manualErrors.phone && <span className='form-error'>{manualErrors.phone}</span>}
-                        </div>
-                        <div className='admin-form-group'>
-                            <label>Email (optional)</label>
-                            <input
-                                type='email'
-                                value={manualForm.email}
-                                onChange={e => setManualForm({ ...manualForm, email: e.target.value })}
-                                placeholder='Email address'
-                            />
-                        </div>
-                        <div className='admin-form-group'>
-                            <label>Pass Type</label>
-                            <select
-                                value={manualForm.passType}
-                                onChange={e => {
-                                    setManualForm({ ...manualForm, passType: e.target.value })
-                                    setManualErrors({ ...manualErrors, passType: '' })
+                        <div className='admin-actions'>
+                            <div className='admin-sort'>
+                                <button
+                                    className={`admin-filter-btn ${sortBy === 'alpha' ? 'active' : ''}`}
+                                    onClick={() => setSortBy('alpha')}
+                                >
+                                    A–Z
+                                </button>
+                                <button
+                                    className={`admin-filter-btn ${sortBy === 'date' ? 'active' : ''}`}
+                                    onClick={() => setSortBy('date')}
+                                >
+                                    By Date
+                                </button>
+                            </div>
+                            <button
+                                className='admin-btn'
+                                onClick={() => {
+                                    if (showManualEntry) {
+                                        setShowManualEntry(false)
+                                        setFromCheckIn(false)
+                                    } else {
+                                        startAddMember({}, false)
+                                    }
                                 }}
                             >
-                                <option value='' disabled>Select a pass</option>
-                                {activePasses.map(pass => (
-                                    <option key={pass.id} value={pass.key}>
-                                        {pass.label} — ${pass.amount}
-                                    </option>
-                                ))}
-                            </select>
-                            {manualErrors.passType && <span className='form-error'>{manualErrors.passType}</span>}
+                                {showManualEntry ? 'Cancel' : '+ Add Member'}
+                            </button>
+                            <button className='admin-btn' onClick={exportToCSV}>
+                                Export CSV
+                            </button>
                         </div>
-                        <div className='admin-form-group'>
-                            <label>Payment Method</label>
-                            <select
-                                value={manualForm.paymentMethod}
-                                onChange={e => setManualForm({ ...manualForm, paymentMethod: e.target.value })}
-                            >
-                                <option value='cash'>Cash</option>
-                                <option value='venmo'>Venmo</option>
-                                <option value='paypal'>PayPal</option>
-                            </select>
-                        </div>
-                        <button className='admin-btn' onClick={handleManualEntry}>
-                            Add Member
-                        </button>
                     </div>
-                </div>
-            )}
 
-            {/* Desktop table */}
-            <div className='admin-table-wrapper'>
-                <table className='admin-table'>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>Pass</th>
-                            <th>Expires</th>
-                            <th>Status</th>
-                            <th>Payment</th>
-                            <th>Attendance</th>
-                            <th>{isCheckInDateToday ? 'Today' : 'Selected Date'}</th>
-                            <th>Action</th>
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                    {showManualEntry && (
+                        <div className='admin-manual-entry'>
+                            <h3>Add Member</h3>
+                            <div className='manual-entry-form'>
+                                <div className='admin-form-group'>
+                                    <label>First Name</label>
+                                    <input
+                                        type='text'
+                                        value={manualForm.firstName}
+                                        onChange={e => {
+                                            setManualForm({ ...manualForm, firstName: e.target.value })
+                                            setManualErrors({ ...manualErrors, firstName: '' })
+                                        }}
+                                        placeholder='First name'
+                                    />
+                                    {manualErrors.firstName && <span className='form-error'>{manualErrors.firstName}</span>}
+                                </div>
+                                <div className='admin-form-group'>
+                                    <label>Last Name</label>
+                                    <input
+                                        type='text'
+                                        value={manualForm.lastName}
+                                        onChange={e => {
+                                            setManualForm({ ...manualForm, lastName: e.target.value })
+                                            setManualErrors({ ...manualErrors, lastName: '' })
+                                        }}
+                                        placeholder='Last name'
+                                    />
+                                    {manualErrors.lastName && <span className='form-error'>{manualErrors.lastName}</span>}
+                                </div>
+                                <div className='admin-form-group'>
+                                    <label>Phone</label>
+                                    <input
+                                        type='tel'
+                                        value={manualForm.phone}
+                                        onChange={e => {
+                                            const value = e.target.value.replace(/[^0-9]/g, '')
+                                            setManualForm({ ...manualForm, phone: value })
+                                            setManualErrors({ ...manualErrors, phone: '' })
+                                        }}
+                                        placeholder='Phone number'
+                                        maxLength={10}
+                                    />
+                                    {manualErrors.phone && <span className='form-error'>{manualErrors.phone}</span>}
+                                </div>
+                                <div className='admin-form-group'>
+                                    <label>Email (optional)</label>
+                                    <input
+                                        type='email'
+                                        value={manualForm.email}
+                                        onChange={e => setManualForm({ ...manualForm, email: e.target.value })}
+                                        placeholder='Email address'
+                                    />
+                                </div>
+                                <div className='admin-form-group'>
+                                    <label>Pass Type</label>
+                                    <select
+                                        value={manualForm.passType}
+                                        onChange={e => {
+                                            setManualForm({ ...manualForm, passType: e.target.value })
+                                            setManualErrors({ ...manualErrors, passType: '' })
+                                        }}
+                                    >
+                                        <option value='' disabled>Select a pass</option>
+                                        {activePasses.map(pass => (
+                                            <option key={pass.id} value={pass.key}>
+                                                {pass.label} — ${pass.amount}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {manualErrors.passType && <span className='form-error'>{manualErrors.passType}</span>}
+                                </div>
+                                <div className='admin-form-group'>
+                                    <label>Payment Method</label>
+                                    <select
+                                        value={manualForm.paymentMethod}
+                                        onChange={e => setManualForm({ ...manualForm, paymentMethod: e.target.value })}
+                                    >
+                                        <option value='cash'>Cash</option>
+                                        <option value='venmo'>Venmo</option>
+                                        <option value='paypal'>PayPal</option>
+                                    </select>
+                                </div>
+                                <button className='admin-btn' onClick={handleManualEntry}>
+                                    Add Member
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Desktop table */}
+                    <div className='admin-table-wrapper'>
+                        <table className='admin-table'>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>Pass</th>
+                                    <th>Expires</th>
+                                    <th>Status</th>
+                                    <th>Payment</th>
+                                    <th>Attendance</th>
+                                    <th>{isCheckInDateToday ? 'Today' : 'Selected Date'}</th>
+                                    <th>Action</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredMembers.length === 0 ? (
+                                    <tr>
+                                        <td colSpan='10' className='admin-empty'>No members found</td>
+                                    </tr>
+                                ) : (
+                                    filteredMembers.map(member => (
+                                        <tr key={member.id} className={!isActive(member) ? 'expired-row' : ''}>
+                                            <td>{member.firstName} {member.lastName}</td>
+                                            <td>{member.phone}</td>
+                                            <td>{member.passLabel}</td>
+                                            <td>{formatDate(member.expiryDate)}</td>
+                                            <td>
+                                                <span className={`status-badge ${getStatusClass(member)}`}>
+                                                    {getStatusLabel(member)}
+                                                </span>
+                                            </td>
+                                            <td>{getPaymentLabel(member)}</td>
+                                            <td>{getAttendanceCount(member)}</td>
+                                            <td>{isCheckedInOnDate(member, checkInDate) ? '✓ Yes' : 'No'}</td>
+                                            <td>
+                                                {isCheckedInOnDate(member, checkInDate) ? (
+                                                    <button
+                                                        className='checkin-btn checkin-btn-undo'
+                                                        onClick={() => runUndo(member, checkInDate)}
+                                                    >
+                                                        Undo
+                                                    </button>
+                                                ) : isPending(member) ? (
+                                                    <button className='checkin-btn' onClick={() => markPaid(member)}>
+                                                        Mark paid
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        className='checkin-btn'
+                                                        onClick={() => runCheckIn(member)}
+                                                        disabled={!isActive(member) && isCheckInDateToday}
+                                                        style={{ opacity: (!isActive(member) && isCheckInDateToday) ? 0.4 : 1, cursor: (!isActive(member) && isCheckInDateToday) ? 'not-allowed' : 'pointer' }}
+                                                    >
+                                                        Check In
+                                                    </button>
+                                                )}
+                                            </td>
+                                            <td>
+                                                <button
+                                                    className='delete-btn'
+                                                    onClick={() => handleDelete(member.id)}
+                                                >
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Mobile list */}
+                    <div className='admin-mobile-list'>
                         {filteredMembers.length === 0 ? (
-                            <tr>
-                                <td colSpan='10' className='admin-empty'>No members found</td>
-                            </tr>
+                            <p className='admin-empty'>No members found</p>
                         ) : (
                             filteredMembers.map(member => (
-                                <tr key={member.id} className={!isActive(member) ? 'expired-row' : ''}>
-                                    <td>{member.firstName} {member.lastName}</td>
-                                    <td>{member.phone}</td>
-                                    <td>{member.passLabel}</td>
-                                    <td>{formatDate(member.expiryDate)}</td>
-                                    <td>
-                                        <span className={`status-badge ${getStatusClass(member)}`}>
-                                            {getStatusLabel(member)}
-                                        </span>
-                                    </td>
-                                    <td>{getPaymentLabel(member)}</td>
-                                    <td>{getAttendanceCount(member)}</td>
-                                    <td>{isCheckedInOnDate(member, checkInDate) ? '✓ Yes' : 'No'}</td>
-                                    <td>
+                                <div key={member.id} className={`admin-mobile-card ${!isActive(member) ? 'expired-card' : ''}`}>
+                                    <div>
+                                        <div className='admin-mobile-top'>
+                                            <span className='admin-mobile-name'>{member.firstName} {member.lastName}</span>
+                                            <span className={`status-badge ${getStatusClass(member)}`}>
+                                                {getStatusLabel(member)}
+                                            </span>
+                                        </div>
+                                        <div className='admin-mobile-meta'>
+                                            <span>{member.passLabel}</span>
+                                            <span>Exp: {formatDate(member.expiryDate)}</span>
+                                            <span>{getPaymentLabel(member)}</span>
+                                            <span>Attended: {getAttendanceCount(member)}x</span>
+                                        </div>
+                                    </div>
+                                    <div className='admin-mobile-buttons'>
                                         {isCheckedInOnDate(member, checkInDate) ? (
                                             <button
                                                 className='checkin-btn checkin-btn-undo'
-                                                onClick={() => handleUndoCheckIn(member.id, member.passType, member, checkInDate)}
+                                                onClick={() => runUndo(member, checkInDate)}
                                             >
                                                 Undo
+                                            </button>
+                                        ) : isPending(member) ? (
+                                            <button className='checkin-btn' onClick={() => markPaid(member)}>
+                                                Mark paid
                                             </button>
                                         ) : (
                                             <button
                                                 className='checkin-btn'
-                                                onClick={() => handleCheckIn(member.id, member.passType, checkInDate)}
+                                                onClick={() => runCheckIn(member)}
                                                 disabled={!isActive(member) && isCheckInDateToday}
                                                 style={{ opacity: (!isActive(member) && isCheckInDateToday) ? 0.4 : 1, cursor: (!isActive(member) && isCheckInDateToday) ? 'not-allowed' : 'pointer' }}
                                             >
                                                 Check In
                                             </button>
                                         )}
-                                    </td>
-                                    <td>
                                         <button
                                             className='delete-btn'
                                             onClick={() => handleDelete(member.id)}
                                         >
                                             Delete
                                         </button>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             ))
                         )}
-                    </tbody>
-                </table>
-            </div>
+                    </div>
+                </div>
+            )}
 
-            {/* Mobile list */}
-            <div className='admin-mobile-list'>
-                {filteredMembers.length === 0 ? (
-                    <p className='admin-empty'>No members found</p>
-                ) : (
-                    filteredMembers.map(member => (
-                        <div key={member.id} className={`admin-mobile-card ${!isActive(member) ? 'expired-card' : ''}`}>
-                            <div>
-                                <div className='admin-mobile-top'>
-                                    <span className='admin-mobile-name'>{member.firstName} {member.lastName}</span>
-                                    <span className={`status-badge ${getStatusClass(member)}`}>
-                                        {getStatusLabel(member)}
-                                    </span>
-                                </div>
-                                <div className='admin-mobile-meta'>
-                                    <span>{member.passLabel}</span>
-                                    <span>Exp: {formatDate(member.expiryDate)}</span>
-                                    <span>{getPaymentLabel(member)}</span>
-                                    <span>Attended: {getAttendanceCount(member)}x</span>
-                                </div>
+            {/* ============ ACTIVITY ============ */}
+            {tab === 'activity' && (
+                <div className='ci-activity'>
+                    {/* Staff Activity — only visible to authorized emails */}
+                    {canViewStaff && (
+                        <div className='admin-staff'>
+                            <h3>Staff Activity</h3>
+                            <div className='staff-lookup'>
+                                <input
+                                    type='date'
+                                    value={staffDate}
+                                    max={getTodayString()}
+                                    onChange={e => setStaffDate(e.target.value)}
+                                />
                             </div>
-                            <div className='admin-mobile-buttons'>
-                                {isCheckedInOnDate(member, checkInDate) ? (
-                                    <button
-                                        className='checkin-btn checkin-btn-undo'
-                                        onClick={() => handleUndoCheckIn(member.id, member.passType, member, checkInDate)}
-                                    >
-                                        Undo
-                                    </button>
-                                ) : (
-                                    <button
-                                        className='checkin-btn'
-                                        onClick={() => handleCheckIn(member.id, member.passType, checkInDate)}
-                                        disabled={!isActive(member) && isCheckInDateToday}
-                                        style={{ opacity: (!isActive(member) && isCheckInDateToday) ? 0.4 : 1, cursor: (!isActive(member) && isCheckInDateToday) ? 'not-allowed' : 'pointer' }}
-                                    >
-                                        Check In
-                                    </button>
-                                )}
-                                <button
-                                    className='delete-btn'
-                                    onClick={() => handleDelete(member.id)}
-                                >
-                                    Delete
-                                </button>
-                            </div>
+                            {staffEmailsOnDate.length === 0 ? (
+                                <p className='staff-empty'>No staff activity on {new Date(staffDate + 'T12:00:00').toLocaleDateString()}</p>
+                            ) : (
+                                <div className='staff-list'>
+                                    {staffEmailsOnDate.map(emailAddr => {
+                                        const shift = staffOnDate.find(s => s.email === emailAddr)
+                                        return (
+                                            <div key={emailAddr} className='staff-row'>
+                                                <span className='staff-name'>{getStaffName(emailAddr)}</span>
+                                                <span className='staff-meta'>
+                                                    {shift ? `Signed in ${formatTime(shift.signInTime)}` : 'No sign-in record'}
+                                                </span>
+                                                <span className='staff-count'>{getCheckInCountForAdmin(emailAddr, staffDate)} check-ins</span>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            )}
                         </div>
-                    ))
-                )}
-            </div>
+                    )}
+
+                    <div className='admin-attendance'>
+                        <h3>Attendance Lookup</h3>
+                        <div className='attendance-lookup'>
+                            <input
+                                type='date'
+                                value={attendanceDate}
+                                onChange={e => setAttendanceDate(e.target.value)}
+                            />
+                            <p>{attendanceDateCount} member{attendanceDateCount !== 1 ? 's' : ''} checked in on {new Date(attendanceDate + 'T12:00:00').toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {toast && (
+                <div className='ci-toast' role='status'>
+                    <span>✓ {toast.name} checked in</span>
+                    <button type='button' onClick={undoFromToast}>Undo</button>
+                </div>
+            )}
         </div>
     )
 }
