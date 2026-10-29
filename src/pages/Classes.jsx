@@ -307,11 +307,7 @@ export default function Classes() {
                             {specialEvents.map(event => (
                                 <div key={event.id} className='class-schedule special-event'>
                                     <h3>🔔 {event.title}</h3>
-                                    <div className='schedule'>
-                                        <div className='times'>
-                                            <p>{event.description}</p>
-                                        </div>
-                                    </div>
+                                    <p className='special-event-desc'>{event.description}</p>
                                 </div>
                             ))}
                         </div>

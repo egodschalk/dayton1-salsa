@@ -88,8 +88,13 @@
     overflow-wrap: break-word;
 }
 
-.class-schedule.special-event .schedule {
-    margin-top: 4px;
+.special-event-desc {
+    margin: 4px 0 0;
+    font-size: 18pt;
+    line-height: 1.5;
+    text-align: center;
+    white-space: pre-line;
+    overflow-wrap: break-word;
 }
 
 .schedule {
