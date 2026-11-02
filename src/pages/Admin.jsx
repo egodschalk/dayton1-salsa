@@ -78,7 +78,8 @@ export default function Admin() {
         phone: '',
         email: '',
         passType: '',
-        paymentMethod: 'cash'
+        paymentMethod: 'cash',
+        freeReason: ''
     })
     const [manualErrors, setManualErrors] = useState({})
 
@@ -175,6 +176,7 @@ export default function Admin() {
         if (!manualForm.phone.trim()) errors.phone = 'Phone number is required'
         if (manualForm.phone.length < 10) errors.phone = 'Please enter a valid 10 digit phone number'
         if (!manualForm.passType) errors.passType = 'Please select a pass'
+        if (manualForm.paymentMethod === 'free' && !manualForm.freeReason.trim()) errors.freeReason = 'Please enter a reason for the free pass'
         return errors
     }
 
@@ -198,6 +200,8 @@ export default function Admin() {
         let transactionId = 'CASH'
         if (manualForm.paymentMethod === 'venmo') transactionId = 'VENMO'
         if (manualForm.paymentMethod === 'paypal') transactionId = 'PAYPAL'
+        const isFree = manualForm.paymentMethod === 'free'
+        if (isFree) transactionId = 'FREE'
 
         try {
             await addDoc(collection(db, 'members'), {
@@ -207,7 +211,8 @@ export default function Admin() {
                 email: manualForm.email || '',
                 passType: pass.key,
                 passLabel: pass.label,
-                amount: pass.amount,
+                amount: isFree ? 0 : pass.amount,
+                ...(isFree ? { regularPrice: pass.amount, freeReason: (manualForm.freeReason || '').trim(), grantedBy: user?.email || 'unknown' } : {}),
                 purchaseDate: now.toISOString(),
                 expiryDate,
                 originalExpiryDate: expiryDate,
@@ -223,7 +228,7 @@ export default function Admin() {
         }
 
         const addedPhone = manualForm.phone
-        setManualForm({ firstName: '', lastName: '', phone: '', email: '', passType: activePasses[0]?.key || '', paymentMethod: 'cash' })
+        setManualForm({ firstName: '', lastName: '', phone: '', email: '', passType: activePasses[0]?.key || '', paymentMethod: 'cash', freeReason: '' })
         setManualErrors({})
         setShowManualEntry(false)
 
@@ -382,7 +387,8 @@ export default function Admin() {
             phone: (prefill.phone || '').replace(/\D/g, '').slice(0, 10),
             email: prefill.email || '',
             passType: activePasses[0]?.key || '',
-            paymentMethod: 'cash'
+            paymentMethod: 'cash',
+            freeReason: ''
         })
         setManualErrors({})
         setShowManualEntry(true)
@@ -494,6 +500,7 @@ export default function Admin() {
         if (member.transactionId === 'CASH') return 'Cash'
         if (member.transactionId === 'VENMO') return 'Venmo'
         if (member.transactionId === 'PAYPAL') return 'PayPal'
+        if (member.transactionId === 'FREE') return member.freeReason ? `Free (${member.freeReason})` : 'Free'
         if (member.transactionId === 'PENDING') {
             const labels = { cash: 'Cash', venmo: 'Venmo', paypal: 'PayPal' }
             return `Pending (${labels[member.paymentMethod] || '?'})`
@@ -568,6 +575,17 @@ export default function Admin() {
     const isCheckInDateToday = checkInDate === getTodayString()
     const checkInDateLabel = new Date(checkInDate + 'T12:00:00').toLocaleDateString()
     const canViewStaff = user && STAFF_VIEW_EMAILS.includes(user.email)
+
+    // Free passes given in the last 30 days (owner view)
+    const freeCutoff = Date.now() - 30 * 24 * 60 * 60 * 1000
+    const recentFreePasses = members
+        .filter(m => m.transactionId === 'FREE' && new Date(m.purchaseDate).getTime() >= freeCutoff)
+        .sort((a, b) => new Date(b.purchaseDate) - new Date(a.purchaseDate))
+    const freeByStaff = {}
+    recentFreePasses.forEach(m => {
+        const who = m.grantedBy || 'unknown'
+        freeByStaff[who] = (freeByStaff[who] || 0) + 1
+    })
 
     const staffOnDate = shifts.filter(s => s.date === staffDate)
     const checkInsOnStaffDate = checkInLog.filter(l => l.date === staffDate)
@@ -1019,8 +1037,21 @@ export default function Admin() {
                                         <option value='cash'>Cash</option>
                                         <option value='venmo'>Venmo</option>
                                         <option value='paypal'>PayPal</option>
+                                        <option value='free'>Free / comp (no charge)</option>
                                     </select>
                                 </div>
+                                {manualForm.paymentMethod === 'free' && (
+                                    <div className='admin-form-group'>
+                                        <label>Reason</label>
+                                        <input
+                                            type='text'
+                                            value={manualForm.freeReason}
+                                            onChange={e => { setManualForm({ ...manualForm, freeReason: e.target.value }); setManualErrors({ ...manualErrors, freeReason: '' }) }}
+                                            placeholder='e.g. Giveaway, instructor guest, make-up'
+                                        />
+                                        {manualErrors.freeReason && <span className='form-error'>{manualErrors.freeReason}</span>}
+                                    </div>
+                                )}
                                 <button className='admin-btn' onClick={handleManualEntry}>
                                     Add Member
                                 </button>
@@ -1191,6 +1222,34 @@ export default function Admin() {
                                             </div>
                                         )
                                     })}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {canViewStaff && (
+                        <div className='admin-staff'>
+                            <h3>Free passes (last 30 days)</h3>
+                            {recentFreePasses.length === 0 ? (
+                                <p className='staff-empty'>No free passes given in the last 30 days</p>
+                            ) : (
+                                <div className='staff-list'>
+                                    {Object.entries(freeByStaff).map(([emailAddr, count]) => (
+                                        <div key={emailAddr} className='staff-row'>
+                                            <span className='staff-name'>{emailAddr === 'unknown' ? 'Unknown' : getStaffName(emailAddr)}</span>
+                                            <span className='staff-meta'>gave out</span>
+                                            <span className='staff-count'>{count} free pass{count !== 1 ? 'es' : ''}</span>
+                                        </div>
+                                    ))}
+                                    {recentFreePasses.map(m => (
+                                        <div key={m.id} className='staff-row'>
+                                            <span className='staff-name'>{m.firstName} {m.lastName}</span>
+                                            <span className='staff-meta'>
+                                                {m.passLabel}{m.freeReason ? ` · ${m.freeReason}` : ''} · by {m.grantedBy ? getStaffName(m.grantedBy) : 'unknown'}
+                                            </span>
+                                            <span className='staff-count'>{formatDate(m.purchaseDate)}</span>
+                                        </div>
+                                    ))}
                                 </div>
                             )}
                         </div>
